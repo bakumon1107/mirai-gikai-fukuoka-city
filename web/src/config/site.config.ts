@@ -4,27 +4,26 @@
  * @see docs/kawasaki/20260304_1000_別地域向けfork手順.md
  */
 export const siteConfig = {
-  siteName: "みらい議会ー川崎版",
+  siteName: "みらい議会ー福岡市版",
   siteDescription:
-    "川崎市議会で今どんな議案が検討されているか、わかりやすく伝えるプラットフォームです",
-  cityName: "川崎市",
-  councilName: "川崎市議会",
+    "福岡市議会で今どんな議案が検討されているか、わかりやすく伝えるプラットフォームです",
+  cityName: "福岡市",
+  councilName: "福岡市議会",
   keywords: [
-    "みらい議会ー川崎版",
+    "みらい議会ー福岡市版",
     "議案",
-    "川崎市",
+    "福岡市",
     "市議会",
     "地方政治",
     "政策",
     "解説",
   ],
-  councilBaseUrl: "https://www.city.kawasaki.jp/",
+  councilBaseUrl: "https://gikai.city.fukuoka.lg.jp/",
   /** 議案・議決結果の一覧ページ */
-  councilBillsDetailUrl:
-    "https://www.city.kawasaki.jp/shisei/category/40-7-25-0-0-0-0-0-0-0.html",
-  twitterHashtag: "みらい議会川崎版", // # なし
+  councilBillsDetailUrl: "https://gikai.city.fukuoka.lg.jp/result/result/",
+  twitterHashtag: "みらい議会福岡市版", // # なし
   externalLinks: {
-    report: "https://forms.gle/GM4oTN94ttPRjyjp9",
+    report: "https://forms.gle/PbZdpdRzTrsAuDST7",
     aboutNote: "",
     donation: "https://team-mir.ai/support/donation",
     teamAbout: "https://team-mir.ai/about",
@@ -42,10 +41,10 @@ export const siteConfig = {
    * 利用規約や問い合わせ先に使用します。
    */
   operator: {
-    name: "GondoTakashi" as string,
-    contactUrl: "https://x.com/TakashiGondo" as string,
+    name: "バクモン" as string,
+    contactUrl: "https://x.com/bakumon0907" as string,
     /** 利用規約の準拠法・管轄裁判所（第一審の専属的合意管轄） */
-    jurisdiction: "横浜地方裁判所" as string,
+    jurisdiction: "福岡地方裁判所" as string,
   },
   /**
    * AI機能の有効/無効設定
