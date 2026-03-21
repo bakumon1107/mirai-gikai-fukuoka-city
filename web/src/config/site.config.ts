@@ -23,7 +23,7 @@ export const siteConfig = {
   councilBillsDetailUrl: "https://gikai.city.fukuoka.lg.jp/result/result/",
   twitterHashtag: "みらい議会福岡市版", // # なし
   externalLinks: {
-    report: "", // TODO: 問題報告フォームURLを設定してください
+    report: "https://forms.gle/PbZdpdRzTrsAuDST7",
     aboutNote: "",
     donation: "https://team-mir.ai/support/donation",
     teamAbout: "https://team-mir.ai/about",
@@ -35,14 +35,14 @@ export const siteConfig = {
    * ページを管理する政党名（空文字列の場合は政党名を省略した汎用表現を使用）
    * 例: "チームみらい"
    */
-  managingParty: "" as string, // TODO: 運営方針に応じて設定してください
+  managingParty: "" as string,
   /**
    * サービス運営者情報
    * 利用規約や問い合わせ先に使用します。
    */
   operator: {
-    name: "" as string, // TODO: 運営者名を設定してください
-    contactUrl: "" as string, // TODO: 連絡先URLを設定してください
+    name: "バクモン" as string,
+    contactUrl: "https://x.com/bakumon0907" as string,
     /** 利用規約の準拠法・管轄裁判所（第一審の専属的合意管轄） */
     jurisdiction: "福岡地方裁判所" as string,
   },
