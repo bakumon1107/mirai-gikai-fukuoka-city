@@ -4,27 +4,26 @@
  * @see docs/kawasaki/20260304_1000_別地域向けfork手順.md
  */
 export const siteConfig = {
-  siteName: "みらい議会ー川崎版",
+  siteName: "みらい議会ー福岡市版",
   siteDescription:
-    "川崎市議会で今どんな議案が検討されているか、わかりやすく伝えるプラットフォームです",
-  cityName: "川崎市",
-  councilName: "川崎市議会",
+    "福岡市議会で今どんな議案が検討されているか、わかりやすく伝えるプラットフォームです",
+  cityName: "福岡市",
+  councilName: "福岡市議会",
   keywords: [
-    "みらい議会ー川崎版",
+    "みらい議会ー福岡市版",
     "議案",
-    "川崎市",
+    "福岡市",
     "市議会",
     "地方政治",
     "政策",
     "解説",
   ],
-  councilBaseUrl: "https://www.city.kawasaki.jp/",
+  councilBaseUrl: "https://gikai.city.fukuoka.lg.jp/",
   /** 議案・議決結果の一覧ページ */
-  councilBillsDetailUrl:
-    "https://www.city.kawasaki.jp/shisei/category/40-7-25-0-0-0-0-0-0-0.html",
-  twitterHashtag: "みらい議会川崎版", // # なし
+  councilBillsDetailUrl: "https://gikai.city.fukuoka.lg.jp/result/result/",
+  twitterHashtag: "みらい議会福岡市版", // # なし
   externalLinks: {
-    report: "https://forms.gle/GM4oTN94ttPRjyjp9",
+    report: "", // TODO: 問題報告フォームURLを設定してください
     aboutNote: "",
     donation: "https://team-mir.ai/support/donation",
     teamAbout: "https://team-mir.ai/about",
@@ -36,16 +35,16 @@ export const siteConfig = {
    * ページを管理する政党名（空文字列の場合は政党名を省略した汎用表現を使用）
    * 例: "チームみらい"
    */
-  managingParty: "" as string,
+  managingParty: "" as string, // TODO: 運営方針に応じて設定してください
   /**
    * サービス運営者情報
    * 利用規約や問い合わせ先に使用します。
    */
   operator: {
-    name: "GondoTakashi" as string,
-    contactUrl: "https://x.com/TakashiGondo" as string,
+    name: "" as string, // TODO: 運営者名を設定してください
+    contactUrl: "" as string, // TODO: 連絡先URLを設定してください
     /** 利用規約の準拠法・管轄裁判所（第一審の専属的合意管轄） */
-    jurisdiction: "横浜地方裁判所" as string,
+    jurisdiction: "福岡地方裁判所" as string,
   },
   /**
    * AI機能の有効/無効設定
