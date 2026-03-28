@@ -6,11 +6,17 @@
   "scripts": {
     "seed": "tsx main/run.ts",
     "seed:csv": "tsx csv/import-csv.ts",
+    "fukuoka:scrape": "tsx fukuoka/scrape-bills.ts",
+    "fukuoka:generate": "tsx fukuoka/generate-content.ts",
+    "fukuoka:import": "tsx fukuoka/import-bills.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^3.0.1",
     "@mirai-gikai/supabase": "workspace:*",
     "@supabase/supabase-js": "^2.57.0",
+    "ai": "^6.0.3",
+    "cheerio": "^1.0.0",
     "csv-parse": "^6.1.0"
   },
   "devDependencies": {
