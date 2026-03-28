@@ -9,7 +9,9 @@
  *
  * 前提:
  *   - scrape-bills.ts を先に実行して output/<slug>-bills.json が存在すること
- *   - .env に AI_GATEWAY_API_KEY が設定されていること
+ *   - .env に ANTHROPIC_API_KEY または AI_GATEWAY_API_KEY のいずれかを設定すること
+ *     ANTHROPIC_API_KEY が優先される（console.anthropic.com で取得）
+ *     AI_GATEWAY_API_KEY はVercel AI Gateway経由で使う場合（Vercelダッシュボードで取得）
  *   - pdftotext (poppler-utils) がインストールされていること
  *
  * 出力: packages/seed/fukuoka/output/<slug>-contents.json
@@ -19,8 +21,9 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import * as os from "node:os";
 import { execSync } from "node:child_process";
+import { createAnthropic } from "@ai-sdk/anthropic";
 import { createOpenAI } from "@ai-sdk/openai";
-import { generateText } from "ai";
+import { generateText, type LanguageModel } from "ai";
 import type { ScrapedBill } from "./scrape-bills";
 
 // ---- 型定義 ----
@@ -46,17 +49,29 @@ export type ContentOutput = {
   bills: GeneratedContent[];
 };
 
-// ---- AI クライアント ----
+// ---- AI モデル生成 ----
 
-function createAiClient() {
-  const apiKey = process.env.AI_GATEWAY_API_KEY;
-  if (!apiKey) {
-    throw new Error("AI_GATEWAY_API_KEY が設定されていません");
+/**
+ * 環境変数に応じてAIモデルを返す。
+ * ANTHROPIC_API_KEY が優先。なければ AI_GATEWAY_API_KEY（Vercel AI Gateway）を使用。
+ */
+function createModel(): LanguageModel {
+  if (process.env.ANTHROPIC_API_KEY) {
+    console.log("🔑 Using Anthropic API directly");
+    return createAnthropic({ apiKey: process.env.ANTHROPIC_API_KEY })(
+      "claude-haiku-4-5-20251001"
+    );
   }
-  return createOpenAI({
-    baseURL: "https://ai-gateway.vercel.sh/v1",
-    apiKey,
-  });
+  if (process.env.AI_GATEWAY_API_KEY) {
+    console.log("🔑 Using Vercel AI Gateway");
+    return createOpenAI({
+      baseURL: "https://ai-gateway.vercel.sh/v1",
+      apiKey: process.env.AI_GATEWAY_API_KEY,
+    })("anthropic/claude-haiku-4.5") as LanguageModel;
+  }
+  throw new Error(
+    "ANTHROPIC_API_KEY または AI_GATEWAY_API_KEY を設定してください"
+  );
 }
 
 // ---- PDF テキスト抽出 ----
@@ -188,7 +203,7 @@ function extractRelevantText(text: string | null, billName: string): string {
 async function generateBillContent(
   bill: ScrapedBill,
   pdfText: string | null,
-  aiClient: ReturnType<typeof createOpenAI>
+  model: LanguageModel
 ): Promise<GeneratedContent> {
   const relevantText = extractRelevantText(pdfText, bill.name);
   const factionVotesStr = formatFactionVotes(bill.factionVotes);
@@ -200,8 +215,6 @@ async function generateBillContent(
       .replace("{result}", bill.result || "未議決")
       .replace("{factionVotes}", factionVotesStr)
       .replace("{pdfText}", relevantText);
-
-  const model = aiClient("anthropic/claude-haiku-4.5");
 
   const parseJsonResponse = (text: string): { title: string; summary: string; content: string } => {
     // コードブロックを除去
@@ -261,7 +274,7 @@ async function main() {
   const bills: ScrapedBill[] = JSON.parse(fs.readFileSync(inputPath, "utf-8"));
   console.log(`📋 ${bills.length} 件の議案を処理します`);
 
-  const aiClient = createAiClient();
+  const model = createModel();
   const results: GeneratedContent[] = [];
 
   for (let i = 0; i < bills.length; i++) {
@@ -280,7 +293,7 @@ async function main() {
 
     // AI解説生成
     console.log("  🤖 AI解説生成中...");
-    const content = await generateBillContent(bill, pdfText, aiClient);
+    const content = await generateBillContent(bill, pdfText, model);
     results.push(content);
 
     console.log(`  ✅ 完了: "${content.normal.title}"`);
