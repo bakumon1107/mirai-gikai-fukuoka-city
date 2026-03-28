@@ -3,6 +3,10 @@
  *
  * 福岡市議会公式サイトから議案一覧を取得してJSONに出力する。
  *
+ * テーブル構造（転置テーブル）:
+ *   左列がフィールド名（議案番号/提出年月日/件名/議決年月日/議決結果/各会派）
+ *   横方向に各議案のデータが並ぶ（90件など）
+ *
  * 使い方:
  *   tsx packages/seed/fukuoka/scrape-bills.ts [会期slug]
  *   例: tsx packages/seed/fukuoka/scrape-bills.ts r8-1
@@ -26,7 +30,7 @@ export type ScrapedBill = {
   name: string; // 議案タイトル
   submittedDate: string | null; // ISO形式 "YYYY-MM-DD"
   resolvedDate: string | null; // ISO形式 "YYYY-MM-DD"
-  result: string; // 可決 / 否決 / 継続審査 等
+  result: string; // 可決 / 否決 / 継続審査 等（空文字=未議決）
   factionVotes: FactionVote[];
   pdfUrl: string | null;
 };
@@ -77,10 +81,23 @@ function parseVoteSymbol(symbol: string): "for" | "against" | "unknown" {
   return "unknown";
 }
 
+/**
+ * 「無所属１」「無所属2」などを「無所属」に正規化する。
+ * 個人名がついた会派名（例: "みらい田中"）はそのまま返す。
+ */
+function normalizeFactionName(name: string): string {
+  if (/^無所属[0-9１-９]?$/.test(name)) return "無所属";
+  return name;
+}
+
 // ---- スクレイピング本体 ----
 
 /**
  * 指定URLのHTMLを取得してパースし、議案データの配列を返す。
+ *
+ * 福岡市議会サイトのテーブルは**転置（縦持ち）形式**:
+ *   - 各行が1フィールド（議案番号, 件名, 提出日, 議決日, 結果, 各会派...）
+ *   - 各列が1議案のデータ
  */
 export async function scrapeBills(councilUrl: string): Promise<ScrapedBill[]> {
   console.log(`🌐 Fetching: ${councilUrl}`);
@@ -101,102 +118,126 @@ export async function scrapeBills(councilUrl: string): Promise<ScrapedBill[]> {
   const html = await response.text();
   const $ = load(html);
 
-  const bills: ScrapedBill[] = [];
-
   // DataTablesテーブルを探す（id="tablepress-XXXX" 形式）
   const table = $("table[id^='tablepress-']").first();
   if (!table.length) {
     console.warn("⚠️  議案テーブルが見つかりませんでした。HTMLを確認してください。");
-    return bills;
+    return [];
   }
 
-  // ヘッダー行から会派名を取得
-  const headers: string[] = [];
-  table.find("thead th, thead td").each((_, el) => {
-    headers.push($(el).text().trim());
+  // ---- 転置テーブルのパース ----
+  // 各行を { fieldName, values[], links[] } として収集する
+
+  type TableRow = {
+    fieldName: string;
+    values: string[];
+    links: (string | null)[];
+  };
+
+  const tableRows: TableRow[] = [];
+
+  // thead + tbody 両方の tr を対象にする（「議案番号」行は thead に入っている）
+  table.find("tr").each((_, trEl) => {
+    const cells = $(trEl).find("td, th");
+    if (cells.length === 0) return;
+
+    const fieldName = cells.eq(0).text().trim();
+    const values: string[] = [];
+    const links: (string | null)[] = [];
+
+    cells.each((colIdx, tdEl) => {
+      if (colIdx === 0) return; // フィールド名列はスキップ
+      values.push($(tdEl).text().trim());
+      const href = $(tdEl).find("a[href]").attr("href") ?? null;
+      links.push(href);
+    });
+
+    tableRows.push({ fieldName, values, links });
   });
 
-  // ヘッダーが取れない場合は tbody の最初の行をヘッダーとして扱う
-  let factionStartIndex = -1;
-  if (headers.length === 0) {
-    table.find("tbody tr").first().find("th, td").each((i, el) => {
-      headers.push($(el).text().trim());
-    });
+  // 議案数（議案番号行の値の数）
+  const billNumberRow = tableRows.find((r) => r.fieldName === "議案番号");
+  if (!billNumberRow) {
+    console.warn("⚠️  「議案番号」行が見つかりません。");
+    return [];
   }
+  const billCount = billNumberRow.values.length;
 
-  // 会派列の開始インデックスを特定（「議決結果」列の次）
-  const resultIndex = headers.findIndex(
-    (h) => h.includes("議決") || h.includes("結果")
+  // 各フィールドをフィールド名でインデックス化
+  const rowByField = new Map<string, TableRow>(
+    tableRows.map((r) => [r.fieldName, r])
   );
-  if (resultIndex >= 0) {
-    factionStartIndex = resultIndex + 1;
-  }
 
-  const factionNames = factionStartIndex >= 0
-    ? headers.slice(factionStartIndex).filter((h) => h.length > 0)
-    : [];
+  // 会派行を特定（既知のフィールド名以外は会派とみなす）
+  const knownFields = new Set(["議案番号", "提出年月日", "件名", "議決年月日", "議決結果"]);
+  const factionRows = tableRows.filter((r) => !knownFields.has(r.fieldName) && r.fieldName !== "");
 
-  // データ行をパース
-  table.find("tbody tr").each((rowIndex, row) => {
-    const cells = $(row).find("td");
-    if (cells.length < 3) return; // ヘッダー行などをスキップ
+  // ---- 各議案を組み立て ----
+  const bills: ScrapedBill[] = [];
 
-    // 列インデックスは公式サイトの構造に合わせて調整
-    // 想定: 議案番号 | 件名 | 提出日 | 議決日 | 議決結果 | [会派...]
-    const billNumber = cells.eq(0).text().trim();
-    const nameCell = cells.eq(1);
-    const name = nameCell.text().trim();
-    const submittedDateRaw = cells.eq(2).text().trim();
-    const resolvedDateRaw = cells.eq(3).text().trim();
-    const resultText = cells.eq(4).text().trim();
+  for (let i = 0; i < billCount; i++) {
+    const billNumber = billNumberRow.values[i] ?? "";
+    const name = rowByField.get("件名")?.values[i] ?? "";
 
-    if (!billNumber || !name) return;
+    if (!billNumber || !name) continue;
 
-    // PDFリンク
-    const pdfHref = nameCell.find("a[href$='.pdf'], a[href*='.pdf']").attr("href");
-    let pdfUrl: string | null = null;
-    if (pdfHref) {
-      pdfUrl = pdfHref.startsWith("http")
-        ? pdfHref
-        : new URL(pdfHref, councilUrl).toString();
+    // PDF URL
+    const rawHref = rowByField.get("件名")?.links[i] ?? null;
+    const pdfUrl = rawHref
+      ? rawHref.startsWith("http")
+        ? rawHref
+        : new URL(rawHref, councilUrl).toString()
+      : null;
+
+    // 会派別採決（同一会派（無所属）の複数行はまとめる）
+    const factionVoteMap = new Map<string, "for" | "against" | "unknown">();
+    for (const frow of factionRows) {
+      const normalized = normalizeFactionName(frow.fieldName);
+      const vote = parseVoteSymbol(frow.values[i] ?? "");
+
+      // 既にエントリがある場合（無所属の集約）: 反対が1人でもいれば against を優先
+      const existing = factionVoteMap.get(normalized);
+      if (!existing || (vote === "against" && existing !== "against")) {
+        factionVoteMap.set(normalized, vote);
+      }
     }
 
-    // 会派別採決
-    const factionVotes: FactionVote[] = [];
-    if (factionStartIndex >= 0) {
-      factionNames.forEach((factionName, i) => {
-        const voteCell = cells.eq(factionStartIndex + i);
-        factionVotes.push({
-          factionName,
-          vote: parseVoteSymbol(voteCell.text()),
-        });
-      });
-    }
+    const factionVotes: FactionVote[] = Array.from(factionVoteMap.entries()).map(
+      ([factionName, vote]) => ({ factionName, vote })
+    );
 
     bills.push({
-      billNumber,
-      name,
-      submittedDate: parseJapaneseDate(submittedDateRaw),
-      resolvedDate: parseJapaneseDate(resolvedDateRaw),
-      result: resultText,
+      billNumber: `第${billNumber}号`,
+      name: name.replace(/\n.*$/, "").trim(), // 注記（※...）を除去
+      submittedDate: parseJapaneseDate(rowByField.get("提出年月日")?.values[i] ?? ""),
+      resolvedDate: parseJapaneseDate(rowByField.get("議決年月日")?.values[i] ?? ""),
+      result: rowByField.get("議決結果")?.values[i] ?? "",
       factionVotes,
       pdfUrl,
     });
-  });
+  }
 
   return bills;
 }
 
 // ---- メイン ----
 
+/**
+ * slug形式: "r8-1" → URL path: "r8_gikai1"
+ */
+function slugToUrlPath(slug: string): string {
+  const match = slug.match(/^r(\d+)-(\d+)$/);
+  if (!match) return slug;
+  return `r${match[1]}_gikai${match[2]}`;
+}
+
 async function main() {
   const slug = process.argv[2] || "r8-1";
 
-  // 会期スラッグからURLを組み立て
   const councilUrl =
     slug === "r7-4"
       ? "https://gikai.city.fukuoka.lg.jp/result/result/"
-      : `https://gikai.city.fukuoka.lg.jp/result/${slug}_gikai1/`;
+      : `https://gikai.city.fukuoka.lg.jp/result/${slugToUrlPath(slug)}/`;
 
   const bills = await scrapeBills(councilUrl);
   console.log(`✅ ${bills.length} 件の議案を取得しました`);
@@ -213,10 +254,17 @@ async function main() {
   console.log("\n📊 議決結果サマリー:");
   const resultCounts: Record<string, number> = {};
   for (const bill of bills) {
-    resultCounts[bill.result] = (resultCounts[bill.result] ?? 0) + 1;
+    resultCounts[bill.result || "(未議決)"] = (resultCounts[bill.result || "(未議決)"] ?? 0) + 1;
   }
   for (const [result, count] of Object.entries(resultCounts)) {
-    console.log(`  ${result || "(未記載)"}: ${count}件`);
+    console.log(`  ${result}: ${count}件`);
+  }
+
+  // 先頭5件をプレビュー
+  console.log("\n📋 先頭5件プレビュー:");
+  for (const bill of bills.slice(0, 5)) {
+    console.log(`  ${bill.billNumber} ${bill.name.slice(0, 40)}`);
+    console.log(`    結果: ${bill.result || "(未議決)"} / PDF: ${bill.pdfUrl ? "あり" : "なし"}`);
   }
 }
 
