@@ -19,6 +19,7 @@ import {
   type PromptInputMessage,
   PromptInputTextarea,
 } from "@/components/ai-elements/prompt-input";
+import { siteConfig } from "@/config/site.config";
 import type { BillWithContent } from "@/features/bills/shared/types";
 import { useIsDesktop } from "@/hooks/use-is-desktop";
 import { useViewportHeight } from "@/hooks/use-viewport-height";
@@ -98,7 +99,7 @@ function ChatMessages({
           {(billContext
             ? [`この議案のポイントは？`, "この議案は私にどんな影響がある？"]
             : [
-                "みらい議会ー川崎版って何？",
+                `${siteConfig.siteName}って何？`,
                 "市議会って何をするところ？",
                 "注目の議案について教えて",
               ]
