@@ -6,9 +6,9 @@
   "scripts": {
     "seed": "tsx main/run.ts",
     "seed:csv": "tsx csv/import-csv.ts",
-    "fukuoka:scrape": "tsx fukuoka/scrape-bills.ts",
-    "fukuoka:generate": "tsx fukuoka/generate-content.ts",
-    "fukuoka:import": "tsx fukuoka/import-bills.ts",
+    "fukuoka:scrape": "tsx --env-file=../../.env fukuoka/scrape-bills.ts",
+    "fukuoka:generate": "tsx --env-file=../../.env fukuoka/generate-content.ts",
+    "fukuoka:import": "tsx --env-file=../../.env fukuoka/import-bills.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
