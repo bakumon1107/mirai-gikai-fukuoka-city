@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/layouts/container";
+import { getDifficultyLevel } from "@/features/bill-difficulty/server/loaders/get-difficulty-level";
 import { getCouncilSessionBySlug } from "@/features/council-sessions/server/loaders/get-council-session-by-slug";
 import { getBudgetOverviews } from "@/features/budget-overview/server/loaders/get-budget-overviews";
 import { BudgetOverviewList } from "@/features/budget-overview/server/components/budget-overview-list";
+import { BudgetChatClient } from "@/features/budget-overview/client/components/budget-chat-client";
+import { siteConfig } from "@/config/site.config";
 
 interface BudgetListPageProps {
   params: Promise<{
@@ -30,7 +33,10 @@ export async function generateMetadata({
 export default async function BudgetListPage({ params }: BudgetListPageProps) {
   const { session_slug } = await params;
 
-  const session = await getCouncilSessionBySlug(session_slug);
+  const [session, currentDifficulty] = await Promise.all([
+    getCouncilSessionBySlug(session_slug),
+    getDifficultyLevel(),
+  ]);
   if (!session) {
     notFound();
   }
@@ -47,6 +53,19 @@ export default async function BudgetListPage({ params }: BudgetListPageProps) {
       </div>
 
       <BudgetOverviewList overviews={overviews} sessionSlug={session_slug} />
+
+      {siteConfig.features.aiChat && overviews.length > 0 && (
+        <BudgetChatClient
+          currentDifficulty={currentDifficulty}
+          budget={{
+            departmentName: `${session.name} 各局`,
+            themes: overviews.map((o) => ({
+              title: o.department_name,
+              aiSummary: o.direction,
+            })),
+          }}
+        />
+      )}
     </Container>
   );
 }
