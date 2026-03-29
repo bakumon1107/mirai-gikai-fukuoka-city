@@ -15,6 +15,7 @@ import { siteConfig } from "@/config/site.config";
 import { getCurrentCouncilSession } from "@/features/council-sessions/server/loaders/get-current-council-session";
 import { CurrentCouncilSession } from "@/features/council-sessions/client/components/current-council-session";
 import { getJapanTime } from "@/lib/utils/date";
+import { BudgetOverviewBanner } from "@/components/top/budget-overview-banner";
 
 export default async function Home() {
   const { billsByTag, featuredBills, comingSoonBills, previousSessionData } =
@@ -41,6 +42,13 @@ export default async function Home() {
 
       {/* 本日の定例会セクション */}
       <CurrentCouncilSession session={currentSession} />
+
+      {/* 予算概要バナー */}
+      {currentSession?.slug && (
+        <Container className="pt-6">
+          <BudgetOverviewBanner sessionSlug={currentSession.slug} />
+        </Container>
+      )}
 
       {/* 議案一覧セクション */}
       <Container className="">
