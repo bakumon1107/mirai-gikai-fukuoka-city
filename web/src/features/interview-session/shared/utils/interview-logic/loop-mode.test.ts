@@ -26,6 +26,7 @@ const makeBill = (
   status_order: BILL_STATUS_ORDER.submitted,
   publish_status_order: 2,
   thumbnail_url: null,
+  source_url: null,
   created_at: new Date().toISOString(),
   updated_at: new Date().toISOString(),
   bill_content: {

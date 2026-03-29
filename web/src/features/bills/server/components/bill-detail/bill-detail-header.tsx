@@ -1,3 +1,4 @@
+import { ExternalLink } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -57,6 +58,18 @@ export async function BillDetailHeader({
       <div className="px-4 pb-8">
         {displaySummary && (
           <p className="mb-4 leading-relaxed">{displaySummary}</p>
+        )}
+
+        {bill.source_url && (
+          <a
+            href={bill.source_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4"
+          >
+            <ExternalLink className="h-3.5 w-3.5" />
+            議案原文（PDF）
+          </a>
         )}
 
         {/* タグ表示 */}
