@@ -183,6 +183,144 @@ export type Database = {
           },
         ]
       }
+      budget_initiatives: {
+        Row: {
+          badge: string | null
+          budget_amount: number | null
+          created_at: string
+          description: string | null
+          id: string
+          sort_order: number
+          theme_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          badge?: string | null
+          budget_amount?: number | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          sort_order?: number
+          theme_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          badge?: string | null
+          budget_amount?: number | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          sort_order?: number
+          theme_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_initiatives_theme_id_fkey"
+            columns: ["theme_id"]
+            isOneToOne: false
+            referencedRelation: "budget_themes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      budget_overviews: {
+        Row: {
+          council_session_id: string
+          created_at: string
+          department_name: string
+          department_slug: string
+          direction: string | null
+          id: string
+          prev_budget: number | null
+          publish_status: string
+          sort_order: number
+          source_url: string | null
+          total_budget: number | null
+          updated_at: string
+        }
+        Insert: {
+          council_session_id: string
+          created_at?: string
+          department_name: string
+          department_slug: string
+          direction?: string | null
+          id?: string
+          prev_budget?: number | null
+          publish_status?: string
+          sort_order?: number
+          source_url?: string | null
+          total_budget?: number | null
+          updated_at?: string
+        }
+        Update: {
+          council_session_id?: string
+          created_at?: string
+          department_name?: string
+          department_slug?: string
+          direction?: string | null
+          id?: string
+          prev_budget?: number | null
+          publish_status?: string
+          sort_order?: number
+          source_url?: string | null
+          total_budget?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_overviews_council_session_id_fkey"
+            columns: ["council_session_id"]
+            isOneToOne: false
+            referencedRelation: "council_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      budget_themes: {
+        Row: {
+          ai_summary: string | null
+          budget_amount: number | null
+          created_at: string
+          id: string
+          overview_id: string
+          sort_order: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          ai_summary?: string | null
+          budget_amount?: number | null
+          created_at?: string
+          id?: string
+          overview_id: string
+          sort_order?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          ai_summary?: string | null
+          budget_amount?: number | null
+          created_at?: string
+          id?: string
+          overview_id?: string
+          sort_order?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_themes_overview_id_fkey"
+            columns: ["overview_id"]
+            isOneToOne: false
+            referencedRelation: "budget_overviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       chat_usage_events: {
         Row: {
           cost_usd: number
