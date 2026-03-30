@@ -11,6 +11,7 @@ import {
   useState,
 } from "react";
 import type { BillWithContent } from "@/features/bills/shared/types";
+import type { BudgetChatContext } from "@/features/chat/server/services/handle-chat-request";
 import { ChatWindow } from "./chat-window";
 
 // アニメーション定数
@@ -25,13 +26,14 @@ interface ChatButtonProps {
   hasInterviewConfig?: boolean;
   difficultyLevel: string;
   pageContext?: {
-    type: "home" | "bill";
+    type: "home" | "bill" | "budget";
     bills?: Array<{
       name: string;
       summary?: string;
       tags?: string[];
       isFeatured?: boolean;
     }>;
+    budget?: BudgetChatContext;
   };
 }
 

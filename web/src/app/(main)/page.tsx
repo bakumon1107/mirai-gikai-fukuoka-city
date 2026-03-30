@@ -13,6 +13,7 @@ import type { BillWithContent } from "@/features/bills/shared/types";
 import { HomeChatClient } from "@/features/chat/client/components/home-chat-client";
 import { siteConfig } from "@/config/site.config";
 import { getCurrentCouncilSession } from "@/features/council-sessions/server/loaders/get-current-council-session";
+import { getActiveCouncilSession } from "@/features/council-sessions/server/loaders/get-active-council-session";
 import { CurrentCouncilSession } from "@/features/council-sessions/client/components/current-council-session";
 import { getJapanTime } from "@/lib/utils/date";
 import { BudgetOverviewBanner } from "@/components/top/budget-overview-banner";
@@ -22,8 +23,9 @@ export default async function Home() {
     await loadHomeData();
 
   // ゆくゆくタグ機能がマージされたらBFFに統合する
-  const [currentSession, currentDifficulty] = await Promise.all([
+  const [currentSession, activeSession, currentDifficulty] = await Promise.all([
     getCurrentCouncilSession(getJapanTime()),
+    getActiveCouncilSession(),
     getDifficultyLevel(),
   ]);
 
@@ -44,9 +46,9 @@ export default async function Home() {
       <CurrentCouncilSession session={currentSession} />
 
       {/* 予算概要バナー */}
-      {currentSession?.slug && (
+      {activeSession?.slug && (
         <Container className="pt-6">
-          <BudgetOverviewBanner sessionSlug={currentSession.slug} />
+          <BudgetOverviewBanner sessionSlug={activeSession.slug} />
         </Container>
       )}
 
