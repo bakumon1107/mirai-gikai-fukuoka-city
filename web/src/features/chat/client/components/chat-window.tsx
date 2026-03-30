@@ -21,6 +21,7 @@ import {
 } from "@/components/ai-elements/prompt-input";
 import { siteConfig } from "@/config/site.config";
 import type { BillWithContent } from "@/features/bills/shared/types";
+import type { BudgetChatContext } from "@/features/chat/server/services/handle-chat-request";
 import { useIsDesktop } from "@/hooks/use-is-desktop";
 import { useViewportHeight } from "@/hooks/use-viewport-height";
 import { SystemMessage } from "./system-message";
@@ -33,13 +34,14 @@ interface ChatWindowProps {
   isOpen: boolean;
   onClose: () => void;
   pageContext?: {
-    type: "home" | "bill";
+    type: "home" | "bill" | "budget";
     bills?: Array<{
       name: string;
       summary?: string;
       tags?: string[];
       isFeatured?: boolean;
     }>;
+    budget?: BudgetChatContext;
   };
   disableAutoFocus?: boolean;
   sessionId: string;

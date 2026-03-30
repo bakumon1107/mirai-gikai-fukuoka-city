@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/layouts/container";
+import { getDifficultyLevel } from "@/features/bill-difficulty/server/loaders/get-difficulty-level";
 import { getCouncilSessionBySlug } from "@/features/council-sessions/server/loaders/get-council-session-by-slug";
 import { getBudgetOverviewDetail } from "@/features/budget-overview/server/loaders/get-budget-overview-detail";
 import { BudgetOverviewDetail } from "@/features/budget-overview/server/components/budget-overview-detail";
 import { BudgetThemeAccordion } from "@/features/budget-overview/client/components/budget-theme-accordion";
+import { BudgetChatClient } from "@/features/budget-overview/client/components/budget-chat-client";
+import { siteConfig } from "@/config/site.config";
 
 interface BudgetDetailPageProps {
   params: Promise<{
@@ -37,7 +40,10 @@ export default async function BudgetDetailPage({
 }: BudgetDetailPageProps) {
   const { session_slug, department_slug } = await params;
 
-  const session = await getCouncilSessionBySlug(session_slug);
+  const [session, currentDifficulty] = await Promise.all([
+    getCouncilSessionBySlug(session_slug),
+    getDifficultyLevel(),
+  ]);
   if (!session) {
     notFound();
   }
@@ -48,7 +54,7 @@ export default async function BudgetDetailPage({
   }
 
   return (
-    <Container className="py-10">
+    <Container className="py-10 pb-28">
       <BudgetOverviewDetail overview={overview} sessionSlug={session_slug} />
 
       <div>
@@ -57,6 +63,25 @@ export default async function BudgetDetailPage({
         </h2>
         <BudgetThemeAccordion themes={overview.themes} />
       </div>
+
+      {siteConfig.features.aiChat && (
+        <BudgetChatClient
+          currentDifficulty={currentDifficulty}
+          budget={{
+            departmentName: overview.department_name,
+            direction: overview.direction,
+            totalBudget: overview.total_budget,
+            themes: overview.themes.map((t) => ({
+              title: t.title,
+              aiSummary: t.ai_summary,
+              initiatives: t.initiatives.map((i) => ({
+                title: i.title,
+                description: i.description,
+              })),
+            })),
+          }}
+        />
+      )}
     </Container>
   );
 }
