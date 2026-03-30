@@ -54,7 +54,7 @@ export default async function BudgetDetailPage({
   }
 
   return (
-    <Container className="py-10">
+    <Container className="py-10 pb-28">
       <BudgetOverviewDetail overview={overview} sessionSlug={session_slug} />
 
       <div>

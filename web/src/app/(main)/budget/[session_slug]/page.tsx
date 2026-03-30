@@ -44,7 +44,7 @@ export default async function BudgetListPage({ params }: BudgetListPageProps) {
   const overviews = await getBudgetOverviews(session.id);
 
   return (
-    <Container className="py-10">
+    <Container className="py-10 pb-28">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-mirai-text">各局の重点施策</h1>
         <p className="mt-2 text-sm text-mirai-text-secondary">

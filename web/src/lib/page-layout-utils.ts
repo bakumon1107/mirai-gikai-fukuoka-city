@@ -6,12 +6,14 @@
  * - チャットサイドバー用のオフセットレイアウトを使用
  */
 
-/** メインページ（TOP、議案詳細）かどうかを判定 */
+/** メインページ（TOP、議案詳細、予算概要）かどうかを判定 */
 export function isMainPage(pathname: string): boolean {
   // トップページ
   if (pathname === "/") return true;
   // 議案詳細ページ（/bills/[id]）- サブパスは除外
   if (/\/bills\/[^/]+$/.test(pathname)) return true;
+  // 予算概要ページ（/budget/...）
+  if (pathname.startsWith("/budget/")) return true;
   return false;
 }
 
