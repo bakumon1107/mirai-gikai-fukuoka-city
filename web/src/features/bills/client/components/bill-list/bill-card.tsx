@@ -45,6 +45,11 @@ export function BillCard({ bill }: BillCardProps) {
         <div className="flex-1">
           <CardHeader>
             <div className="flex flex-col gap-3">
+              {bill.bill_number && (
+                <span className="text-xs font-medium text-muted-foreground">
+                  {bill.bill_number}
+                </span>
+              )}
               <CardTitle className="text-2xl/8 tracking-normal">
                 {displayTitle}
               </CardTitle>
