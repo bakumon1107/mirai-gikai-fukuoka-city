@@ -2,6 +2,7 @@ import { GitMerge, Plus } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
+import { AutoFeatureButton } from "../../../client/components/bill-list/auto-feature-button";
 import { ResizableBillTable } from "../../../client/components/bill-list/resizable-bill-table";
 import type { BillSortConfig } from "../../../shared/types";
 import { getBills } from "../../loaders/get-bills";
@@ -37,11 +38,22 @@ export async function BillList({
     getTags(),
   ]);
 
+  const isLocal = !process.env.VERCEL;
+  const selectedSession = sessionId
+    ? sessions.find((s) => s.id === sessionId)
+    : null;
+
   return (
     <div>
       <div className="mb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div className="text-sm text-gray-600">{bills.length}件の議案</div>
         <div className="flex items-center gap-2">
+          {isLocal && selectedSession && (
+            <AutoFeatureButton
+              councilSessionId={selectedSession.id}
+              sessionName={selectedSession.name}
+            />
+          )}
           <Link href="/bills/merge">
             <Button variant="outline">
               <GitMerge className="h-4 w-4 mr-1" />
