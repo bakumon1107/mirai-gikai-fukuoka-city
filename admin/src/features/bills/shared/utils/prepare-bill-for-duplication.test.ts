@@ -9,6 +9,7 @@ import {
 const baseBill: Bill = {
   id: "bill-001",
   bill_number: "",
+  bill_type: "bill",
   name: "テスト議案",
   created_at: "2025-01-01T00:00:00Z",
   updated_at: "2025-01-02T00:00:00Z",

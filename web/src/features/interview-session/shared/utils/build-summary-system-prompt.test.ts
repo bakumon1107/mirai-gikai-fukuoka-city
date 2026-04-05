@@ -10,6 +10,7 @@ const makeBill = (
 ): BillWithContent => ({
   id: "bill-1",
   bill_number: "",
+  bill_type: "bill",
   name: "テスト議案",
   is_featured: false,
   council_session_id: null,
