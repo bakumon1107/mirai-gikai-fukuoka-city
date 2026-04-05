@@ -30,6 +30,7 @@ export function DesktopMenuLogo() {
             fontSize: "36px",
             lineHeight: "1em",
             letterSpacing: "0.1em",
+            whiteSpace: "nowrap",
           }}
         >
           {siteConfig.siteName}

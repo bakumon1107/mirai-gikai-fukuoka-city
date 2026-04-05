@@ -55,6 +55,26 @@ function FactionStanceRow({ stance }: FactionStanceRowProps) {
   );
 }
 
+// 無所属議員の個人名一覧（福岡市議会）
+const MUSHOZOKU_MEMBERS = [
+  "あべ ひでき",
+  "新開 ゆうじ",
+  "木村 てつあき",
+  "森 あやこ",
+  "川口 浩",
+];
+
+function expandStances(stances: FactionStance[]): FactionStance[] {
+  return stances.flatMap((stance) => {
+    if (stance.faction.display_name !== "無所属") return [stance];
+    return MUSHOZOKU_MEMBERS.map((name, i) => ({
+      ...stance,
+      id: `${stance.id}-${i}`,
+      faction: { ...stance.faction, display_name: name },
+    }));
+  });
+}
+
 interface FactionStanceCardProps {
   stances: FactionStance[];
   billStatus?: BillStatusEnum;
@@ -70,17 +90,19 @@ export function FactionStanceCard({
     return null;
   }
 
+  const expandedStances = expandStances(stances);
+
   return (
     <>
       <h2 className="text-[22px] font-bold mb-4">🗳️会派の賛否</h2>
       <div className="rounded-2xl border bg-white px-6 py-2">
-        {isPreparing && stances.length === 0 ? (
+        {isPreparing && expandedStances.length === 0 ? (
           <p className="py-6 text-center text-sm text-gray-500">
             議案上程後に各会派の賛否を表明します。
           </p>
         ) : (
           <div>
-            {stances.map((stance) => (
+            {expandedStances.map((stance) => (
               <FactionStanceRow key={stance.id} stance={stance} />
             ))}
           </div>
