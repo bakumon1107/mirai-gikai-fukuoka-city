@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
+import { ChevronRight } from "lucide-react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/layouts/container";
+import { Button } from "@/components/ui/button";
 import { getDifficultyLevel } from "@/features/bill-difficulty/server/loaders/get-difficulty-level";
 import { getCouncilSessionBySlug } from "@/features/council-sessions/server/loaders/get-council-session-by-slug";
+import { findPreviousCouncilSession } from "@/features/council-sessions/server/repositories/council-session-repository";
 import { getBudgetOverviews } from "@/features/budget-overview/server/loaders/get-budget-overviews";
+import { hasPublishedOverviewsBySession } from "@/features/budget-overview/server/repositories/budget-repository";
 import { BudgetOverviewList } from "@/features/budget-overview/server/components/budget-overview-list";
 import { BudgetChatClient } from "@/features/budget-overview/client/components/budget-chat-client";
 import { siteConfig } from "@/config/site.config";
@@ -41,7 +46,17 @@ export default async function BudgetListPage({ params }: BudgetListPageProps) {
     notFound();
   }
 
-  const overviews = await getBudgetOverviews(session.id);
+  const [overviews, prevSession] = await Promise.all([
+    getBudgetOverviews(session.id),
+    findPreviousCouncilSession(session.start_date),
+  ]);
+
+  // 前回のセッションに budget_overviews があるか確認
+  const prevSessionWithBudget = prevSession?.slug
+    ? await hasPublishedOverviewsBySession(prevSession.id).then((has) =>
+        has ? prevSession : null
+      )
+    : null;
 
   return (
     <Container className="py-10 pb-28">
@@ -53,6 +68,34 @@ export default async function BudgetListPage({ params }: BudgetListPageProps) {
       </div>
 
       <BudgetOverviewList overviews={overviews} sessionSlug={session_slug} />
+
+      {/* 前年度予算セクション */}
+      {prevSessionWithBudget && (
+        <div className="mt-12 pt-8 border-t border-mirai-border">
+          <h2 className="text-lg font-bold text-mirai-text mb-4">
+            前年度の予算
+          </h2>
+          <Link
+            href={`/budget/${prevSessionWithBudget.slug}`}
+            className="flex items-center justify-between py-4 px-2 hover:bg-mirai-surface-grouped rounded-lg transition-colors group"
+          >
+            <span className="font-bold text-mirai-text text-base">
+              {prevSessionWithBudget.name}
+            </span>
+            <ChevronRight className="h-5 w-5 text-mirai-text-muted group-hover:translate-x-0.5 transition-transform flex-shrink-0" />
+          </Link>
+          <div className="mt-4 flex justify-center">
+            <Button
+              variant="outline"
+              size="lg"
+              asChild
+              className="rounded-full"
+            >
+              <Link href="/budget">さらに前の予算を一覧で表示</Link>
+            </Button>
+          </div>
+        </div>
+      )}
 
       {siteConfig.features.aiChat && overviews.length > 0 && (
         <BudgetChatClient

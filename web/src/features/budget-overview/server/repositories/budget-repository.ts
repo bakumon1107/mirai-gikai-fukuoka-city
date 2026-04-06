@@ -28,6 +28,30 @@ export async function findPublishedOverviewsBySession(
 }
 
 /**
+ * 会期IDに紐づく公開済み予算概要が存在するか確認
+ */
+export async function hasPublishedOverviewsBySession(
+  councilSessionId: string
+): Promise<boolean> {
+  const supabase = createAdminClient();
+
+  const { count, error } = await supabase
+    .from("budget_overviews")
+    .select("id", { count: "exact", head: true })
+    .eq("council_session_id", councilSessionId)
+    .eq("publish_status", "published");
+
+  if (error) {
+    console.error(
+      `Failed to check budget overviews existence: ${error.message}`
+    );
+    return false;
+  }
+
+  return (count ?? 0) > 0;
+}
+
+/**
  * 会期ID + department_slug で公開済み予算概要を1件取得（テーマ・施策含む）
  */
 export async function findPublishedOverviewBySlug(
