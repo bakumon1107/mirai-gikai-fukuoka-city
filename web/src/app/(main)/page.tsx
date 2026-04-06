@@ -7,7 +7,6 @@ import { getDifficultyLevel } from "@/features/bill-difficulty/server/loaders/ge
 import { BillDisclaimer } from "@/features/bills/client/components/bill-detail/bill-disclaimer";
 import { BillsByTagSection } from "@/features/bills/server/components/bills-by-tag-section";
 import { FeaturedBillSection } from "@/features/bills/server/components/featured-bill-section";
-import { PreviousSessionSection } from "@/features/bills/server/components/previous-session-section";
 import { loadHomeData } from "@/features/bills/server/loaders/load-home-data";
 import type { BillWithContent } from "@/features/bills/shared/types";
 import { HomeChatClient } from "@/features/chat/client/components/home-chat-client";
@@ -21,8 +20,7 @@ import { BudgetOverviewBanner } from "@/components/top/budget-overview-banner";
 import { getSessionsWithBudget } from "@/features/budget-overview/server/loaders/get-sessions-with-budget";
 
 export default async function Home() {
-  const { billsByTag, featuredBills, previousSessionData } =
-    await loadHomeData();
+  const { billsByTag, featuredBills } = await loadHomeData();
 
   // ゆくゆくタグ機能がマージされたらBFFに統合する
   const [
@@ -71,27 +69,19 @@ export default async function Home() {
 
             {/* タグ別議案一覧セクション */}
             <BillsByTagSection billsByTag={billsByTag} />
-
-            {/* 過去の定例会セクション */}
-            <PastSessionsSection
-              sessions={pastSessions}
-              budgetSessions={budgetSessions}
-            />
           </main>
         </div>
       </Container>
-      {/* 前回の定例会セクション（Archive） */}
-      {previousSessionData && (
-        <div className="bg-mirai-surface-muted py-10">
-          <Container>
-            <PreviousSessionSection
-              session={previousSessionData.session}
-              bills={previousSessionData.bills}
-              totalBillCount={previousSessionData.totalBillCount}
-            />
-          </Container>
-        </div>
-      )}
+
+      {/* 過去の定例会セクション（Archive） */}
+      <div className="bg-mirai-surface-muted py-10">
+        <Container>
+          <PastSessionsSection
+            sessions={pastSessions}
+            budgetSessions={budgetSessions}
+          />
+        </Container>
+      </div>
 
       <Container>
         {/* みらい議会とは セクション */}
