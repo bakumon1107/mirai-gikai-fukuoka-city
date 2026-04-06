@@ -54,11 +54,34 @@ export async function findCurrentCouncilSession(
 export async function findAllPastCouncilSessions(): Promise<CouncilSession[]> {
   const supabase = createAdminClient();
 
+  // bills テーブルから published な議案がある会期IDを取得
+  const { data: billData, error: billError } = await supabase
+    .from("bills")
+    .select("council_session_id")
+    .eq("publish_status", "published");
+
+  if (billError) {
+    console.error("Failed to fetch published bills:", billError);
+    return [];
+  }
+
+  const sessionIds = [
+    ...new Set(
+      (billData ?? [])
+        .map((b) => b.council_session_id)
+        .filter((id): id is string => id !== null)
+    ),
+  ];
+
+  if (sessionIds.length === 0) {
+    return [];
+  }
+
   const { data, error } = await supabase
     .from("council_sessions")
-    .select("*, bills!inner(id)")
+    .select("*")
     .eq("is_active", false)
-    .eq("bills.publish_status", "published")
+    .in("id", sessionIds)
     .order("start_date", { ascending: false });
 
   if (error) {
@@ -66,17 +89,7 @@ export async function findAllPastCouncilSessions(): Promise<CouncilSession[]> {
     return [];
   }
 
-  // bills の重複を除いて CouncilSession の形に戻す
-  const seen = new Set<string>();
-  const sessions: CouncilSession[] = [];
-  for (const row of data ?? []) {
-    if (!seen.has(row.id)) {
-      seen.add(row.id);
-      const { bills: _, ...session } = row;
-      sessions.push(session as CouncilSession);
-    }
-  }
-  return sessions;
+  return (data ?? []) as CouncilSession[];
 }
 
 /**
