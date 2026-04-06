@@ -49,15 +49,16 @@ export async function findCurrentCouncilSession(
 }
 
 /**
- * 全定例会を新しい順に取得（アクティブなものを除く）
+ * 全定例会を新しい順に取得（アクティブなものを除く、公開済み議案が1件以上あるもののみ）
  */
 export async function findAllPastCouncilSessions(): Promise<CouncilSession[]> {
   const supabase = createAdminClient();
 
   const { data, error } = await supabase
     .from("council_sessions")
-    .select("*")
+    .select("*, bills!inner(id)")
     .eq("is_active", false)
+    .eq("bills.publish_status", "published")
     .order("start_date", { ascending: false });
 
   if (error) {
@@ -65,7 +66,17 @@ export async function findAllPastCouncilSessions(): Promise<CouncilSession[]> {
     return [];
   }
 
-  return data ?? [];
+  // bills の重複を除いて CouncilSession の形に戻す
+  const seen = new Set<string>();
+  const sessions: CouncilSession[] = [];
+  for (const row of data ?? []) {
+    if (!seen.has(row.id)) {
+      seen.add(row.id);
+      const { bills: _, ...session } = row;
+      sessions.push(session as CouncilSession);
+    }
+  }
+  return sessions;
 }
 
 /**
