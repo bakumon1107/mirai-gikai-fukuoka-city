@@ -32,9 +32,7 @@ export default async function Home() {
       getAllPastSessions(),
     ]);
 
-  const activeSessionYear = activeSession
-    ? new Date(activeSession.start_date).getFullYear()
-    : null;
+  const budgetSessionSlug = activeSession?.slug ?? null;
 
   const toBillChatContext = (bill: BillWithContent) => {
     return {
@@ -72,7 +70,7 @@ export default async function Home() {
             {/* 過去の定例会セクション */}
             <PastSessionsSection
               sessions={pastSessions}
-              activeSessionYear={activeSessionYear}
+              budgetSessionSlug={budgetSessionSlug}
             />
           </main>
         </div>
