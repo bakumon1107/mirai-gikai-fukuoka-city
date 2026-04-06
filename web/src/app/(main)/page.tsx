@@ -1,7 +1,7 @@
 import { Container } from "@/components/layouts/container";
 import { About } from "@/components/top/about";
-import { ComingSoonSection } from "@/components/top/coming-soon-section";
 import { Hero } from "@/components/top/hero";
+import { PastSessionsSection } from "@/components/top/past-sessions-section";
 import { TeamMirai } from "@/components/top/team-mirai";
 import { getDifficultyLevel } from "@/features/bill-difficulty/server/loaders/get-difficulty-level";
 import { BillDisclaimer } from "@/features/bills/client/components/bill-detail/bill-disclaimer";
@@ -12,21 +12,31 @@ import { loadHomeData } from "@/features/bills/server/loaders/load-home-data";
 import type { BillWithContent } from "@/features/bills/shared/types";
 import { HomeChatClient } from "@/features/chat/client/components/home-chat-client";
 import { siteConfig } from "@/config/site.config";
-import { getCurrentCouncilSession } from "@/features/council-sessions/server/loaders/get-current-council-session";
 import { getActiveCouncilSession } from "@/features/council-sessions/server/loaders/get-active-council-session";
+import { getAllPastSessions } from "@/features/council-sessions/server/loaders/get-all-past-sessions";
+import { getCurrentCouncilSession } from "@/features/council-sessions/server/loaders/get-current-council-session";
 import { CurrentCouncilSession } from "@/features/council-sessions/client/components/current-council-session";
 import { getJapanTime } from "@/lib/utils/date";
 import { BudgetOverviewBanner } from "@/components/top/budget-overview-banner";
+import { getSessionsWithBudget } from "@/features/budget-overview/server/loaders/get-sessions-with-budget";
 
 export default async function Home() {
-  const { billsByTag, featuredBills, comingSoonBills, previousSessionData } =
+  const { billsByTag, featuredBills, previousSessionData } =
     await loadHomeData();
 
   // ゆくゆくタグ機能がマージされたらBFFに統合する
-  const [currentSession, activeSession, currentDifficulty] = await Promise.all([
+  const [
+    currentSession,
+    activeSession,
+    currentDifficulty,
+    pastSessions,
+    budgetSessions,
+  ] = await Promise.all([
     getCurrentCouncilSession(getJapanTime()),
     getActiveCouncilSession(),
     getDifficultyLevel(),
+    getAllPastSessions(),
+    getSessionsWithBudget(),
   ]);
 
   const toBillChatContext = (bill: BillWithContent) => {
@@ -62,8 +72,11 @@ export default async function Home() {
             {/* タグ別議案一覧セクション */}
             <BillsByTagSection billsByTag={billsByTag} />
 
-            {/* Coming soonセクション */}
-            <ComingSoonSection bills={comingSoonBills} />
+            {/* 過去の定例会セクション */}
+            <PastSessionsSection
+              sessions={pastSessions}
+              budgetSessions={budgetSessions}
+            />
           </main>
         </div>
       </Container>
