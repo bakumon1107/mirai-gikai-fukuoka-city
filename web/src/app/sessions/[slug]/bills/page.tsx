@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { Container } from "@/components/layouts/container";
 import { siteConfig } from "@/config/site.config";
 import { getBillsByCouncilSession } from "@/features/bills/server/loaders/get-bills-by-council-session";
-import { CouncilSessionBillList } from "@/features/council-sessions/client/components/council-session-bill-list";
+import { SessionBillsPage as SessionBillsPageFeature } from "@/features/bills/server/components/session-bills-page";
 import { getCouncilSessionBySlug } from "@/features/council-sessions/server/loaders/get-council-session-by-slug";
 
 type Props = {
@@ -35,7 +35,7 @@ export default async function SessionBillsPage({ params }: Props) {
 
   return (
     <Container className="py-8">
-      <CouncilSessionBillList session={session} bills={bills} />
+      <SessionBillsPageFeature session={session} bills={bills} />
     </Container>
   );
 }
