@@ -10,6 +10,14 @@ interface PastSessionsSectionProps {
 
 const MAX_VISIBLE_SESSIONS = 5;
 
+function toBudgetLabel(sessionName: string): string {
+  const match = sessionName.match(/令和(\d+)年/);
+  if (match) {
+    return `令和${match[1]}年度 各局の重点施策`;
+  }
+  return `${sessionName} 各局の重点施策`;
+}
+
 export function PastSessionsSection({
   sessions,
   budgetSessions,
@@ -84,7 +92,7 @@ export function PastSessionsSection({
                     className="flex items-center justify-between py-4 px-2 hover:bg-mirai-surface-grouped rounded-lg transition-colors group"
                   >
                     <span className="font-bold text-mirai-text text-base">
-                      {session.name} 各局の重点施策
+                      {toBudgetLabel(session.name)}
                     </span>
                     <ChevronRight className="h-5 w-5 text-mirai-text-muted group-hover:translate-x-0.5 transition-transform flex-shrink-0" />
                   </Link>
