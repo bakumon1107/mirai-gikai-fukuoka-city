@@ -18,21 +18,26 @@ import { getCurrentCouncilSession } from "@/features/council-sessions/server/loa
 import { CurrentCouncilSession } from "@/features/council-sessions/client/components/current-council-session";
 import { getJapanTime } from "@/lib/utils/date";
 import { BudgetOverviewBanner } from "@/components/top/budget-overview-banner";
+import { getSessionsWithBudget } from "@/features/budget-overview/server/loaders/get-sessions-with-budget";
 
 export default async function Home() {
   const { billsByTag, featuredBills, previousSessionData } =
     await loadHomeData();
 
   // ゆくゆくタグ機能がマージされたらBFFに統合する
-  const [currentSession, activeSession, currentDifficulty, pastSessions] =
-    await Promise.all([
-      getCurrentCouncilSession(getJapanTime()),
-      getActiveCouncilSession(),
-      getDifficultyLevel(),
-      getAllPastSessions(),
-    ]);
-
-  const budgetSessionSlug = activeSession?.slug ?? null;
+  const [
+    currentSession,
+    activeSession,
+    currentDifficulty,
+    pastSessions,
+    budgetSessions,
+  ] = await Promise.all([
+    getCurrentCouncilSession(getJapanTime()),
+    getActiveCouncilSession(),
+    getDifficultyLevel(),
+    getAllPastSessions(),
+    getSessionsWithBudget(),
+  ]);
 
   const toBillChatContext = (bill: BillWithContent) => {
     return {
@@ -70,7 +75,7 @@ export default async function Home() {
             {/* 過去の定例会セクション */}
             <PastSessionsSection
               sessions={pastSessions}
-              budgetSessionSlug={budgetSessionSlug}
+              budgetSessions={budgetSessions}
             />
           </main>
         </div>
