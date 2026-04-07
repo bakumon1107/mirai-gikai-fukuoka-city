@@ -35,6 +35,11 @@ export async function generateMetadata({
   };
 }
 
+function toFiscalYearLabel(sessionName: string): string {
+  const match = sessionName.match(/令和(\d+)年/);
+  return match ? `令和${match[1]}年度予算` : sessionName;
+}
+
 export default async function BudgetListPage({ params }: BudgetListPageProps) {
   const { session_slug } = await params;
 
@@ -63,7 +68,8 @@ export default async function BudgetListPage({ params }: BudgetListPageProps) {
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-mirai-text">各局の重点施策</h1>
         <p className="mt-2 text-sm text-mirai-text-secondary">
-          {session.name} の各局予算の方向性と主要施策をまとめています。
+          {toFiscalYearLabel(session.name)}{" "}
+          の各局予算の方向性と主要施策をまとめています。
         </p>
       </div>
 
