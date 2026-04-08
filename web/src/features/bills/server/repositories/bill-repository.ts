@@ -492,3 +492,23 @@ export async function findPreviewToken(billId: string, token: string) {
 
   return data;
 }
+
+/**
+ * 議案に紐づく質疑情報を取得
+ */
+export async function findDiscussionsByBillId(billId: string) {
+  const supabase = createAdminClient();
+  const { data, error } = await supabase
+    .from("bill_discussions")
+    .select("*")
+    .eq("bill_id", billId)
+    .order("session_day", { ascending: true })
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    console.error(`Failed to fetch bill discussions: ${error.message}`);
+    return [];
+  }
+
+  return data ?? [];
+}
