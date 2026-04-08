@@ -7,30 +7,10 @@ export type Json =
   | Json[]
 
 export type Database = {
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          extensions?: Json
-          operationName?: string
-          query?: string
-          variables?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.4"
   }
   public: {
     Tables: {
@@ -68,6 +48,65 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "bill_contents_bill_id_fkey"
+            columns: ["bill_id"]
+            isOneToOne: false
+            referencedRelation: "bills"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bill_discussions: {
+        Row: {
+          answer_raw: string | null
+          answer_summary: string | null
+          answerer_name: string | null
+          answerer_role: string | null
+          bill_id: string
+          created_at: string
+          exchange_count: number
+          id: string
+          question_raw: string | null
+          question_summary: string | null
+          questioner_name: string
+          questioner_number: string | null
+          questioner_party: string | null
+          session_day: number
+        }
+        Insert: {
+          answer_raw?: string | null
+          answer_summary?: string | null
+          answerer_name?: string | null
+          answerer_role?: string | null
+          bill_id: string
+          created_at?: string
+          exchange_count?: number
+          id?: string
+          question_raw?: string | null
+          question_summary?: string | null
+          questioner_name: string
+          questioner_number?: string | null
+          questioner_party?: string | null
+          session_day: number
+        }
+        Update: {
+          answer_raw?: string | null
+          answer_summary?: string | null
+          answerer_name?: string | null
+          answerer_role?: string | null
+          bill_id?: string
+          created_at?: string
+          exchange_count?: number
+          id?: string
+          question_raw?: string | null
+          question_summary?: string | null
+          questioner_name?: string
+          questioner_number?: string | null
+          questioner_party?: string | null
+          session_day?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bill_discussions_bill_id_fkey"
             columns: ["bill_id"]
             isOneToOne: false
             referencedRelation: "bills"
@@ -1241,9 +1280,6 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
-  graphql_public: {
-    Enums: {},
-  },
   public: {
     Enums: {
       bill_publish_status: ["draft", "published", "coming_soon"],
@@ -1281,4 +1317,3 @@ export const Constants = {
     },
   },
 } as const
-
