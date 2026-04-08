@@ -6,6 +6,7 @@
   "scripts": {
     "seed": "tsx main/run.ts",
     "seed:csv": "tsx csv/import-csv.ts",
+    "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -16,6 +17,7 @@
   "devDependencies": {
     "@types/node": "^22.5.5",
     "tsx": "^4.19.1",
-    "typescript": "~5.8.0"
+    "typescript": "~5.8.0",
+    "vitest": "^3.0.0"
   }
 }
