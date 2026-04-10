@@ -63,9 +63,10 @@ function DiscussionCard({ discussion }: { discussion: BillDiscussion }) {
           <div className="border-t border-mirai-border pt-4">
             {(discussion.answerer_role || discussion.answerer_name) && (
               <p className="text-xs font-semibold text-mirai-text-muted uppercase tracking-wide mb-1">
-                {[discussion.answerer_role, discussion.answerer_name]
-                  .filter(Boolean)
-                  .join("・")}{" "}
+                {discussion.answerer_role && discussion.answerer_name
+                  ? `${discussion.answerer_role}（${discussion.answerer_name}）`
+                  : (discussion.answerer_role ?? discussion.answerer_name)}
+                {"  "}
                 の答弁
               </p>
             )}
