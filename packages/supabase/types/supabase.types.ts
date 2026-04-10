@@ -121,6 +121,7 @@ export type Database = {
           committee_id: string | null
           council_session_id: string | null
           created_at: string
+          discussion_overview_points: string[]
           id: string
           is_featured: boolean
           name: string
@@ -141,6 +142,7 @@ export type Database = {
           committee_id?: string | null
           council_session_id?: string | null
           created_at?: string
+          discussion_overview_points?: string[]
           id?: string
           is_featured?: boolean
           name: string
@@ -161,6 +163,7 @@ export type Database = {
           committee_id?: string | null
           council_session_id?: string | null
           created_at?: string
+          discussion_overview_points?: string[]
           id?: string
           is_featured?: boolean
           name?: string
