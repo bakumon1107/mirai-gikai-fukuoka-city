@@ -3,14 +3,18 @@ import type { BillDiscussion } from "../../loaders/get-bill-discussions";
 
 interface BillDiscussionsSectionProps {
   discussions: BillDiscussion[];
+  overviewPoints?: string[];
 }
 
 export function BillDiscussionsSection({
   discussions,
+  overviewPoints,
 }: BillDiscussionsSectionProps) {
   if (discussions.length === 0) {
     return null;
   }
+
+  const hasOverview = overviewPoints && overviewPoints.length > 0;
 
   return (
     <section className="bg-card rounded-xl p-6">
@@ -18,6 +22,30 @@ export function BillDiscussionsSection({
         <MessageSquare className="w-5 h-5 text-primary" />
         議会での審議
       </h2>
+
+      {/* 総論 */}
+      {hasOverview && (
+        <div className="mb-6 p-4 bg-mirai-surface rounded-lg">
+          <p className="text-xs font-semibold text-mirai-text-muted uppercase tracking-wide mb-3">
+            この議案で議論されたこと
+          </p>
+          <ul className="space-y-2">
+            {overviewPoints.map((point) => (
+              <li
+                key={point}
+                className="flex items-start gap-2 text-sm text-mirai-text"
+              >
+                <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
+                {point}
+              </li>
+            ))}
+          </ul>
+          <p className="text-xs text-mirai-text-muted mt-3">
+            {discussions.length}名の議員が質疑を行いました
+          </p>
+        </div>
+      )}
+
       <div className="space-y-6">
         {discussions.map((discussion) => (
           <DiscussionCard key={discussion.id} discussion={discussion} />
@@ -63,9 +91,10 @@ function DiscussionCard({ discussion }: { discussion: BillDiscussion }) {
           <div className="border-t border-mirai-border pt-4">
             {(discussion.answerer_role || discussion.answerer_name) && (
               <p className="text-xs font-semibold text-mirai-text-muted uppercase tracking-wide mb-1">
-                {[discussion.answerer_role, discussion.answerer_name]
-                  .filter(Boolean)
-                  .join("・")}{" "}
+                {discussion.answerer_role && discussion.answerer_name
+                  ? `${discussion.answerer_role}（${discussion.answerer_name}）`
+                  : (discussion.answerer_role ?? discussion.answerer_name)}
+                {"  "}
                 の答弁
               </p>
             )}

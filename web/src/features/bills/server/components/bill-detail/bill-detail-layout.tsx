@@ -66,7 +66,10 @@ export async function BillDetailLayout({
           <BillContent bill={bill} />
           {discussions.length > 0 && (
             <div className="my-8">
-              <BillDiscussionsSection discussions={discussions} />
+              <BillDiscussionsSection
+                discussions={discussions}
+                overviewPoints={bill.discussion_overview_points ?? []}
+              />
             </div>
           )}
         </Container>
