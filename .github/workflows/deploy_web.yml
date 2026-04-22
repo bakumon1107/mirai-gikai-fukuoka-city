@@ -2,7 +2,7 @@ name: Migrate DB then Deploy Web
 
 on:
   push:
-    branches: [kawasaki/develop]
+    branches: [fukuoka-city/develop]
   workflow_dispatch:
 
 jobs:
