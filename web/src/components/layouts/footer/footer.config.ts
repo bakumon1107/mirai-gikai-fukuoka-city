@@ -55,4 +55,9 @@ export const policyLinks: FooterPolicyLink[] = [
     label: "プライバシーポリシー",
     href: "/privacy",
   },
+  {
+    label: "ソースコード（GitHub）",
+    href: "https://github.com/bakumon1107/mirai-gikai-fukuoka-city",
+    external: true,
+  },
 ];
