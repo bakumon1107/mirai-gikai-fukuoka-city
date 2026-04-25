@@ -119,7 +119,25 @@ export async function scrapeBills(councilUrl: string): Promise<ScrapedBill[]> {
   const $ = load(html);
 
   // DataTablesテーブルを探す（id="tablepress-XXXX" 形式）
-  const table = $("table[id^='tablepress-']").first();
+  // 「議案番号」行を持つテーブル、または1行目第1セルが空で残りが数値のテーブルを対象とする
+  // 会期によって形式が異なる:
+  //   - 通常形式: 1行目第1セル="議案番号"、以降のセルに議案番号の数値
+  //   - 番号ヘッダ形式: 1行目第1セルが空、以降の<th>に直接議案番号の数値（r7-4以前）
+  let table = $();
+  let maxCols = 0;
+  $("table[id^='tablepress-']").each((_, el) => {
+    const t = $(el);
+    const firstRow = t.find("tr").first();
+    const firstCell = firstRow.find("td, th").first().text().trim();
+    const isNormalFormat = firstCell === "議案番号";
+    const isHeaderFormat = firstCell === "" && firstRow.find("th").length > 1;
+    if (!isNormalFormat && !isHeaderFormat) return;
+    const cols = firstRow.find("td, th").length;
+    if (cols > maxCols) {
+      maxCols = cols;
+      table = t;
+    }
+  });
   if (!table.length) {
     console.warn("⚠️  議案テーブルが見つかりませんでした。HTMLを確認してください。");
     return [];
@@ -155,11 +173,22 @@ export async function scrapeBills(councilUrl: string): Promise<ScrapedBill[]> {
     tableRows.push({ fieldName, values, links });
   });
 
-  // 議案数（議案番号行の値の数）
-  const billNumberRow = tableRows.find((r) => r.fieldName === "議案番号");
+  // 議案数・議案番号の取得
+  // 通常形式: "議案番号" 行の値を使用
+  // 番号ヘッダ形式: 第1行（fieldName=""）の値が直接議案番号の数値
+  let billNumberRow = tableRows.find((r) => r.fieldName === "議案番号");
   if (!billNumberRow) {
-    console.warn("⚠️  「議案番号」行が見つかりません。");
-    return [];
+    const headerRow = tableRows.find((r) => r.fieldName === "");
+    if (!headerRow) {
+      console.warn("⚠️  「議案番号」行が見つかりません。");
+      return [];
+    }
+    // 番号ヘッダ形式: 値（例: "145"）をそのまま使用（push 時に "第N号" フォーマット適用）
+    billNumberRow = {
+      fieldName: "議案番号",
+      values: headerRow.values,
+      links: headerRow.links,
+    };
   }
   const billCount = billNumberRow.values.length;
 
@@ -167,6 +196,8 @@ export async function scrapeBills(councilUrl: string): Promise<ScrapedBill[]> {
   const rowByField = new Map<string, TableRow>(
     tableRows.map((r) => [r.fieldName, r])
   );
+  // 番号ヘッダ形式の場合、変換済み billNumberRow で上書き
+  rowByField.set("議案番号", billNumberRow);
 
   // 会派行を特定（既知のフィールド名以外は会派とみなす）
   const knownFields = new Set(["議案番号", "提出年月日", "件名", "議決年月日", "議決結果"]);
@@ -234,10 +265,7 @@ function slugToUrlPath(slug: string): string {
 async function main() {
   const slug = process.argv[2] || "r8-1";
 
-  const councilUrl =
-    slug === "r7-4"
-      ? "https://gikai.city.fukuoka.lg.jp/result/result/"
-      : `https://gikai.city.fukuoka.lg.jp/result/${slugToUrlPath(slug)}/`;
+  const councilUrl = `https://gikai.city.fukuoka.lg.jp/result/${slugToUrlPath(slug)}/`;
 
   const bills = await scrapeBills(councilUrl);
   console.log(`✅ ${bills.length} 件の議案を取得しました`);
