@@ -31,11 +31,19 @@ export const councilSessions: CouncilSessionInsert[] = [
     is_active: true,
   },
   {
-    name: "令和7年 第4回定例会（12月）",
-    slug: "r7-4",
+    name: "令和7年 第5回定例会（12月）",
+    slug: "r7-5",
     council_url: "https://gikai.city.fukuoka.lg.jp/schedule/regular/",
     start_date: "2025-12-01",
     end_date: "2025-12-19",
+    is_active: false,
+  },
+  {
+    name: "令和7年 第4回定例会（9・10月）",
+    slug: "r7-4",
+    council_url: "https://gikai.city.fukuoka.lg.jp/schedule/regular/",
+    start_date: "2025-09-03",
+    end_date: "2025-10-08",
     is_active: false,
   },
 ];
