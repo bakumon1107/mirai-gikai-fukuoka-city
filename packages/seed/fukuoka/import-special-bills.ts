@@ -8,7 +8,9 @@
  *   tsx --env-file=../../.env packages/seed/fukuoka/import-special-bills.ts \
  *     --url https://gikai.city.fukuoka.lg.jp/result/r8_gikai1/ \
  *     --session r8-1 \
- *     [--dry-run]
+ *     [--dry-run] [--review-only]
+ *
+ * --review-only: DB登録せずにレビュー用JSONを標準出力に出力する。
  *
  * 前提:
  *   - .env に SUPABASE_URL と SUPABASE_SERVICE_ROLE_KEY が設定されていること
@@ -25,6 +27,7 @@
  */
 
 import { createAdminClient } from "../shared/helper";
+import type { ReviewRecord } from "./import-bills";
 
 // ---- 型定義 ----
 
@@ -241,15 +244,18 @@ async function main() {
   const urlArg = args[args.indexOf("--url") + 1];
   const sessionSlug = args[args.indexOf("--session") + 1];
   const dryRun = args.includes("--dry-run");
+  const reviewOnly = args.includes("--review-only");
 
   if (!urlArg || !sessionSlug) {
-    console.error("Usage: tsx import-special-bills.ts --url <URL> --session <slug> [--dry-run]");
+    console.error("Usage: tsx import-special-bills.ts --url <URL> --session <slug> [--dry-run] [--review-only]");
     process.exit(1);
   }
 
-  console.log(`\n対象URL: ${urlArg}`);
-  console.log(`会期slug: ${sessionSlug}`);
-  console.log(`dry-run: ${dryRun}\n`);
+  if (!reviewOnly) {
+    console.log(`\n対象URL: ${urlArg}`);
+    console.log(`会期slug: ${sessionSlug}`);
+    console.log(`dry-run: ${dryRun}\n`);
+  }
 
   // フェッチ
   const res = await fetch(urlArg, { headers: { "User-Agent": "Mozilla/5.0" } });
@@ -257,6 +263,26 @@ async function main() {
 
   // スクレイピング
   const bills = scrapeSpecialBills(html);
+
+  // --review-only: DB登録せずにレビュー用JSONを出力して終了
+  if (reviewOnly) {
+    const mushozokuMap = MUSHOZOKU_BY_SESSION[sessionSlug] ?? {};
+    const records: ReviewRecord[] = bills.map((b) => ({
+      billType: b.billType,
+      billNumber: b.billNumber,
+      title: b.title,
+      result: b.result,
+      submittedDate: b.submittedDate,
+      decidedDate: b.decidedDate,
+      factionVotes: Object.entries(b.votes).map(([siteName, vote]) => {
+        const resolvedName = mushozokuMap[siteName] ?? FACTION_NAME_MAP[siteName] ?? siteName;
+        return { factionName: resolvedName, vote: vote === "○" ? "for" as const : "against" as const };
+      }),
+    }));
+    console.log(JSON.stringify(records, null, 2));
+    return;
+  }
+
   console.log(`スクレイピング結果: ${bills.length}件`);
   for (const b of bills) {
     console.log(`  [${b.billType}] ${b.billNumber} ${b.title} → ${b.result}`);

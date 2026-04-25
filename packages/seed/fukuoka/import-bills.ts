@@ -5,8 +5,12 @@
  * 議案番号 + 会期IDの組み合わせで冪等性を保つ（select → upsert）。
  *
  * 使い方:
- *   tsx packages/seed/fukuoka/import-bills.ts [会期slug]
+ *   tsx packages/seed/fukuoka/import-bills.ts [会期slug] [--review-only]
  *   例: tsx packages/seed/fukuoka/import-bills.ts r8-1
+ *       tsx packages/seed/fukuoka/import-bills.ts r8-1 --review-only
+ *
+ * --review-only: DB登録せずにレビュー用JSONを標準出力に出力する。
+ *   /review-import スキルに渡すことでDB登録前のレビューを行う。
  *
  * 前提:
  *   - scrape-bills.ts で output/<slug>-bills.json が生成済みであること
@@ -24,6 +28,23 @@ import type { Database } from "@mirai-gikai/supabase";
 
 type BillStatusEnum = Database["public"]["Enums"]["bill_status_enum"];
 type StanceTypeEnum = Database["public"]["Enums"]["stance_type_enum"];
+
+// ---- レビュー用データ構造 ----
+
+export type ReviewRecord = {
+  billType: "bill" | "opinion" | "resolution" | "member_bill" | "petition";
+  billNumber: string;
+  title: string;
+  result: string;
+  submittedDate: string;
+  decidedDate: string;
+  answerers?: string[];
+  summary?: string;
+  factionVotes: {
+    factionName: string;
+    vote: "for" | "against" | "unknown";
+  }[];
+};
 
 // ---- ステータスマッピング ----
 
@@ -64,10 +85,35 @@ function normalizeVote(vote: "for" | "against" | "unknown"): StanceTypeEnum | nu
   return null; // unknown は登録しない
 }
 
+// ---- レビュー用出力 ----
+
+function buildReviewRecords(
+  scrapedBills: ScrapedBill[],
+  contentMap: Map<string, GeneratedContent>
+): ReviewRecord[] {
+  return scrapedBills.map((bill) => {
+    const content = contentMap.get(bill.billNumber);
+    return {
+      billType: "bill" as const,
+      billNumber: bill.billNumber,
+      title: bill.name,
+      result: bill.result,
+      submittedDate: bill.submittedDate ?? "",
+      decidedDate: bill.resolvedDate ?? "",
+      summary: content?.normal.summary,
+      factionVotes: bill.factionVotes.map((v) => ({
+        factionName: v.factionName,
+        vote: v.vote,
+      })),
+    };
+  });
+}
+
 // ---- メイン ----
 
 async function main() {
   const slug = process.argv[2] || "r8-1";
+  const reviewOnly = process.argv.includes("--review-only");
   const outputDir = path.join(import.meta.dirname, "output");
 
   // 入力ファイル確認
@@ -90,6 +136,13 @@ async function main() {
   const contentMap = new Map<string, GeneratedContent>(
     contentOutput.bills.map((c) => [c.billNumber, c])
   );
+
+  // --review-only: DBに書き込まずレビュー用JSONを出力して終了
+  if (reviewOnly) {
+    const records = buildReviewRecords(scrapedBills, contentMap);
+    console.log(JSON.stringify(records, null, 2));
+    return;
+  }
 
   const supabase = createAdminClient();
 
