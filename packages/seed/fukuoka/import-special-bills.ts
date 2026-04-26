@@ -129,7 +129,7 @@ function mapResultToStatus(result: string) {
 // ---- スクレイピング ----
 
 function stripTags(html: string): string {
-  return html.replace(/<[^>]+>/g, "").trim();
+  return html.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
 }
 
 function scrapeSpecialBills(html: string): ScrapedSpecialBill[] {
@@ -154,18 +154,24 @@ function scrapeSpecialBills(html: string): ScrapedSpecialBill[] {
       while ((cellMatch = cellRegex.exec(rowMatch[1])) !== null) {
         cells.push(stripTags(cellMatch[1]));
       }
-      if (cells.length > 0) rows.push(cells);
+      if (cells.length > 0) {
+        // 1列目（フィールド名）の内部スペースを除去して正規化
+        cells[0] = cells[0].replace(/\s/g, "");
+        rows.push(cells);
+      }
     }
 
     if (rows.length === 0) continue;
 
     const firstLabel = rows[0][0];
+    // ページによってセル内に改行やスペースが入る場合があるため正規化して比較
+    const firstLabelNorm = firstLabel.replace(/\s/g, "");
 
     // 種別を判定
     let billType: BillType | null = null;
-    if (firstLabel === "意見書案番号") billType = "opinion";
-    else if (firstLabel === "決議案番号") billType = "resolution";
-    else if (firstLabel === "受理番号") billType = "petition";
+    if (firstLabelNorm === "意見書案番号") billType = "opinion";
+    else if (firstLabelNorm === "決議案番号") billType = "resolution";
+    else if (firstLabelNorm === "受理番号" || firstLabelNorm === "請願受理番号") billType = "petition";
     else if (firstLabel === "議案番号") {
       // 議員提出議案かどうかは tableId の直前の注記で判断
       const tablePos = html.indexOf(`id="${tableId}"`);
