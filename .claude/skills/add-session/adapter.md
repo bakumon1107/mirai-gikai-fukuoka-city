@@ -53,3 +53,39 @@ SUPPORTED_SPECIAL_TYPES: opinion, resolution, member_bill, petition
 ### スクリプトパス追加（タグ付け・注目タグ付け）
 ASSIGN_TAGS_SCRIPT: packages/seed/fukuoka/assign-tags.ts
 AUTO_FEATURE_SCRIPT: packages/seed/fukuoka/auto-feature.ts
+
+## インポート実行の注意点
+
+### 本番 DB への接続方法
+スクリプトは `.env` の `SUPABASE_URL` を参照する。**ローカル Supabase（127.0.0.1）ではなく本番 DB に投入する場合**は、環境変数を明示的に上書きすること:
+
+```bash
+SUPABASE_URL="https://<project-ref>.supabase.co" \
+SUPABASE_SERVICE_ROLE_KEY="<key>" \
+packages/seed/node_modules/.bin/tsx packages/seed/fukuoka/import-bills.ts <slug>
+```
+
+`.env.production` の値は `mirai-gikai-fukuoka-city/.env.production` に格納されている（gitignore済み）。
+
+### tsx の実行方法
+`npx tsx` や `pnpm exec tsx` は動作しない場合がある。必ず以下を使うこと:
+
+```bash
+packages/seed/node_modules/.bin/tsx <script>
+```
+
+### bill_type チェック制約の確認（petition 等の新種別を追加した場合）
+`petition` など新しい `bill_type` を追加した際は、本番 DB の `bills_bill_type_check` 制約が更新済みかを確認すること。マイグレーションが未マージ・未適用の場合は `import-special-bills.ts` が `check constraint` エラーで失敗する。
+
+確認・修正手順:
+1. 対応するマイグレーション PR が `fukuoka-city/develop` にマージ済みかを確認
+2. 未マージの場合は Supabase management API で直接適用:
+   ```bash
+   curl -s -X POST "https://api.supabase.com/v1/projects/<ref>/database/query" \
+     -H "Authorization: Bearer <access_token>" \
+     -H "Content-Type: application/json" \
+     -d '{"query": "alter table bills drop constraint if exists bills_bill_type_check; alter table bills add constraint bills_bill_type_check check (bill_type in (''bill'', ''opinion'', ''resolution'', ''member_bill'', ''petition''));"}'
+   ```
+
+### assign-tags.ts: 会期ごとのタグマッピング
+`BILL_TAG_MAP_BY_SESSION` に新会期のマッピングを追加すること（r8-1 以降は番号が変わるため、`BILL_TAG_MAP` は r8-1 用の番号が入っている）。マッピング不要な議案（契約締結・和解・損害賠償等）はパターンマッチ（`PATTERN_TAGS`）で自動付与されるため省略可。
