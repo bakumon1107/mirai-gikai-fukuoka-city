@@ -43,3 +43,13 @@ SUPPORTED_SPECIAL_TYPES: opinion, resolution, member_bill, petition
 - `認定`: 決算認定（`approved` にマッピング）
 - `可決`: 通常可決（`approved`）
 - `同意`: 同意案件（スクレイパーはスキップ対象）
+- `採択`: 請願が採択（`approved`）
+- `不採択`: 請願が不採択（`rejected`）
+
+### 請願テーブルのヘッダ（r7-4 実績）
+- 1行目第1セル: `"請願受理番号"`（`"受理番号"` ではない点に注意）
+- 番号例: `"６年４号"` → billNumber: `"請願６年４号"`
+
+### スクリプトパス追加（タグ付け・注目タグ付け）
+ASSIGN_TAGS_SCRIPT: packages/seed/fukuoka/assign-tags.ts
+AUTO_FEATURE_SCRIPT: packages/seed/fukuoka/auto-feature.ts
