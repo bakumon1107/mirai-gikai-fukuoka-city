@@ -113,16 +113,8 @@ const NON_VOTE_FIELDS = new Set([
 // ---- ステータスマッピング ----
 
 function mapResultToStatus(result: string) {
-  if (
-    result.includes("可決") ||
-    result.includes("承認") ||
-    result.includes("同意") ||
-    result.includes("採択")  // 請願の「採択」
-  ) return "approved";
-  if (
-    result.includes("否決") ||
-    result.includes("不採択") // 請願の「不採択」
-  ) return "rejected";
+  if (result.includes("不採択") || result.includes("否決")) return "rejected";
+  if (result.includes("可決") || result.includes("承認") || result.includes("同意") || result.includes("採択")) return "approved";
   return "submitted";
 }
 
