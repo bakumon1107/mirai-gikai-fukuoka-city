@@ -14,7 +14,10 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { spawn } from "node:child_process";
+import { fileURLToPath } from "node:url";
 import type { RawQuestionerBlock } from "./scrape-general-questions";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // ---- 型 ----
 

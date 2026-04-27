@@ -14,8 +14,11 @@
 
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { fileURLToPath } from "node:url";
 import { createAdminClient } from "../shared/helper";
 import type { GeneratedQuestion } from "./generate-general-questions";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 async function main() {
   const args = process.argv.slice(2);

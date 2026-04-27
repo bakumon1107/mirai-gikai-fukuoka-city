@@ -14,6 +14,9 @@
 
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // ---- 型 ----
 
@@ -30,107 +33,76 @@ export type RawQuestionerBlock = {
 
 // ---- パーサー ----
 
-const QUESTIONER_OPENING = /^◯(\d+)番（(.+?)）登壇/;
-const QUESTIONER_CONTINUE = /^◯(\d+)番（(.+?)）(?!登壇)/;
-const CHAIRPERSON = /^◯議長（/;
-const NEXT_QUESTIONER_CALL = /^◯議長（.+?）\s+(.+?)議員。/;
+// ◯N番（name）登壇 で始まる行 = 質問者の開会発言（1人1回のみ）
+// 議席番号は半角（58番）・全角（２番）どちらもある
+const QUESTIONER_OPENING = /^◯([0-9０-９]+)番（(.+?)）登壇/;
+
+function toHalfWidth(s: string): number {
+  return parseInt(
+    s.replace(/[０-９]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xff10 + 0x30)),
+    10
+  );
+}
 const PARTY_PATTERN = /私は([^をが]+?)(?:を代表して|が代表して|として)/;
 
+/**
+ * 1日分のテキストから質問者ブロックを抽出する。
+ *
+ * 方針: 各「登壇」行を境界として質問者ブロックを区切る。
+ * - 「休憩いたします」は会期内の一時休憩のため終了とせず、散会のみで終了
+ * - 議長が同一議員を呼び戻す「○○議員。」は誤検出しないよう登壇行のみで管理
+ */
 function parseDay(text: string, sessionSlug: string, day: number): RawQuestionerBlock[] {
   const lines = text.split("\n");
-  const blocks: RawQuestionerBlock[] = [];
 
-  let inGeneralQuestions = false;
-  let currentQuestioner: { name: string; number: number | null } | null = null;
-  let currentLines: string[] = [];
-  let questionOrder = 0;
-
+  // 一般質問セクション開始行を探す
+  let startIdx = -1;
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i].trim();
-
-    // 一般質問の開始検出
-    if (line.includes("日程第１、一般質問を行います")) {
-      inGeneralQuestions = true;
-      continue;
-    }
-
-    // 本日の会議終了
-    if (inGeneralQuestions && (line.includes("本日の会議を閉じます") || line.includes("散会いたします") || line.includes("休憩いたします"))) {
+    if (lines[i].includes("日程第１、一般質問を行います")) {
+      startIdx = i;
       break;
     }
+  }
+  if (startIdx === -1) return [];
 
-    if (!inGeneralQuestions) continue;
-
-    // 新しい質問者（登壇）
-    const openingMatch = QUESTIONER_OPENING.exec(line);
-    if (openingMatch) {
-      // 前の質問者を確定
-      if (currentQuestioner && currentLines.length > 0) {
-        const rawText = currentLines.join("\n").trim();
-        const party = extractParty(rawText);
-        blocks.push({
-          sessionSlug,
-          sessionDay: day,
-          questionOrder,
-          questionerName: currentQuestioner.name,
-          questionerNumber: currentQuestioner.number,
-          questionerParty: party,
-          rawText,
-          sourceUrl: null,
-        });
-      }
-
-      questionOrder++;
-      currentQuestioner = {
-        name: openingMatch[2].trim(),
-        number: parseInt(openingMatch[1], 10),
-      };
-      currentLines = [line];
-      continue;
-    }
-
-    if (currentQuestioner) {
-      // 議長の発言 — 次の質問者呼び出しかどうか確認
-      if (CHAIRPERSON.test(line)) {
-        const nextCall = NEXT_QUESTIONER_CALL.exec(line);
-        if (nextCall) {
-          // 議長が別の議員名を呼び出した → 現在の質問者ブロックを終了
-          const rawText = currentLines.join("\n").trim();
-          const party = extractParty(rawText);
-          blocks.push({
-            sessionSlug,
-            sessionDay: day,
-            questionOrder,
-            questionerName: currentQuestioner.name,
-            questionerNumber: currentQuestioner.number,
-            questionerParty: party,
-            rawText,
-            sourceUrl: null,
-          });
-          currentQuestioner = null;
-          currentLines = [];
-        } else {
-          // 議長の通常の発言（答弁者指名など）→ ブロックに含める
-          currentLines.push(line);
-        }
-        continue;
-      }
-
-      // 同一質問者の追加発言 or 答弁者の発言 → ブロックに含める
-      currentLines.push(line);
+  // 散会行（セクション終了）を探す
+  let endIdx = lines.length;
+  for (let i = startIdx; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (line.includes("散会いたします") || line.includes("本日の会議を閉じます")) {
+      endIdx = i;
+      break;
     }
   }
 
-  // 最後の質問者
-  if (currentQuestioner && currentLines.length > 0) {
-    const rawText = currentLines.join("\n").trim();
+  // 対象範囲内の「登壇」行のインデックスと質問者情報を収集
+  const openings: Array<{ lineIdx: number; name: string; number: number }> = [];
+  for (let i = startIdx; i < endIdx; i++) {
+    const line = lines[i].trim();
+    const m = QUESTIONER_OPENING.exec(line);
+    if (m) {
+      openings.push({ lineIdx: i, name: m[2].trim(), number: toHalfWidth(m[1]) });
+    }
+  }
+
+  // 各質問者のブロック: 自分の登壇行〜次の登壇行の直前まで
+  const blocks: RawQuestionerBlock[] = [];
+  for (let i = 0; i < openings.length; i++) {
+    const opening = openings[i];
+    const blockEnd = i + 1 < openings.length ? openings[i + 1].lineIdx : endIdx;
+    const blockLines = lines
+      .slice(opening.lineIdx, blockEnd)
+      .map((l) => l.trim())
+      .filter(Boolean);
+    const rawText = blockLines.join("\n").trim();
     const party = extractParty(rawText);
+
     blocks.push({
       sessionSlug,
       sessionDay: day,
-      questionOrder,
-      questionerName: currentQuestioner.name,
-      questionerNumber: currentQuestioner.number,
+      questionOrder: i + 1,
+      questionerName: opening.name,
+      questionerNumber: opening.number,
       questionerParty: party,
       rawText,
       sourceUrl: null,
