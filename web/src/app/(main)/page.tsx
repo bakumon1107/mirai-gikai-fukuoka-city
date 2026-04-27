@@ -1,8 +1,11 @@
 import { Container } from "@/components/layouts/container";
 import { About } from "@/components/top/about";
+import { BudgetOverviewBanner } from "@/components/top/budget-overview-banner";
+import { GeneralQuestionsBanner } from "@/components/top/general-questions-banner";
 import { Hero } from "@/components/top/hero";
 import { PastSessionsSection } from "@/components/top/past-sessions-section";
 import { TeamMirai } from "@/components/top/team-mirai";
+import { siteConfig } from "@/config/site.config";
 import { getDifficultyLevel } from "@/features/bill-difficulty/server/loaders/get-difficulty-level";
 import { BillDisclaimer } from "@/features/bills/client/components/bill-detail/bill-disclaimer";
 import { BillsByTagSection } from "@/features/bills/server/components/bills-by-tag-section";
@@ -10,14 +13,12 @@ import { FeaturedBillSection } from "@/features/bills/server/components/featured
 import { loadHomeData } from "@/features/bills/server/loaders/load-home-data";
 import type { BillWithContent } from "@/features/bills/shared/types";
 import { HomeChatClient } from "@/features/chat/client/components/home-chat-client";
-import { siteConfig } from "@/config/site.config";
+import { CurrentCouncilSession } from "@/features/council-sessions/client/components/current-council-session";
 import { getActiveCouncilSession } from "@/features/council-sessions/server/loaders/get-active-council-session";
 import { getAllPastSessions } from "@/features/council-sessions/server/loaders/get-all-past-sessions";
 import { getCurrentCouncilSession } from "@/features/council-sessions/server/loaders/get-current-council-session";
-import { CurrentCouncilSession } from "@/features/council-sessions/client/components/current-council-session";
-import { getJapanTime } from "@/lib/utils/date";
-import { BudgetOverviewBanner } from "@/components/top/budget-overview-banner";
 import { getSessionsWithBudget } from "@/features/budget-overview/server/loaders/get-sessions-with-budget";
+import { getJapanTime } from "@/lib/utils/date";
 
 export default async function Home() {
   const { billsByTag, featuredBills } = await loadHomeData();
@@ -57,6 +58,13 @@ export default async function Home() {
       {activeSession?.slug && (
         <Container className="pt-6">
           <BudgetOverviewBanner sessionSlug={activeSession.slug} />
+        </Container>
+      )}
+
+      {/* 一般質問バナー */}
+      {activeSession?.slug && (
+        <Container className="pt-3">
+          <GeneralQuestionsBanner sessionSlug={activeSession.slug} />
         </Container>
       )}
 
