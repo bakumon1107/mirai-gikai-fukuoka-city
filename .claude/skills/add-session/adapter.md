@@ -89,3 +89,37 @@ packages/seed/node_modules/.bin/tsx <script>
 
 ### assign-tags.ts: 会期ごとのタグマッピング
 `BILL_TAG_MAP_BY_SESSION` に新会期のマッピングを追加すること（r8-1 以降は番号が変わるため、`BILL_TAG_MAP` は r8-1 用の番号が入っている）。マッピング不要な議案（契約締結・和解・損害賠償等）はパターンマッチ（`PATTERN_TAGS`）で自動付与されるため省略可。
+
+### generate-special-contents.ts: 意見書案・決議案・請願のコンテンツ生成
+
+`import-special-bills.ts` でインポートした議案は bill_contents が空のまま登録される。インポート後に以下を実行してコンテンツを生成すること:
+
+```bash
+SUPABASE_URL="..." SUPABASE_SERVICE_ROLE_KEY="..." \
+packages/seed/node_modules/.bin/tsx packages/seed/fukuoka/generate-special-contents.ts \
+  --session <slug>
+```
+
+- Claude CLI がレート制限に当たると `SyntaxError: Unexpected end of JSON input` で失敗する。**何度か再実行すれば全件成功する**（既に更新済みのものも上書きされるが問題なし）
+- 請願（petition）の議決結果ラベルは「採択」「不採択」であり、通常議案の「可決」「否決」とは異なる。スクリプト内で `bill_type === "petition"` の場合は別ラベルを使用するよう実装済み
+
+### mapResultToStatus バグ（修正済み）
+
+`"不採択".includes("採択")` が `true` になるため、`"採択"` を先にチェックすると「不採択」が `approved` にマッピングされる。必ず以下の順で確認すること:
+
+```typescript
+if (result.includes("不採択") || result.includes("否決")) return "rejected";
+if (result.includes("可決") || result.includes("採択") || ...) return "approved";
+```
+
+### Next.js キャッシュのリフレッシュ
+
+インポート・コンテンツ生成後は ISR キャッシュが残るため、本番 Web URL の `/api/revalidate` に `REVALIDATE_SECRET` を Bearer トークンとして POST すること。
+`WEB_URL` と `REVALIDATE_SECRET` は `mirai-gikai-fukuoka-city/.env.production` に格納済み（gitignore対象）。
+
+```bash
+curl -X POST "<WEB_URL>/api/revalidate" \
+  -H "Authorization: Bearer <REVALIDATE_SECRET>"
+```
+
+成功時: `{"success":true,"revalidated":true,...}` が返る。
