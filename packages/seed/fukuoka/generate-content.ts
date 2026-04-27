@@ -150,8 +150,13 @@ async function extractPdfText(pdfUrl: string): Promise<string | null> {
 
 // ---- AI 解説生成 ----
 
-const NORMAL_PROMPT = `あなたは市議会の議案をわかりやすく解説する専門家です。
-以下の議案情報をもとに、市民向けのわかりやすい解説を生成してください。
+const COMBINED_PROMPT = `あなたは市議会の議案を解説する専門家です。
+以下の議案情報をもとに、2種類の解説コンテンツを一度に生成してください。
+
+## 重要な制約（必ず守ること）
+- 採決の賛成・反対理由は**絶対に推測・創作しない**。
+- 賛否に関する記述は、提供された「会派別採決」データと「PDF抽出テキスト」に明示されている事実のみを記載する。
+- 理由が不明な場合は「理由は公開情報にありません」と明記するか、賛否の事実のみ記載する。
 
 ## 議案情報
 - 議案番号: {billNumber}
@@ -166,30 +171,16 @@ const NORMAL_PROMPT = `あなたは市議会の議案をわかりやすく解説
 以下のJSON形式のみを出力してください。説明文や前置きは不要です。
 
 {
-  "title": "市民が理解しやすいわかりやすいタイトル（公式件名とは別に設定。20〜40文字程度）",
-  "summary": "1〜2文で議案の目的をまとめた要約",
-  "content": "Markdown形式の本文。以下のセクションを含めること：\n## この議案は何をするものですか？\n（市民が日常生活との関連で理解できる説明）\n## 誰に影響がありますか？\n（対象者・範囲）\n## 審議の結果は？\n（議決結果と会派別賛否の簡潔なまとめ）"
-}`;
-
-const HARD_PROMPT = `あなたは市議会の議案を詳しく解説する専門家です。
-以下の議案情報をもとに、政策的背景・論点を含む詳細な解説を生成してください。
-
-## 議案情報
-- 議案番号: {billNumber}
-- 件名: {billName}
-- 議決結果: {result}
-- 会派別採決: {factionVotes}
-
-## PDF抽出テキスト（抜粋）
-{pdfText}
-
-## 出力形式（JSON）
-以下のJSON形式のみを出力してください。説明文や前置きは不要です。
-
-{
-  "title": "詳細解説用タイトル（公式件名をわかりやすく言い換えたもの。20〜50文字程度）",
-  "summary": "1〜2文で議案の目的と背景をまとめた要約",
-  "content": "Markdown形式の本文。以下のセクションを含めること：\n## 背景・目的\n（政策的背景、改正理由など）\n## 主な変更点・内容\n（具体的な制度変更、予算額など）\n## 審議経過\n（委員会審査、主な論点）\n## 採決結果\n（会派別賛否の詳細）"
+  "normal": {
+    "title": "市民が理解しやすいわかりやすいタイトル（20〜40文字程度）",
+    "summary": "1〜2文で議案の目的をまとめた要約（中学生レベル）",
+    "content": "Markdown形式の本文。以下のセクションを含めること：\n## この議案は何をするものですか？\n（市民が日常生活との関連で理解できる説明）\n## 誰に影響がありますか？\n（対象者・範囲）\n## 審議の結果は？\n（議決結果と会派別賛否の事実のみ。理由は推測しない。会派別採決はMarkdownの**表ではなく箇条書き**で「- 賛成：〇〇、△△」「- 反対：〇〇」の形式で書くこと）"
+  },
+  "hard": {
+    "title": "詳細解説用タイトル（公式件名をわかりやすく言い換えたもの。20〜50文字程度）",
+    "summary": "1〜2文で議案の目的と背景をまとめた要約（専門的）",
+    "content": "Markdown形式の本文。以下のセクションを含めること：\n## 背景・目的\n（政策的背景、改正理由など）\n## 主な変更点・内容\n（具体的な制度変更、予算額など）\n## 審議経過\n（委員会審査など、PDFに記載のある事実のみ）\n## 採決結果\n（会派別賛否の事実のみ。理由は推測しない。会派別採決はMarkdownの**表ではなく箇条書き**で「- 賛成：〇〇、△△」「- 反対：〇〇」の形式で書くこと）"
+  }
 }`;
 
 function formatFactionVotes(votes: ScrapedBill["factionVotes"]): string {
@@ -223,20 +214,24 @@ function extractRelevantText(text: string | null, billName: string): string {
   return text.slice(0, maxLength);
 }
 
-function parseJsonResponse(
-  text: string,
-  fallbackName: string
-): { title: string; summary: string; content: string } {
-  const cleaned = text.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-  try {
-    return JSON.parse(cleaned);
-  } catch {
-    return {
-      title: fallbackName,
-      summary: `${fallbackName}について`,
-      content: cleaned,
-    };
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+async function callClaudeWithRetry(prompt: string, retries = 3): Promise<string> {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      return await callClaude(prompt);
+    } catch (err) {
+      if (attempt < retries) {
+        const wait = attempt * 15000; // 15秒, 30秒 と増やす
+        console.warn(`  ⚠️  Claude エラー（${attempt}/${retries}）。${wait / 1000}秒後にリトライ...`);
+        await sleep(wait);
+      } else {
+        throw err;
+      }
+    }
   }
+  throw new Error("unreachable");
 }
 
 async function generateBillContent(
@@ -254,14 +249,25 @@ async function generateBillContent(
       .replace("{factionVotes}", factionVotesStr)
       .replace("{pdfText}", relevantText);
 
-  const normalText = await callClaude(buildPrompt(NORMAL_PROMPT));
-  const normal = parseJsonResponse(normalText, bill.name);
+  const combinedText = await callClaudeWithRetry(buildPrompt(COMBINED_PROMPT));
 
-  // 1秒待機
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-
-  const hardText = await callClaude(buildPrompt(HARD_PROMPT));
-  const hard = parseJsonResponse(hardText, bill.name);
+  // combined レスポンスをパース: { normal: {...}, hard: {...} }
+  let normal: { title: string; summary: string; content: string };
+  let hard: { title: string; summary: string; content: string };
+  try {
+    const cleaned = combinedText.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+    const parsed = JSON.parse(cleaned) as {
+      normal: { title: string; summary: string; content: string };
+      hard: { title: string; summary: string; content: string };
+    };
+    normal = parsed.normal;
+    hard = parsed.hard;
+  } catch {
+    // パース失敗時はフォールバック
+    const fallback = { title: bill.name, summary: `${bill.name}について`, content: combinedText };
+    normal = fallback;
+    hard = fallback;
+  }
 
   return { billNumber: bill.billNumber, billName: bill.name, normal, hard };
 }
@@ -292,36 +298,65 @@ async function main() {
   );
   console.log(`🤖 Claude CLI: ${CLAUDE_PATH}`);
 
-  const results: GeneratedContent[] = [];
+  fs.mkdirSync(outputDir, { recursive: true });
+  const outputPath = path.join(outputDir, `${slug}-contents.json`);
+
+  // 既存の生成済みデータを読み込んで途中再開できるようにする
+  let existingResults: GeneratedContent[] = [];
+  if (fs.existsSync(outputPath)) {
+    try {
+      const existing = JSON.parse(fs.readFileSync(outputPath, "utf-8")) as ContentOutput;
+      existingResults = existing.bills ?? [];
+      console.log(`♻️  既存データ読み込み: ${existingResults.length} 件（スキップします）`);
+    } catch {
+      // 読み込み失敗は無視
+    }
+  }
+  const doneSet = new Set(existingResults.map((r) => r.billNumber));
+  const results: GeneratedContent[] = [...existingResults];
+
+  const save = () => {
+    const output: ContentOutput = {
+      slug,
+      generatedAt: new Date().toISOString(),
+      bills: results,
+    };
+    fs.writeFileSync(outputPath, JSON.stringify(output, null, 2), "utf-8");
+  };
 
   for (let i = 0; i < bills.length; i++) {
     const bill = bills[i];
+
+    if (doneSet.has(bill.billNumber)) {
+      console.log(`[${i + 1}/${bills.length}] ${bill.billNumber} スキップ（生成済み）`);
+      continue;
+    }
+
     console.log(`\n[${i + 1}/${bills.length}] ${bill.billNumber} ${bill.name}`);
 
     let pdfText: string | null = null;
     if (bill.pdfUrl) {
       pdfText = await extractPdfText(bill.pdfUrl);
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await sleep(2000);
     } else {
       console.log("  ℹ️  PDFリンクなし");
     }
 
     console.log("  🤖 AI解説生成中...");
-    const content = await generateBillContent(bill, pdfText);
-    results.push(content);
+    try {
+      const content = await generateBillContent(bill, pdfText);
+      results.push(content);
+      save(); // 1件ごとに保存
+      console.log(`  ✅ 完了: "${content.normal.title}"`);
+    } catch (err) {
+      console.error(`  ❌ スキップ: ${err}`);
+    }
 
-    console.log(`  ✅ 完了: "${content.normal.title}"`);
+    // 議案間に10秒待機
+    await sleep(10000);
   }
 
-  const output: ContentOutput = {
-    slug,
-    generatedAt: new Date().toISOString(),
-    bills: results,
-  };
-
-  fs.mkdirSync(outputDir, { recursive: true });
-  const outputPath = path.join(outputDir, `${slug}-contents.json`);
-  fs.writeFileSync(outputPath, JSON.stringify(output, null, 2), "utf-8");
+  save();
   console.log(`\n📄 出力: ${outputPath}`);
   console.log(`🎉 ${results.length} 件の解説コンテンツを生成しました`);
 }
