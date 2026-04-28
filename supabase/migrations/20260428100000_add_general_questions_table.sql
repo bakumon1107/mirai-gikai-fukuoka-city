@@ -1,5 +1,5 @@
 -- 一般質問テーブル
-create table public.general_questions (
+create table if not exists public.general_questions (
   id uuid primary key default gen_random_uuid(),
   council_session_id uuid not null references public.council_sessions(id) on delete cascade,
   session_day integer not null,
@@ -20,6 +20,13 @@ create table public.general_questions (
 
 alter table public.general_questions enable row level security;
 
-create trigger update_general_questions_updated_at
-  before update on public.general_questions
-  for each row execute function update_updated_at_column();
+do $$ begin
+  if not exists (
+    select 1 from pg_trigger
+    where tgname = 'update_general_questions_updated_at'
+  ) then
+    create trigger update_general_questions_updated_at
+      before update on public.general_questions
+      for each row execute function update_updated_at_column();
+  end if;
+end $$;
