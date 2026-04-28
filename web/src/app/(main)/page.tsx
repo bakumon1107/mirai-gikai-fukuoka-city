@@ -18,6 +18,7 @@ import { getActiveCouncilSession } from "@/features/council-sessions/server/load
 import { getAllPastSessions } from "@/features/council-sessions/server/loaders/get-all-past-sessions";
 import { getCurrentCouncilSession } from "@/features/council-sessions/server/loaders/get-current-council-session";
 import { getSessionsWithBudget } from "@/features/budget-overview/server/loaders/get-sessions-with-budget";
+import { getLatestSessionWithQuestions } from "@/features/general-questions/server/loaders/get-latest-session-with-questions";
 import { getJapanTime } from "@/lib/utils/date";
 
 export default async function Home() {
@@ -30,12 +31,14 @@ export default async function Home() {
     currentDifficulty,
     pastSessions,
     budgetSessions,
+    latestQuestionsSlug,
   ] = await Promise.all([
     getCurrentCouncilSession(getJapanTime()),
     getActiveCouncilSession(),
     getDifficultyLevel(),
     getAllPastSessions(),
     getSessionsWithBudget(),
+    getLatestSessionWithQuestions(),
   ]);
 
   const toBillChatContext = (bill: BillWithContent) => {
@@ -62,9 +65,9 @@ export default async function Home() {
       )}
 
       {/* 一般質問バナー */}
-      {activeSession?.slug && (
+      {latestQuestionsSlug && (
         <Container className="pt-3">
-          <GeneralQuestionsBanner sessionSlug={activeSession.slug} />
+          <GeneralQuestionsBanner sessionSlug={latestQuestionsSlug} />
         </Container>
       )}
 

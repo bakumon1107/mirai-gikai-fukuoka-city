@@ -24,6 +24,36 @@ export async function findPublishedGeneralQuestionsBySession(
   })) as GeneralQuestion[];
 }
 
+export async function findLatestSessionSlugWithPublishedQuestions(): Promise<
+  string | null
+> {
+  const supabase = createAdminClient();
+
+  const { data: rows, error: qErr } = await supabase
+    .from("general_questions")
+    .select("council_session_id")
+    .eq("publish_status", "published");
+
+  if (qErr || !rows?.length) return null;
+
+  const ids = [
+    ...new Set(
+      rows.map((r: { council_session_id: string }) => r.council_session_id)
+    ),
+  ];
+
+  const { data: session, error: sErr } = await supabase
+    .from("council_sessions")
+    .select("slug")
+    .in("id", ids)
+    .order("start_date", { ascending: false })
+    .limit(1)
+    .single();
+
+  if (sErr) return null;
+  return session?.slug ?? null;
+}
+
 export async function findPublishedGeneralQuestionById(
   id: string
 ): Promise<GeneralQuestion | null> {
