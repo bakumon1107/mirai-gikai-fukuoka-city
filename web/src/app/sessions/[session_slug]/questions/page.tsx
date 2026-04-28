@@ -6,12 +6,12 @@ import { GeneralQuestionList } from "@/features/general-questions/server/compone
 import { getGeneralQuestionsBySession } from "@/features/general-questions/server/loaders/get-general-questions-by-session";
 
 type Props = {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ session_slug: string }>;
 };
 
 export async function generateMetadata({ params }: Props) {
-  const { slug } = await params;
-  const session = await getCouncilSessionBySlug(slug);
+  const { session_slug } = await params;
+  const session = await getCouncilSessionBySlug(session_slug);
 
   if (!session) {
     return { title: "定例会が見つかりません" };
@@ -24,8 +24,8 @@ export async function generateMetadata({ params }: Props) {
 }
 
 export default async function SessionQuestionsPage({ params }: Props) {
-  const { slug } = await params;
-  const session = await getCouncilSessionBySlug(slug);
+  const { session_slug } = await params;
+  const session = await getCouncilSessionBySlug(session_slug);
 
   if (!session) {
     notFound();
