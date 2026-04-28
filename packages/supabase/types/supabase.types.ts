@@ -626,6 +626,65 @@ export type Database = {
         }
         Relationships: []
       }
+      general_questions: {
+        Row: {
+          council_session_id: string
+          created_at: string
+          id: string
+          publish_status: string
+          question_order: number
+          questioner_name: string
+          questioner_number: number | null
+          questioner_party: string | null
+          raw_text: string
+          session_day: number
+          source_url: string | null
+          summary: string
+          topics: Json
+          updated_at: string
+        }
+        Insert: {
+          council_session_id: string
+          created_at?: string
+          id?: string
+          publish_status?: string
+          question_order: number
+          questioner_name: string
+          questioner_number?: number | null
+          questioner_party?: string | null
+          raw_text: string
+          session_day: number
+          source_url?: string | null
+          summary: string
+          topics?: Json
+          updated_at?: string
+        }
+        Update: {
+          council_session_id?: string
+          created_at?: string
+          id?: string
+          publish_status?: string
+          question_order?: number
+          questioner_name?: string
+          questioner_number?: number | null
+          questioner_party?: string | null
+          raw_text?: string
+          session_day?: number
+          source_url?: string | null
+          summary?: string
+          topics?: Json
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "general_questions_council_session_id_fkey"
+            columns: ["council_session_id"]
+            isOneToOne: false
+            referencedRelation: "council_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       interview_configs: {
         Row: {
           bill_id: string
@@ -1320,3 +1379,5 @@ export const Constants = {
     },
   },
 } as const
+A new version of Supabase CLI is available: v2.95.4 (currently installed v2.62.5)
+We recommend updating regularly for new features and bug fixes: https://supabase.com/docs/guides/cli/getting-started#updating-the-supabase-cli
