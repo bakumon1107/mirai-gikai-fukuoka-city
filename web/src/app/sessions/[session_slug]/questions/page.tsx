@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { Container } from "@/components/layouts/container";
 import { siteConfig } from "@/config/site.config";
 import { getCouncilSessionBySlug } from "@/features/council-sessions/server/loaders/get-council-session-by-slug";
-import { GeneralQuestionList } from "@/features/general-questions/server/components/general-question-list";
+import { SessionTopicsView } from "@/features/general-questions/server/components/session-topics-view";
 import { getGeneralQuestionsBySession } from "@/features/general-questions/server/loaders/get-general-questions-by-session";
 
 type Props = {
@@ -40,10 +40,10 @@ export default async function SessionQuestionsPage({ params }: Props) {
           {session.name}の一般質問
         </h1>
         <p className="mt-2 text-sm text-mirai-text-secondary">
-          議員が市長・局長に直接質問した内容をわかりやすく解説します
+          議員が問い、市が答えた。あなたの暮らしに関わる取り組みをテーマ別にまとめました。
         </p>
       </div>
-      <GeneralQuestionList questions={questions} />
+      <SessionTopicsView questions={questions} />
     </Container>
   );
 }
