@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/layouts/container";
 import { siteConfig } from "@/config/site.config";
-import { GeneralQuestionTopics } from "@/features/general-questions/client/components/general-question-topics";
+import { QuestionChatView } from "@/features/general-questions/client/components/question-chat-view";
 import { getGeneralQuestionById } from "@/features/general-questions/server/loaders/get-general-question-by-id";
 
 type Props = {
@@ -65,7 +65,7 @@ export default async function GeneralQuestionDetailPage({ params }: Props) {
         </p>
       )}
 
-      <GeneralQuestionTopics topics={question.topics} />
+      <QuestionChatView topics={question.topics} />
 
       {question.source_url && (
         <div className="mt-8 pt-6 border-t border-border">
