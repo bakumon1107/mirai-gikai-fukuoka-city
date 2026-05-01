@@ -2,11 +2,13 @@ import {
   Baby,
   Shield,
   Heart,
-  Bus,
   Leaf,
-  MapPin,
   Circle,
   ArrowRight,
+  Stethoscope,
+  Building2,
+  Trophy,
+  Globe,
 } from "lucide-react";
 import Link from "next/link";
 import type { GeneralQuestion } from "../../shared/types";
@@ -20,9 +22,11 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   Baby,
   Shield,
   Heart,
-  Bus,
+  Stethoscope,
+  Building2,
   Leaf,
-  MapPin,
+  Trophy,
+  Globe,
   Circle,
 };
 
@@ -48,7 +52,13 @@ const CATEGORY_STYLE: Record<
     text: "text-rose-700",
     iconBg: "bg-rose-100",
   },
-  "交通・都市基盤": {
+  "健康・医療": {
+    card: "bg-teal-50 border-teal-200",
+    header: "bg-white/60 border-teal-200",
+    text: "text-teal-700",
+    iconBg: "bg-teal-100",
+  },
+  "交通・まちづくり": {
     card: "bg-violet-50 border-violet-200",
     header: "bg-white/60 border-violet-200",
     text: "text-violet-700",
@@ -60,7 +70,13 @@ const CATEGORY_STYLE: Record<
     text: "text-emerald-700",
     iconBg: "bg-emerald-100",
   },
-  地域振興: {
+  "スポーツ・文化": {
+    card: "bg-indigo-50 border-indigo-200",
+    header: "bg-white/60 border-indigo-200",
+    text: "text-indigo-700",
+    iconBg: "bg-indigo-100",
+  },
+  "地域・国際交流": {
     card: "bg-amber-50 border-amber-200",
     header: "bg-white/60 border-amber-200",
     text: "text-amber-700",
