@@ -1,4 +1,4 @@
-import type { GeneralQuestion } from "../types";
+import type { GeneralQuestion, GeneralQuestionTopic } from "../types";
 
 export type TopicEntry = {
   title: string;
@@ -6,6 +6,7 @@ export type TopicEntry = {
   answerSummary: string;
   answererRole: string;
   answererName: string;
+  topicCount: number;
   questioner: {
     id: string;
     name: string;
@@ -186,34 +187,74 @@ export function assignCategory(topicTitle: string): {
   return { label: "その他", iconName: "Circle" };
 }
 
+function buildEntry(
+  q: GeneralQuestion,
+  topics: GeneralQuestionTopic[]
+): TopicEntry {
+  const last = topics[topics.length - 1];
+  const isMerged = topics.length > 1;
+  return {
+    title: isMerged
+      ? (q.summary ?? topics.map((t) => t.title).join("・"))
+      : topics[0].title,
+    questionSummary: isMerged
+      ? (q.summary ?? topics[0].question_summary)
+      : topics[0].question_summary,
+    answerSummary: last.answer_summary,
+    answererRole: last.answerer_role,
+    answererName: last.answerer_name,
+    topicCount: topics.length,
+    questioner: {
+      id: q.id,
+      name: q.questioner_name,
+      party: q.questioner_party,
+    },
+  };
+}
+
 export function buildTopicGroups(questions: GeneralQuestion[]): TopicGroup[] {
-  const categoryMap = new Map<string, TopicGroup>();
+  // Group topics by questioner × category to produce one card per pair
+  const questCatMap = new Map<
+    string,
+    {
+      q: GeneralQuestion;
+      topics: GeneralQuestionTopic[];
+      iconName: string;
+      categoryLabel: string;
+    }
+  >();
 
   for (const q of questions) {
     for (const t of q.topics) {
       const { label, iconName } = assignCategory(t.title);
-      const entry: TopicEntry = {
-        title: t.title,
-        questionSummary: t.question_summary,
-        answerSummary: t.answer_summary,
-        answererRole: t.answerer_role,
-        answererName: t.answerer_name,
-        questioner: {
-          id: q.id,
-          name: q.questioner_name,
-          party: q.questioner_party,
-        },
-      };
-      const existing = categoryMap.get(label);
+      const key = `${q.id}:${label}`;
+      const existing = questCatMap.get(key);
       if (existing) {
-        existing.entries.push(entry);
+        existing.topics.push(t);
       } else {
-        categoryMap.set(label, {
-          categoryLabel: label,
+        questCatMap.set(key, {
+          q,
+          topics: [t],
           iconName,
-          entries: [entry],
+          categoryLabel: label,
         });
       }
+    }
+  }
+
+  const categoryMap = new Map<string, TopicGroup>();
+
+  for (const { q, topics, iconName, categoryLabel } of questCatMap.values()) {
+    const entry = buildEntry(q, topics);
+    const existing = categoryMap.get(categoryLabel);
+    if (existing) {
+      existing.entries.push(entry);
+    } else {
+      categoryMap.set(categoryLabel, {
+        categoryLabel,
+        iconName,
+        entries: [entry],
+      });
     }
   }
 
