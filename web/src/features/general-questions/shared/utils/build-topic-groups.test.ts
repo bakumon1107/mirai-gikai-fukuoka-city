@@ -116,9 +116,8 @@ describe("buildTopicGroups", () => {
     expect(bousai?.entries).toHaveLength(1);
     const entry = bousai?.entries[0];
     expect(entry?.topicCount).toBe(3);
-    expect(entry?.title).toBe(
-      "火災警報が平成以降一度も発令されていない実態を指摘。"
-    );
+    // merged block uses first topic's title; N件 badge shows the count
+    expect(entry?.title).toBe("火災警報の発令基準について");
     expect(entry?.answerSummary).toBe("プッシュ通知の拡充を検討する。");
   });
 
