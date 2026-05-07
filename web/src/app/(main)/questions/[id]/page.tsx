@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/layouts/container";
 import { siteConfig } from "@/config/site.config";
+import { RawTranscriptView } from "@/features/general-questions/server/components/raw-transcript-view";
 import { QuestionChatView } from "@/features/general-questions/client/components/question-chat-view";
 import { getGeneralQuestionById } from "@/features/general-questions/server/loaders/get-general-question-by-id";
 
@@ -65,7 +66,11 @@ export default async function GeneralQuestionDetailPage({ params }: Props) {
         </p>
       )}
 
-      <QuestionChatView topics={question.topics} />
+      {question.raw_text ? (
+        <RawTranscriptView rawText={question.raw_text} />
+      ) : (
+        <QuestionChatView topics={question.topics} />
+      )}
 
       {question.source_url && (
         <div className="mt-8 pt-6 border-t border-border">

@@ -75,7 +75,6 @@ const CATEGORY_MAP: Array<{
       "発令",
       "警報",
       "注意報",
-      "ボランティア",
       "林野",
     ],
   },
@@ -126,11 +125,11 @@ const CATEGORY_MAP: Array<{
       "省エネ",
       "カーボン",
       "再生可能",
-      "環境",
+      "環境保全",
       "脱炭素",
       "ゼロカーボン",
       "温室効果",
-      "ごみ",
+      "海洋ごみ",
       "漂着",
       "植栽",
     ],
@@ -144,7 +143,6 @@ const CATEGORY_MAP: Array<{
       "アスリート",
       "スタジアム",
       "博物館",
-      "文化",
       "公民館",
       "城",
       "ドーム",
@@ -171,6 +169,7 @@ const CATEGORY_MAP: Array<{
       "町内会",
       "飼育",
       "農林水産",
+      "アウトバウンド",
     ],
   },
 ];
@@ -192,14 +191,9 @@ function buildEntry(
   topics: GeneralQuestionTopic[]
 ): TopicEntry {
   const last = topics[topics.length - 1];
-  const isMerged = topics.length > 1;
   return {
-    title: isMerged
-      ? (q.summary ?? topics.map((t) => t.title).join("・"))
-      : topics[0].title,
-    questionSummary: isMerged
-      ? (q.summary ?? topics[0].question_summary)
-      : topics[0].question_summary,
+    title: topics[0].title,
+    questionSummary: topics[0].question_summary,
     answerSummary: last.answer_summary,
     answererRole: last.answerer_role,
     answererName: last.answerer_name,
@@ -213,38 +207,35 @@ function buildEntry(
 }
 
 export function buildTopicGroups(questions: GeneralQuestion[]): TopicGroup[] {
-  // Group topics by questioner × category to produce one card per pair
-  const questCatMap = new Map<
-    string,
-    {
-      q: GeneralQuestion;
-      topics: GeneralQuestionTopic[];
-      iconName: string;
-      categoryLabel: string;
-    }
-  >();
+  // Group consecutive same-category topics per questioner into blocks.
+  // This preserves natural Q&A blocks while still merging related sub-topics
+  // (e.g. 10 fire-alarm exchanges → 1 card), without bundling unrelated themes
+  // that happen to share a category (e.g. international exchange ≠ neighborhood assoc).
+  const blocks: Array<{
+    q: GeneralQuestion;
+    topics: GeneralQuestionTopic[];
+    iconName: string;
+    categoryLabel: string;
+  }> = [];
 
   for (const q of questions) {
+    let currentBlock: (typeof blocks)[0] | null = null;
+
     for (const t of q.topics) {
       const { label, iconName } = assignCategory(t.title);
-      const key = `${q.id}:${label}`;
-      const existing = questCatMap.get(key);
-      if (existing) {
-        existing.topics.push(t);
+
+      if (currentBlock && currentBlock.categoryLabel === label) {
+        currentBlock.topics.push(t);
       } else {
-        questCatMap.set(key, {
-          q,
-          topics: [t],
-          iconName,
-          categoryLabel: label,
-        });
+        currentBlock = { q, topics: [t], iconName, categoryLabel: label };
+        blocks.push(currentBlock);
       }
     }
   }
 
   const categoryMap = new Map<string, TopicGroup>();
 
-  for (const { q, topics, iconName, categoryLabel } of questCatMap.values()) {
+  for (const { q, topics, iconName, categoryLabel } of blocks) {
     const entry = buildEntry(q, topics);
     const existing = categoryMap.get(categoryLabel);
     if (existing) {
