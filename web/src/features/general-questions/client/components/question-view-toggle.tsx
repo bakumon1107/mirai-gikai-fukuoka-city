@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { QuestionChatView } from "./question-chat-view";
 import type { GeneralQuestionTopic } from "../../shared/types";
@@ -28,38 +28,60 @@ function isQuestioner(speaker: string): boolean {
   return /^\d+番/.test(speaker);
 }
 
-function RawTranscriptContent({ rawText }: { rawText: string }) {
+function RawTranscriptContent({
+  rawText,
+  topics,
+}: {
+  rawText: string;
+  topics: GeneralQuestionTopic[];
+}) {
   const turns = parseSpeakerTurns(rawText);
+  // Insert topic title dividers at proportionally estimated positions
+  const dividerAt = new Map<number, string>();
+  if (topics.length > 0) {
+    dividerAt.set(0, topics[0].title);
+    for (let i = 1; i < topics.length; i++) {
+      dividerAt.set(
+        Math.floor((turns.length * i) / topics.length),
+        topics[i].title
+      );
+    }
+  }
   return (
     <div className="flex flex-col gap-4">
       {turns.map((turn, i) => {
+        const topicTitle = dividerAt.get(i);
         const isQ = isQuestioner(turn.speaker);
         return (
-          <div
-            key={`${i}-${turn.speaker}`}
-            className={isQ ? "flex justify-end" : "flex"}
-          >
-            <div
-              className={`max-w-[85%] rounded-2xl px-4 py-3 ${
-                isQ
-                  ? "bg-primary text-primary-foreground rounded-br-sm"
-                  : "bg-card border border-border text-mirai-text rounded-bl-sm"
-              }`}
-            >
-              <p
-                className={`mb-1 text-xs font-medium ${
+          <Fragment key={`${i}-${turn.speaker}`}>
+            {topicTitle && (
+              <p className="text-center text-xs font-medium text-mirai-text-secondary bg-mirai-surface-muted rounded-full px-3 py-1 mx-auto">
+                {topicTitle}
+              </p>
+            )}
+            <div className={isQ ? "flex justify-end" : "flex"}>
+              <div
+                className={`max-w-[85%] rounded-2xl px-4 py-3 ${
                   isQ
-                    ? "text-primary-foreground/70"
-                    : "text-mirai-text-secondary"
+                    ? "bg-primary text-primary-foreground rounded-br-sm"
+                    : "bg-card border border-border text-mirai-text rounded-bl-sm"
                 }`}
               >
-                {turn.speaker}
-              </p>
-              <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                {turn.text}
-              </p>
+                <p
+                  className={`mb-1 text-xs font-medium ${
+                    isQ
+                      ? "text-primary-foreground/70"
+                      : "text-mirai-text-secondary"
+                  }`}
+                >
+                  {turn.speaker}
+                </p>
+                <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                  {turn.text}
+                </p>
+              </div>
             </div>
-          </div>
+          </Fragment>
         );
       })}
     </div>
@@ -98,7 +120,7 @@ export function QuestionViewToggle({
       {mode === "summary" ? (
         <QuestionChatView topics={topics} />
       ) : (
-        <RawTranscriptContent rawText={rawText} />
+        <RawTranscriptContent rawText={rawText} topics={topics} />
       )}
     </div>
   );
