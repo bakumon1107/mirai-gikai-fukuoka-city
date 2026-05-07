@@ -101,9 +101,18 @@ function TopicCard({
   return (
     <div className={`rounded-xl border ${style.card} overflow-hidden`}>
       <div className="px-4 pt-4 pb-3">
-        <h3 className={`text-base font-bold ${style.text} mb-2`}>
-          {entry.title}
-        </h3>
+        <div className="flex items-start gap-2 mb-2">
+          <h3 className={`text-base font-bold ${style.text} flex-1`}>
+            {entry.title}
+          </h3>
+          {entry.topicCount > 1 && (
+            <span
+              className={`shrink-0 text-xs font-medium px-1.5 py-0.5 rounded-full ${style.iconBg} ${style.text}`}
+            >
+              {entry.topicCount}件
+            </span>
+          )}
+        </div>
         <p className="text-sm text-mirai-text leading-relaxed">
           {entry.answerSummary}
         </p>
