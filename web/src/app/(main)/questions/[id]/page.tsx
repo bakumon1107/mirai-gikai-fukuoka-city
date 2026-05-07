@@ -6,6 +6,7 @@ import { Container } from "@/components/layouts/container";
 import { siteConfig } from "@/config/site.config";
 import { RawTranscriptView } from "@/features/general-questions/server/components/raw-transcript-view";
 import { QuestionChatView } from "@/features/general-questions/client/components/question-chat-view";
+import { QuestionViewToggle } from "@/features/general-questions/client/components/question-view-toggle";
 import { getGeneralQuestionById } from "@/features/general-questions/server/loaders/get-general-question-by-id";
 
 type Props = {
@@ -66,7 +67,12 @@ export default async function GeneralQuestionDetailPage({ params }: Props) {
         </p>
       )}
 
-      {question.raw_text ? (
+      {question.raw_text && question.topics.length > 0 ? (
+        <QuestionViewToggle
+          topics={question.topics}
+          rawText={question.raw_text}
+        />
+      ) : question.raw_text ? (
         <RawTranscriptView rawText={question.raw_text} />
       ) : (
         <QuestionChatView topics={question.topics} />
