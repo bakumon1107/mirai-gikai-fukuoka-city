@@ -8,6 +8,7 @@ import { RawTranscriptView } from "@/features/general-questions/server/component
 import { QuestionChatView } from "@/features/general-questions/client/components/question-chat-view";
 import { QuestionViewToggle } from "@/features/general-questions/client/components/question-view-toggle";
 import { getGeneralQuestionById } from "@/features/general-questions/server/loaders/get-general-question-by-id";
+import { getCouncilSessionById } from "@/features/council-sessions/server/loaders/get-council-session-by-id";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -39,10 +40,17 @@ const DAY_LABELS: Record<number, string> = {
 export default async function GeneralQuestionDetailPage({ params }: Props) {
   const { id } = await params;
   const question = await getGeneralQuestionById(id);
+  const session = question
+    ? await getCouncilSessionById(question.council_session_id)
+    : null;
 
   if (!question) {
     notFound();
   }
+
+  const backHref = session
+    ? `/sessions/${session.slug}/questions`
+    : "/questions";
 
   const dayLabel =
     DAY_LABELS[question.session_day] ?? `第${question.session_day}日`;
@@ -51,7 +59,7 @@ export default async function GeneralQuestionDetailPage({ params }: Props) {
     <Container className="py-8 max-w-2xl">
       <div className="mb-4">
         <Link
-          href="/questions"
+          href={backHref}
           className="inline-flex items-center gap-1 text-sm text-mirai-text-secondary hover:text-mirai-text"
         >
           <ChevronLeft className="w-4 h-4" />
