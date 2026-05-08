@@ -26,10 +26,10 @@ jobs:
           SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
 
-      # マイグレーション適用（idempotent）
+      # 未適用のマイグレーションのみ適用（確認プロンプトに自動でyを入力）
       - name: Supabase db push
         run: |
-          supabase db push --include-all --yes
+          echo "y" | supabase db push
           supabase config push
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
