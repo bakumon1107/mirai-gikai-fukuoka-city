@@ -1,4 +1,4 @@
-import { ExternalLink } from "lucide-react";
+import { ChevronLeft, ExternalLink } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -49,6 +49,15 @@ export default async function GeneralQuestionDetailPage({ params }: Props) {
 
   return (
     <Container className="py-8 max-w-2xl">
+      <div className="mb-4">
+        <Link
+          href="/questions"
+          className="inline-flex items-center gap-1 text-sm text-mirai-text-secondary hover:text-mirai-text"
+        >
+          <ChevronLeft className="w-4 h-4" />
+          一般質問の一覧に戻る
+        </Link>
+      </div>
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-mirai-text">
           {question.questioner_name} 議員
