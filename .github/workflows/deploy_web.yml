@@ -19,6 +19,7 @@ jobs:
 
       # Supabase プロジェクトへリンク（ノンインタラクティブ）
       - name: Supabase link
+        continue-on-error: true
         run: |
           supabase link --project-ref $SUPABASE_PROJECT_REF --password $SUPABASE_DB_PASSWORD
         env:
@@ -26,15 +27,16 @@ jobs:
           SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
 
-      # 未適用のマイグレーションのみ適用（確認プロンプトに自動でyを入力）
+      # 未適用のマイグレーションのみ適用（失敗してもデプロイは続行）
       - name: Supabase db push
+        continue-on-error: true
         run: |
           echo "y" | supabase db push
           supabase config push
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
 
-      # 成功したら Vercel デプロイを開始
+      # Vercel デプロイを開始（Supabase の結果に関わらず常に実行）
       - name: Trigger Vercel Deploy Hook
         run: |
           curl -X POST "${{ secrets.WEB_VERCEL_DEPLOY_HOOK_URL }}"
