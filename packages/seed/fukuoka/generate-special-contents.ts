@@ -17,70 +17,14 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import * as os from "node:os";
-import { execSync, spawn } from "node:child_process";
 import { createAdminClient } from "../shared/helper";
+import { callClaudeWithRetry, resolveCLIPath, sleep } from "../shared/claude-cli";
 
 // ---- Claude CLI ----
 
-const CLAUDE_PATH = process.env.CLAUDE_CLI_PATH || "claude";
 
-function callClaude(prompt: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const env = { ...process.env };
-    delete env.CLAUDECODE;
 
-    const proc = spawn(CLAUDE_PATH, ["-p", prompt, "--output-format", "json"], {
-      stdio: ["ignore", "pipe", "pipe"],
-      env,
-    });
 
-    let stdout = "";
-    let stderr = "";
-
-    proc.stdout.on("data", (chunk: Buffer) => { stdout += chunk.toString(); });
-    proc.stderr.on("data", (chunk: Buffer) => { stderr += chunk.toString(); });
-
-    proc.on("error", (err) => {
-      reject(new Error(`claude の起動に失敗しました: ${err.message}`));
-    });
-
-    proc.on("close", (code) => {
-      if (code !== 0) {
-        reject(new Error(`claude がコード ${code} で終了しました。stderr: ${stderr.slice(0, 300)}`));
-        return;
-      }
-      try {
-        const parsed = JSON.parse(stdout) as { result?: string; is_error?: boolean };
-        if (parsed.is_error) {
-          reject(new Error(`Claude エラー: ${String(parsed.result ?? "不明")}`));
-          return;
-        }
-        resolve(parsed.result ?? "");
-      } catch {
-        resolve(stdout.trim());
-      }
-    });
-  });
-}
-
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-async function callClaudeWithRetry(prompt: string, retries = 3): Promise<string> {
-  for (let attempt = 1; attempt <= retries; attempt++) {
-    try {
-      return await callClaude(prompt);
-    } catch (err) {
-      if (attempt < retries) {
-        const wait = attempt * 15000;
-        console.warn(`  ⚠️  リトライ ${attempt}/${retries}（${wait / 1000}秒後）: ${err}`);
-        await sleep(wait);
-      } else {
-        throw err;
-      }
-    }
-  }
-  throw new Error("unreachable");
-}
 
 // ---- PDF テキスト抽出 ----
 
