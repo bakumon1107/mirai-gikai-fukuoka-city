@@ -93,6 +93,28 @@ export async function findAllPastCouncilSessions(): Promise<CouncilSession[]> {
 }
 
 /**
+ * IDで定例会を取得
+ */
+export async function findCouncilSessionById(
+  id: string
+): Promise<CouncilSession | null> {
+  const supabase = createAdminClient();
+
+  const { data, error } = await supabase
+    .from("council_sessions")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Failed to fetch council session by id:", error);
+    return null;
+  }
+
+  return data;
+}
+
+/**
  * 指定日より前の直近の定例会を取得
  */
 export async function findPreviousCouncilSession(
