@@ -1,8 +1,10 @@
 import { Container } from "@/components/layouts/container";
 import { About } from "@/components/top/about";
+import { BudgetOverviewBanner } from "@/components/top/budget-overview-banner";
 import { ComingSoonSection } from "@/components/top/coming-soon-section";
 import { Hero } from "@/components/top/hero";
 import { TeamMirai } from "@/components/top/team-mirai";
+import { siteConfig } from "@/config/site.config";
 import { getDifficultyLevel } from "@/features/bill-difficulty/server/loaders/get-difficulty-level";
 import { BillDisclaimer } from "@/features/bills/client/components/bill-detail/bill-disclaimer";
 import { BillsByTagSection } from "@/features/bills/server/components/bills-by-tag-section";
@@ -11,12 +13,13 @@ import { PreviousSessionSection } from "@/features/bills/server/components/previ
 import { loadHomeData } from "@/features/bills/server/loaders/load-home-data";
 import type { BillWithContent } from "@/features/bills/shared/types";
 import { HomeChatClient } from "@/features/chat/client/components/home-chat-client";
-import { siteConfig } from "@/config/site.config";
-import { getCurrentCouncilSession } from "@/features/council-sessions/server/loaders/get-current-council-session";
-import { getActiveCouncilSession } from "@/features/council-sessions/server/loaders/get-active-council-session";
 import { CurrentCouncilSession } from "@/features/council-sessions/client/components/current-council-session";
+import { getActiveCouncilSession } from "@/features/council-sessions/server/loaders/get-active-council-session";
+import { getCurrentCouncilSession } from "@/features/council-sessions/server/loaders/get-current-council-session";
+import { PressConferenceArchiveSection } from "@/features/press-conferences/client/components/press-conference-archive-section";
+import { PressConferenceNoticeBanner } from "@/features/press-conferences/client/components/press-conference-notice-banner";
+import { samplePressConference } from "@/features/press-conferences/shared/fixtures/sample";
 import { getJapanTime } from "@/lib/utils/date";
-import { BudgetOverviewBanner } from "@/components/top/budget-overview-banner";
 
 export default async function Home() {
   const { billsByTag, featuredBills, comingSoonBills, previousSessionData } =
@@ -44,6 +47,11 @@ export default async function Home() {
 
       {/* 本日の定例会セクション */}
       <CurrentCouncilSession session={currentSession} />
+
+      {/* 市長記者会見バナー */}
+      <Container className="pt-4">
+        <PressConferenceNoticeBanner pressConference={samplePressConference} />
+      </Container>
 
       {/* 予算概要バナー */}
       {activeSession?.slug && (
@@ -79,6 +87,15 @@ export default async function Home() {
           </Container>
         </div>
       )}
+
+      {/* 市長記者会見アーカイブセクション */}
+      <div className="bg-mirai-surface-muted py-10">
+        <Container>
+          <PressConferenceArchiveSection
+            pressConferences={[samplePressConference]}
+          />
+        </Container>
+      </div>
 
       <Container>
         {/* みらい議会とは セクション */}
