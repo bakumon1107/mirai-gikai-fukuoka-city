@@ -21,8 +21,8 @@ import { getCurrentCouncilSession } from "@/features/council-sessions/server/loa
 import { getLatestSessionWithQuestions } from "@/features/general-questions/server/loaders/get-latest-session-with-questions";
 import { PressConferenceArchiveSection } from "@/features/press-conferences/client/components/press-conference-archive-section";
 import { PressConferenceNoticeBanner } from "@/features/press-conferences/client/components/press-conference-notice-banner";
-import { pressConference20260420 } from "@/features/press-conferences/shared/fixtures/2026-04-20";
-import { pressConference20260511 } from "@/features/press-conferences/shared/fixtures/2026-05-11";
+import { getLatestPressConference } from "@/features/press-conferences/server/loaders/get-latest-press-conference";
+import { getPressConferences } from "@/features/press-conferences/server/loaders/get-press-conferences";
 import { getJapanTime } from "@/lib/utils/date";
 
 export default async function Home() {
@@ -36,6 +36,8 @@ export default async function Home() {
     pastSessions,
     budgetSessions,
     latestQuestionsSlug,
+    latestPressConference,
+    pressConferences,
   ] = await Promise.all([
     getCurrentCouncilSession(getJapanTime()),
     getActiveCouncilSession(),
@@ -43,6 +45,8 @@ export default async function Home() {
     getAllPastSessions(),
     getSessionsWithBudget(),
     getLatestSessionWithQuestions(),
+    getLatestPressConference(),
+    getPressConferences(),
   ]);
 
   const toBillChatContext = (bill: BillWithContent) => {
@@ -62,11 +66,13 @@ export default async function Home() {
       <CurrentCouncilSession session={currentSession} />
 
       {/* 市長記者会見バナー */}
-      <Container className="pt-4">
-        <PressConferenceNoticeBanner
-          pressConference={pressConference20260511}
-        />
-      </Container>
+      {latestPressConference && (
+        <Container className="pt-4">
+          <PressConferenceNoticeBanner
+            pressConference={latestPressConference}
+          />
+        </Container>
+      )}
 
       {/* 予算概要バナー */}
       {activeSession?.slug && (
@@ -104,10 +110,7 @@ export default async function Home() {
               budgetSessions={budgetSessions}
             />
             <PressConferenceArchiveSection
-              pressConferences={[
-                pressConference20260511,
-                pressConference20260420,
-              ]}
+              pressConferences={pressConferences}
             />
           </div>
         </Container>
