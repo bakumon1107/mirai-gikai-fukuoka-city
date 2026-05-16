@@ -8,39 +8,6 @@ type BudgetOverviewDetailProps = {
   sessionSlug: string;
 };
 
-function formatBudget(amount: number | null): string {
-  if (amount === null) return "—";
-  if (amount >= 10000) {
-    return `${(amount / 10000).toFixed(1)}億円`;
-  }
-  return `${amount.toLocaleString()}万円`;
-}
-
-function BudgetChange({
-  total,
-  prev,
-}: {
-  total: number | null;
-  prev: number | null;
-}) {
-  if (total === null || prev === null || prev === 0) return null;
-  const diff = total - prev;
-  const sign = diff >= 0 ? "+" : "";
-  const colorClass =
-    diff > 0
-      ? "text-primary"
-      : diff < 0
-        ? "text-stance-against"
-        : "text-mirai-text-muted";
-
-  return (
-    <span className={`text-sm font-medium ${colorClass}`}>
-      {sign}
-      {formatBudget(diff)}（前年比）
-    </span>
-  );
-}
-
 export function BudgetOverviewDetail({
   overview,
   sessionSlug,
@@ -70,27 +37,6 @@ export function BudgetOverviewDetail({
             {overview.direction}
           </p>
         )}
-
-        <div className="mt-5 flex flex-wrap gap-6 text-sm">
-          <div>
-            <span className="text-mirai-text-muted">予算総額</span>
-            <div className="font-bold text-xl text-mirai-text mt-0.5">
-              {formatBudget(overview.total_budget)}
-            </div>
-          </div>
-          <div>
-            <span className="text-mirai-text-muted">前年度予算</span>
-            <div className="font-semibold text-mirai-text mt-0.5">
-              {formatBudget(overview.prev_budget)}
-            </div>
-          </div>
-          <div className="flex items-end pb-0.5">
-            <BudgetChange
-              total={overview.total_budget}
-              prev={overview.prev_budget}
-            />
-          </div>
-        </div>
 
         {overview.source_url && (
           <Link

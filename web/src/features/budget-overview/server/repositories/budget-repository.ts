@@ -1,9 +1,43 @@
 import "server-only";
 import { createAdminClient } from "@mirai-gikai/supabase";
+import type { CouncilSession } from "@/features/council-sessions/shared/types";
 import type {
   BudgetOverview,
   BudgetOverviewWithThemes,
 } from "../../shared/types";
+
+/**
+ * 公開済み予算概要が存在する全会期を新しい順に取得
+ */
+export async function findAllSessionsWithBudget(): Promise<CouncilSession[]> {
+  const supabase = createAdminClient();
+
+  const { data, error } = await supabase
+    .from("budget_overviews")
+    .select("council_session_id, council_sessions!inner(*)")
+    .eq("publish_status", "published")
+    .eq("council_sessions.is_active", false);
+
+  if (error) {
+    console.error("Failed to fetch sessions with budget:", error);
+    return [];
+  }
+
+  const seen = new Set<string>();
+  const sessions: CouncilSession[] = [];
+  for (const row of data ?? []) {
+    const session = row.council_sessions as CouncilSession;
+    if (session && !seen.has(session.id)) {
+      seen.add(session.id);
+      sessions.push(session);
+    }
+  }
+
+  return sessions.sort(
+    (a, b) =>
+      new Date(b.start_date).getTime() - new Date(a.start_date).getTime()
+  );
+}
 
 /**
  * 会期IDに紐づく公開済み予算概要一覧を取得
@@ -25,6 +59,30 @@ export async function findPublishedOverviewsBySession(
   }
 
   return data ?? [];
+}
+
+/**
+ * 会期IDに紐づく公開済み予算概要が存在するか確認
+ */
+export async function hasPublishedOverviewsBySession(
+  councilSessionId: string
+): Promise<boolean> {
+  const supabase = createAdminClient();
+
+  const { count, error } = await supabase
+    .from("budget_overviews")
+    .select("id", { count: "exact", head: true })
+    .eq("council_session_id", councilSessionId)
+    .eq("publish_status", "published");
+
+  if (error) {
+    console.error(
+      `Failed to check budget overviews existence: ${error.message}`
+    );
+    return false;
+  }
+
+  return (count ?? 0) > 0;
 }
 
 /**

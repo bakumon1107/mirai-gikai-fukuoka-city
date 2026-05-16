@@ -3,8 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import type { CouncilSession } from "@/features/council-sessions/shared/types";
-import type { BillWithContent } from "../../shared/types";
 import { CompactBillCard } from "../../client/components/bill-list/compact-bill-card";
+import type { BillWithContent } from "../../shared/types";
 
 interface PreviousSessionSectionProps {
   session: CouncilSession;
@@ -28,6 +28,7 @@ export function PreviousSessionSection({
   }
 
   const sessionBillsUrl = `/sessions/${session.slug}/bills`;
+  const sessionQuestionsUrl = `/sessions/${session.slug}/questions`;
   const startDate = new Date(session.start_date);
   const endDate = new Date(session.end_date ?? session.start_date);
   const sessionDescription = `${startDate.getFullYear()}.${startDate.getMonth() + 1}月〜${endDate.getMonth() + 1}月に実施された${session.name}`;
@@ -91,6 +92,11 @@ export function PreviousSessionSection({
           </div>
         )}
       </div>
+
+      {/* 一般質問リンク */}
+      <Button variant="ghost" size="sm" asChild className="self-start">
+        <Link href={sessionQuestionsUrl}>一般質問を見る →</Link>
+      </Button>
     </section>
   );
 }

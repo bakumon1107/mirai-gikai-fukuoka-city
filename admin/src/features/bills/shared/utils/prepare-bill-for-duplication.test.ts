@@ -25,6 +25,7 @@ const baseBill: Bill = {
   publish_status_order: 2,
   thumbnail_url: null,
   source_url: null,
+  discussion_overview_points: [],
 };
 
 describe("prepareBillForDuplication", () => {
