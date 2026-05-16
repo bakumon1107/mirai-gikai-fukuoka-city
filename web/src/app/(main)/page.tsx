@@ -21,7 +21,8 @@ import { getCurrentCouncilSession } from "@/features/council-sessions/server/loa
 import { getLatestSessionWithQuestions } from "@/features/general-questions/server/loaders/get-latest-session-with-questions";
 import { PressConferenceArchiveSection } from "@/features/press-conferences/client/components/press-conference-archive-section";
 import { PressConferenceNoticeBanner } from "@/features/press-conferences/client/components/press-conference-notice-banner";
-import { samplePressConference } from "@/features/press-conferences/shared/fixtures/sample";
+import { pressConference20260420 } from "@/features/press-conferences/shared/fixtures/2026-04-20";
+import { pressConference20260511 } from "@/features/press-conferences/shared/fixtures/2026-05-11";
 import { getJapanTime } from "@/lib/utils/date";
 
 export default async function Home() {
@@ -62,7 +63,9 @@ export default async function Home() {
 
       {/* 市長記者会見バナー */}
       <Container className="pt-4">
-        <PressConferenceNoticeBanner pressConference={samplePressConference} />
+        <PressConferenceNoticeBanner
+          pressConference={pressConference20260511}
+        />
       </Container>
 
       {/* 予算概要バナー */}
@@ -101,7 +104,10 @@ export default async function Home() {
               budgetSessions={budgetSessions}
             />
             <PressConferenceArchiveSection
-              pressConferences={[samplePressConference]}
+              pressConferences={[
+                pressConference20260511,
+                pressConference20260420,
+              ]}
             />
           </div>
         </Container>

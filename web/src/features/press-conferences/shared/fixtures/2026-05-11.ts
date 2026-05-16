@@ -1,10 +1,10 @@
 import type { PressConference } from "../types";
 
-export const samplePressConference: PressConference = {
-  id: "sample-2026-05-15",
-  slug: "2026-05-15",
+export const pressConference20260511: PressConference = {
+  id: "2026-05-11",
+  slug: "2026-05-11",
   title: "令和8年5月 市長定例記者会見",
-  heldAt: "2026-05-15",
+  heldAt: "2026-05-11",
   youtubeUrl: "https://www.youtube.com/watch?v=_l3GaYx3Ouw",
   status: "published",
   items: [
@@ -137,9 +137,34 @@ export const samplePressConference: PressConference = {
       ],
     },
     {
-      id: "qa-5",
+      id: "qa-4b",
       itemType: "qa",
       orderIndex: 7,
+      title: "終活支援の法制度化について",
+      summary: null,
+      turns: [
+        {
+          id: "qa-4b-t1",
+          speaker: "reporter",
+          speakerName: null,
+          content:
+            "2年以内に法制度化されるとのことですが、具体的にどのような内容が規定されるのでしょうか？",
+          orderIndex: 0,
+        },
+        {
+          id: "qa-4b-t2",
+          speaker: "mayor",
+          speakerName: null,
+          content:
+            "終活サポートセンター、死後事務委任事業、日常生活支援（入退院・金銭管理・見守り）の3つが社会福祉法に規定される予定です。",
+          orderIndex: 1,
+        },
+      ],
+    },
+    {
+      id: "qa-5",
+      itemType: "qa",
+      orderIndex: 9,
       title: "舞鶴公園の桜の倒木・緊急点検",
       summary: null,
       turns: [
@@ -164,7 +189,7 @@ export const samplePressConference: PressConference = {
     {
       id: "qa-6",
       itemType: "qa",
-      orderIndex: 8,
+      orderIndex: 10,
       title: "市長選挙・5期目について",
       summary: null,
       turns: [
@@ -200,12 +225,60 @@ export const samplePressConference: PressConference = {
             "市政というのは市民のニーズが時代とともにどんどん変わっていくもので、常に新しいやるべきことが出てきます。終わりというものはないと思っています。",
           orderIndex: 3,
         },
+        {
+          id: "qa-6-t5",
+          speaker: "reporter",
+          speakerName: null,
+          content:
+            "前回の投票率が34.31％でしたが、今回の投票率向上についてどのようにお考えですか？",
+          orderIndex: 4,
+        },
+        {
+          id: "qa-6-t6",
+          speaker: "mayor",
+          speakerName: null,
+          content:
+            "投票率を上げることは大事です。期日前投票の利便性向上や身近な施設での投票実施など、投票しやすい環境づくりが重要です。選挙管理委員会でも検討しているはずです。",
+          orderIndex: 5,
+        },
+        {
+          id: "qa-6-t7",
+          speaker: "reporter",
+          speakerName: null,
+          content:
+            "多選について、首長が強い権限を長期にわたって持ち続けることについてのお考えは？",
+          orderIndex: 6,
+        },
+        {
+          id: "qa-6-t8",
+          speaker: "mayor",
+          speakerName: null,
+          content:
+            "一般論として、首長は予算権・人事権など強い権限を持ちます。諸外国では期数制限があることから、強い権限があるゆえ期数制限の議論があります。一人が権限を持ち続けることへの問いがあることは把握しています。",
+          orderIndex: 7,
+        },
+        {
+          id: "qa-6-t9",
+          speaker: "reporter",
+          speakerName: null,
+          content:
+            "長期勤続の首長が増えている中、若手後任が出づらい背景についてどうお考えですか？",
+          orderIndex: 8,
+        },
+        {
+          id: "qa-6-t10",
+          speaker: "mayor",
+          speakerName: null,
+          content:
+            "私も当初は市政信頼度40％の時代に刷新が求められ、若く経験に染まっていない立場で出てきました。若い首長が全国で増え、様々な分野から出てくることは重要だと思っています。",
+          orderIndex: 9,
+        },
       ],
     },
     {
       id: "qa-7",
       itemType: "qa",
-      orderIndex: 9,
+      orderIndex: 11,
       title: "SNS情報漏洩と市職員への対応",
       summary: null,
       turns: [
@@ -230,8 +303,8 @@ export const samplePressConference: PressConference = {
     {
       id: "qa-8",
       itemType: "qa",
-      orderIndex: 10,
-      title: "副首都のメリット・企業誘致との関係",
+      orderIndex: 12,
+      title: "副首都構想・吉村代表との対談・北九州市との連携",
       summary: null,
       turns: [
         {
@@ -250,12 +323,73 @@ export const samplePressConference: PressConference = {
             "その通りですが、さらにプラスアルファがあります。副首都に選ばれたエリアに税制優遇などの強烈なインセンティブがつけば、企業の移転判断が変わります。それにより東京一極集中から多極分散が実現し、福岡に知識創造型産業が集積することで、若者が東京に行かなくても夢が叶う環境が生まれます。九州全体からの距離感も近く、地方の平均賃金向上・税収増にもつながります。",
           orderIndex: 1,
         },
+        {
+          id: "qa-8-t3",
+          speaker: "reporter",
+          speakerName: null,
+          content:
+            "日本維新の会の吉村代表と対談されていましたが、副首都について県・北九州市との連携はどのようにお考えですか？",
+          orderIndex: 2,
+        },
+        {
+          id: "qa-8-t4",
+          speaker: "mayor",
+          speakerName: null,
+          content:
+            "県と連携し、副首都を狙っています。ポイントは連携協約の内容です。7月に法が制定されれば申し込めるようになります。都構想的なものではなく、県と市の連携協約形式で進めます。都構想のように市町村権限を全て県に移譲すると政令市としての成長戦略が打てなくなるため、その内容が重要です。",
+          orderIndex: 3,
+        },
+        {
+          id: "qa-8-t5",
+          speaker: "reporter",
+          speakerName: null,
+          content: "北九州市の武内市長との協議状況はいかがですか？",
+          orderIndex: 4,
+        },
+        {
+          id: "qa-8-t6",
+          speaker: "mayor",
+          speakerName: null,
+          content:
+            "県が主体となるため、県のイニシアチブが重要です。東京で服部知事を含め3人で副首都を狙いにいきましょうという話をしましたが、国がまだ具体的に固まっていないため詳細な協議はしていません。",
+          orderIndex: 5,
+        },
+        {
+          id: "qa-8-t7",
+          speaker: "reporter",
+          speakerName: null,
+          content: "北九州市はライバルになるのでしょうか？",
+          orderIndex: 6,
+        },
+        {
+          id: "qa-8-t8",
+          speaker: "mayor",
+          speakerName: null,
+          content:
+            "全然ライバルではなく仲間です。都市間競争ではなく、福岡県が地域の核となり、北九州の産業力と福岡の拠点性が掛け合わさってより大きな力になると思います。",
+          orderIndex: 7,
+        },
+        {
+          id: "qa-8-t9",
+          speaker: "reporter",
+          speakerName: null,
+          content: "官公庁の移転も副首都の効果として考えていますか？",
+          orderIndex: 8,
+        },
+        {
+          id: "qa-8-t10",
+          speaker: "mayor",
+          speakerName: null,
+          content:
+            "省庁移転と副首都バックアップは異なります。東日本大震災後の議論は縮小し文化庁が京都に行っただけで、国も積極的でないため省庁移転は想定していません。福岡には国の出先機関が集積しており、普段から機能していることが税金と人材の無駄がない最善の方法です。",
+          orderIndex: 9,
+        },
       ],
     },
     {
       id: "qa-9",
       itemType: "qa",
-      orderIndex: 11,
+      orderIndex: 13,
       title: "七隈線の混雑緩和・6両化",
       summary: null,
       turns: [
@@ -278,9 +412,34 @@ export const samplePressConference: PressConference = {
       ],
     },
     {
+      id: "qa-9b",
+      itemType: "qa",
+      orderIndex: 14,
+      title: "貝塚線と地下鉄の直通化",
+      summary: null,
+      turns: [
+        {
+          id: "qa-9b-t1",
+          speaker: "reporter",
+          speakerName: null,
+          content:
+            "東区の人口増加に伴い、貝塚線と地下鉄の直通運転も課題になっていますがいかがでしょうか？",
+          orderIndex: 0,
+        },
+        {
+          id: "qa-9b-t2",
+          speaker: "mayor",
+          speakerName: null,
+          content:
+            "東区は34万2千人で全国の市の中でもトップクラスの人口です。人口増加も著しくニーズも増えています。西鉄もダイヤ改正で頻回になりましたが、地下鉄との直通運転も大事な課題です。交通マスタープランに明記されており、ボトルネック解消を含めて実現できるよう検討しています。",
+          orderIndex: 1,
+        },
+      ],
+    },
+    {
       id: "qa-10",
       itemType: "qa",
-      orderIndex: 12,
+      orderIndex: 15,
       title: "夏の暑さ・熱中症対策",
       summary: null,
       turns: [
