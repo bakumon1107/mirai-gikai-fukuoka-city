@@ -92,22 +92,18 @@ export default async function Home() {
         </div>
       </Container>
 
-      {/* 過去の定例会セクション（Archive） */}
+      {/* Archive セクション（過去の定例会・過去の予算・市長記者会見） */}
       <div className="bg-mirai-surface-muted py-10">
         <Container>
-          <PastSessionsSection
-            sessions={pastSessions}
-            budgetSessions={budgetSessions}
-          />
-        </Container>
-      </div>
-
-      {/* 市長記者会見アーカイブセクション */}
-      <div className="bg-mirai-surface-muted py-10">
-        <Container>
-          <PressConferenceArchiveSection
-            pressConferences={[samplePressConference]}
-          />
+          <div className="flex flex-col gap-8">
+            <PastSessionsSection
+              sessions={pastSessions}
+              budgetSessions={budgetSessions}
+            />
+            <PressConferenceArchiveSection
+              pressConferences={[samplePressConference]}
+            />
+          </div>
         </Container>
       </div>
 
