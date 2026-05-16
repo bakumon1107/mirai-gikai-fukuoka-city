@@ -1,4 +1,5 @@
 import { ChevronRight } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import type { CouncilSession } from "@/features/council-sessions/shared/types";
@@ -27,6 +28,17 @@ export function PastSessionsSection({
 
   return (
     <section className="flex flex-col gap-8">
+      {/* Archive ヘッダー */}
+      <h2>
+        <Image
+          src="/icons/archive-typography.svg"
+          alt="Archive"
+          width={156}
+          height={36}
+          priority
+        />
+      </h2>
+
       {/* 過去の定例会 */}
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-1">
