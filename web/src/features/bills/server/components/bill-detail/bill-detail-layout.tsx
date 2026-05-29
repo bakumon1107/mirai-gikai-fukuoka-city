@@ -11,8 +11,10 @@ import { BillStatusProgress } from "../../../client/components/bill-detail/bill-
 import { FactionStanceCard } from "../../../client/components/bill-detail/faction-stance-card";
 import type { BillWithContent } from "../../../shared/types";
 import { BillShareButtons } from "../share/bill-share-buttons";
+import { getBillDiscussions } from "../../loaders/get-bill-discussions";
 import { BillContent } from "./bill-content";
 import { BillDetailHeader } from "./bill-detail-header";
+import { BillDiscussionsSection } from "./bill-discussions-section";
 
 interface BillDetailLayoutProps {
   bill: BillWithContent;
@@ -27,10 +29,13 @@ export async function BillDetailLayout({
     bill.status === "preparing" ||
     (bill.faction_stances && bill.faction_stances.length > 0);
 
-  const [interviewConfig, publicReportsResult] = await Promise.all([
-    getInterviewConfig(bill.id),
-    getPublicReportsByBillId(bill.id),
-  ]);
+  const [interviewConfig, publicReportsResult, discussions] = await Promise.all(
+    [
+      getInterviewConfig(bill.id),
+      getPublicReportsByBillId(bill.id),
+      getBillDiscussions(bill.id),
+    ]
+  );
 
   return (
     <div className="container mx-auto pb-8 max-w-4xl">
@@ -59,6 +64,14 @@ export async function BillDetailLayout({
           </div>
 
           <BillContent bill={bill} />
+          {discussions.length > 0 && (
+            <div className="my-8">
+              <BillDiscussionsSection
+                discussions={discussions}
+                overviewPoints={bill.discussion_overview_points ?? []}
+              />
+            </div>
+          )}
         </Container>
       </BillDetailClient>
 

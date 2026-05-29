@@ -18,16 +18,8 @@ type BudgetThemeAccordionProps = {
   themes: BudgetThemeWithInitiatives[];
 };
 
-function formatBudget(amount: number | null): string {
-  if (amount === null) return "";
-  if (amount >= 10000) {
-    return `${(amount / 10000).toFixed(1)}億円`;
-  }
-  return `${amount.toLocaleString()}万円`;
-}
-
 function ThemeItem({ theme }: { theme: BudgetThemeWithInitiatives }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
@@ -36,13 +28,8 @@ function ThemeItem({ theme }: { theme: BudgetThemeWithInitiatives }) {
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-mirai-text">{theme.title}</h3>
             {theme.ai_summary && (
-              <p className="mt-1 text-sm text-mirai-text-secondary line-clamp-2">
+              <p className="mt-1 text-sm text-mirai-text-secondary">
                 {theme.ai_summary}
-              </p>
-            )}
-            {theme.budget_amount !== null && theme.budget_amount !== 0 && (
-              <p className="mt-1 text-xs text-mirai-text-muted">
-                {formatBudget(theme.budget_amount)}
               </p>
             )}
           </div>
@@ -71,12 +58,6 @@ function ThemeItem({ theme }: { theme: BudgetThemeWithInitiatives }) {
                   }
                 />
               </div>
-              {initiative.budget_amount !== null &&
-                initiative.budget_amount !== 0 && (
-                  <p className="mt-0.5 text-xs text-mirai-text-muted">
-                    {formatBudget(initiative.budget_amount)}
-                  </p>
-                )}
               {initiative.description && (
                 <p className="mt-1 text-sm text-mirai-text-secondary">
                   {initiative.description}
