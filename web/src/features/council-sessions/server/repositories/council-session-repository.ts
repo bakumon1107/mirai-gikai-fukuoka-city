@@ -49,6 +49,72 @@ export async function findCurrentCouncilSession(
 }
 
 /**
+ * 全定例会を新しい順に取得（アクティブなものを除く、公開済み議案が1件以上あるもののみ）
+ */
+export async function findAllPastCouncilSessions(): Promise<CouncilSession[]> {
+  const supabase = createAdminClient();
+
+  // bills テーブルから published な議案がある会期IDを取得
+  const { data: billData, error: billError } = await supabase
+    .from("bills")
+    .select("council_session_id")
+    .eq("publish_status", "published");
+
+  if (billError) {
+    console.error("Failed to fetch published bills:", billError);
+    return [];
+  }
+
+  const sessionIds = [
+    ...new Set(
+      (billData ?? [])
+        .map((b) => b.council_session_id)
+        .filter((id): id is string => id !== null)
+    ),
+  ];
+
+  if (sessionIds.length === 0) {
+    return [];
+  }
+
+  const { data, error } = await supabase
+    .from("council_sessions")
+    .select("*")
+    .eq("is_active", false)
+    .in("id", sessionIds)
+    .order("start_date", { ascending: false });
+
+  if (error) {
+    console.error("Failed to fetch past council sessions:", error);
+    return [];
+  }
+
+  return (data ?? []) as CouncilSession[];
+}
+
+/**
+ * IDで定例会を取得
+ */
+export async function findCouncilSessionById(
+  id: string
+): Promise<CouncilSession | null> {
+  const supabase = createAdminClient();
+
+  const { data, error } = await supabase
+    .from("council_sessions")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Failed to fetch council session by id:", error);
+    return null;
+  }
+
+  return data;
+}
+
+/**
  * 指定日より前の直近の定例会を取得
  */
 export async function findPreviousCouncilSession(
