@@ -18,14 +18,23 @@
 
 ## コントリビューション
 
-### ブランチ構成
+### このリポジトリの構造
+
+このリポジトリはチームみらいが開発する「みらい議会」をベースにした **Fork（派生版）** です。
 
 ```
-kawasaki/develop      ← 上流（チームみらい川崎版）取り込み用
-fukuoka-city/develop  ← 福岡市版メインブランチ ★ PRのターゲットはここ
+【チームみらい（上流）】
+  kawasaki/develop
+       ↓ 良い更新があれば取り込む
+【このリポジトリ】bakumon1107/mirai-gikai-fukuoka-city
+  kawasaki/develop     ← 上流のコピー（コントリビューターは触らない）
+  fukuoka-city/develop ← 福岡市版の開発ブランチ ★ PRの送り先はここ
+       ↑ PR を送る
+【コントリビューター】your-name/mirai-gikai-fukuoka-city（Fork）
+  feature/your-feature  ← ブランチ名は自由
 ```
 
-**PR は必ず `fukuoka-city/develop` へ。** `kawasaki/develop` への PR は出さないでください。
+**`kawasaki/develop` はチームみらいの更新を取り込む専用レーンです。コントリビューターは `fukuoka-city/develop` だけ意識してください。**
 
 ### ローカル環境のセットアップ
 
@@ -58,28 +67,48 @@ pnpm dev   # web(:3000) + admin(:3001)
 
 ### 開発フロー
 
-```bash
-# 1. このリポジトリを Fork する（GitHub の「Fork」ボタン）
+#### Step 1 — このリポジトリを Fork する
 
-# 2. Fork したリポジトリをクローン
+GitHub 右上の「Fork」ボタンで自分のアカウントにコピーを作ります（`your-name/mirai-gikai-fukuoka-city`）。Fork 先があなたの作業場所になります。
+
+#### Step 2 — Fork したリポジトリをクローンしてセットアップ
+
+```bash
 git clone https://github.com/<your-name>/mirai-gikai-fukuoka-city.git
 cd mirai-gikai-fukuoka-city
-
-# 3. 上流リポジトリを upstream として登録
-git remote add upstream https://github.com/bakumon1107/mirai-gikai-fukuoka-city.git
-
-# 4. フィーチャーブランチを作成
-git checkout -b fukuoka-city/feature/your-feature-name
-
-# 5. 実装後、PR前に品質チェック（必須）
-pnpm lint && pnpm typecheck && pnpm test
-
-# 6. Fork 先に push して PR を作成
-git push origin fukuoka-city/feature/your-feature-name
-# GitHub 上で PR を作成 → base: bakumon1107/mirai-gikai-fukuoka-city, base branch: fukuoka-city/develop
+cp .env.example .env
+pnpm install
+npx supabase start && pnpm db:reset
 ```
 
-PR がマージされると、GitHub の Contributors リストに自動で名前が掲載されます。
+#### Step 3 — 作業ブランチを作って実装
+
+```bash
+git checkout -b feature/your-feature-name   # ブランチ名は自由
+# 実装する
+```
+
+#### Step 4 — 品質チェックを通してから push
+
+```bash
+pnpm lint && pnpm typecheck && pnpm test  # 全て通ること
+git push origin feature/your-feature-name
+```
+
+#### Step 5 — PR を作成する
+
+push すると GitHub 上に「Compare & pull request」ボタンが表示されます。
+それを押して、送り先を以下のように設定して PR を作成してください。
+
+| 項目 | 値 |
+|------|-----|
+| base repository | `bakumon1107/mirai-gikai-fukuoka-city` |
+| base branch | `fukuoka-city/develop` |
+
+> [!TIP]
+> 「Compare & pull request」ボタンを使うと base repository が自動で上記に設定されます。自分の Fork 内で PR を確認してから送ることも可能です。
+
+> PR がマージされると、GitHub の Contributors リストに自動で名前が掲載されます 🎉
 
 ### よく使うコマンド
 
