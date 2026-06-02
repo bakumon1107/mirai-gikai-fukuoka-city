@@ -1,6 +1,4 @@
 import "server-only";
-import { readdir, readFile } from "node:fs/promises";
-import path from "node:path";
 import type {
   JimuJigyoData,
   JimuJigyoRecord,
@@ -8,6 +6,17 @@ import type {
 import { calcFlags } from "../../shared/utils/flags";
 import { calcScore, slugify } from "../../shared/utils/score";
 import { getCurrentBudget } from "../../shared/utils/budget-accessor";
+import r6Fukushi from "../data/jimu-jigyo-r6-fukushi.json";
+import r6Hoken from "../data/jimu-jigyo-r6-hoken.json";
+import r6Juto from "../data/jimu-jigyo-r6-juto.json";
+import r6Kankyo from "../data/jimu-jigyo-r6-kankyo.json";
+import r6Keizai from "../data/jimu-jigyo-r6-keizai.json";
+import r6Kodomo from "../data/jimu-jigyo-r6-kodomo.json";
+import r6Kouwan from "../data/jimu-jigyo-r6-kouwan.json";
+import r6Kyouiku from "../data/jimu-jigyo-r6-kyouiku.json";
+import r6Nousui from "../data/jimu-jigyo-r6-nousui.json";
+import r6Shimin from "../data/jimu-jigyo-r6-shimin.json";
+import r6Somu from "../data/jimu-jigyo-r6-somu.json";
 
 // 年度メタデータ: 新年度追加時はここだけ変更する
 export const YEAR_METADATA = [
@@ -34,10 +43,23 @@ export function getYearLabel(year: JimuJigyoYear): string {
   );
 }
 
-// Next.js ビルド時の cwd は web/ パッケージディレクトリ
-const DATA_DIR = path.join(process.cwd(), "../packages/seed/fukuoka");
+// JSON データを静的 import でバンドル（Vercel ランタイムで fs は使えないため）
+const STATIC_DATA: Record<JimuJigyoYear, unknown[]> = {
+  r6: [
+    ...r6Fukushi,
+    ...r6Hoken,
+    ...r6Juto,
+    ...r6Kankyo,
+    ...r6Keizai,
+    ...r6Kodomo,
+    ...r6Kouwan,
+    ...r6Kyouiku,
+    ...r6Nousui,
+    ...r6Shimin,
+    ...r6Somu,
+  ],
+};
 
-/** JSON から読み込んだレコードの最低限の形を検証する */
 function sanitizeRecord(raw: unknown): JimuJigyoData | null {
   if (!raw || typeof raw !== "object") return null;
   const r = raw as Record<string, unknown>;
@@ -45,28 +67,6 @@ function sanitizeRecord(raw: unknown): JimuJigyoData | null {
   if (typeof r.所管局 !== "string" || !r.所管局) return null;
   if (typeof r.所管課 !== "string" || !r.所管課) return null;
   return r as unknown as JimuJigyoData;
-}
-
-async function loadAllJson(year: JimuJigyoYear): Promise<JimuJigyoData[]> {
-  const files = await readdir(DATA_DIR);
-  const jsonFiles = files.filter(
-    (f) => f.startsWith(`jimu-jigyo-${year}-`) && f.endsWith(".json")
-  );
-
-  const all: JimuJigyoData[] = [];
-  for (const file of jsonFiles) {
-    const raw = await readFile(path.join(DATA_DIR, file), "utf-8");
-    const parsed: unknown[] = JSON.parse(raw);
-    for (const item of parsed) {
-      const record = sanitizeRecord(item);
-      if (record) {
-        all.push(record);
-      } else {
-        console.warn(`[jimu-jigyo] Skipping invalid record in ${file}`);
-      }
-    }
-  }
-  return all;
 }
 
 function toRecord(data: JimuJigyoData, year: JimuJigyoYear): JimuJigyoRecord {
@@ -88,8 +88,11 @@ export async function loadJimuJigyoList(
   year: JimuJigyoYear
 ): Promise<JimuJigyoRecord[]> {
   if (cache.has(year)) return cache.get(year)!;
-  const raw = await loadAllJson(year);
-  const records = raw.map((d) => toRecord(d, year));
+  const raw = STATIC_DATA[year] ?? [];
+  const records = raw
+    .map(sanitizeRecord)
+    .filter((r): r is JimuJigyoData => r !== null)
+    .map((d) => toRecord(d, year));
   cache.set(year, records);
   return records;
 }
@@ -111,7 +114,7 @@ export async function getGradeSummary(
   return {
     total: records.length,
     counts,
-    averageScore: Math.round(totalScore / records.length),
+    averageScore: records.length ? Math.round(totalScore / records.length) : 0,
     totalBudgetManYen: Math.round(totalBudget / 100),
   };
 }
