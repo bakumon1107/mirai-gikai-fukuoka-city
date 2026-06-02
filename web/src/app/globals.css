@@ -103,6 +103,16 @@
   /* Gradient endpoints */
   --color-mirai-gradient-start: #dbd3f9;
   --color-mirai-gradient-end: #ede9fd;
+
+  /* 事務事業評価グレード */
+  --color-grade-a: #22c55e;
+  --color-grade-a-bg: #f0fdf4;
+  --color-grade-b: #3b82f6;
+  --color-grade-b-bg: #eff6ff;
+  --color-grade-c: #f59e0b;
+  --color-grade-c-bg: #fffbeb;
+  --color-grade-d: #ef4444;
+  --color-grade-d-bg: #fef2f2;
 }
 
 :root {
