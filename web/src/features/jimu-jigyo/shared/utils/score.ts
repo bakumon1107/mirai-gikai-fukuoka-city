@@ -5,6 +5,7 @@ import type {
   ScoreBreakdown,
   ScoreResult,
 } from "../types/jimu-jigyo";
+import { getCurrentBudget, getPrevBudget } from "./budget-accessor";
 
 const MISSING_VALUES = ["集計中", "調査未実施", "─", "設定なし", "-"];
 
@@ -90,11 +91,16 @@ export function calcTransparencyScore(data: JimuJigyoData): number {
   return Math.max(0, 20 - deduction) / 20;
 }
 
-export function calcBudgetScore(data: JimuJigyoData): number {
-  const r5 = data.事業費_千円?.R5決算?.歳出;
-  const r6 = data.事業費_千円?.R6決算見込?.歳出;
+export function calcBudgetScore(
+  data: JimuJigyoData,
+  year: string = "r6"
+): number {
+  const prev = getPrevBudget(data, year)?.歳出;
+  const curr = getCurrentBudget(data, year)?.歳出;
 
-  if (!r5 || !r6 || r5 === 0) return 0.5;
+  if (!prev || !curr || prev === 0) return 0.5;
+  const r5 = prev;
+  const r6 = curr;
 
   const change = (r6 - r5) / r5;
   if (change <= 0.05) return 1.0;
@@ -109,11 +115,14 @@ function scoreToGrade(score: number): Grade {
   return "D";
 }
 
-export function calcScore(data: JimuJigyoData): ScoreResult {
+export function calcScore(
+  data: JimuJigyoData,
+  year: string = "r6"
+): ScoreResult {
   const kpiCoeff = calcKpiScore(data.指標?.成果指標);
   const trendCoeff = calcTrendScore(data);
   const transparencyCoeff = calcTransparencyScore(data);
-  const budgetCoeff = calcBudgetScore(data);
+  const budgetCoeff = calcBudgetScore(data, year);
 
   const kpiScore = kpiCoeff * 40;
   const trendScore = trendCoeff * 30;
