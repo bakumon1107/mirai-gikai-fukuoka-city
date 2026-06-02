@@ -8,14 +8,33 @@ import type {
 import { calcFlags } from "../../shared/utils/flags";
 import { calcScore, slugify } from "../../shared/utils/score";
 
-const DATA_DIR = path.join(process.cwd(), "../../packages/seed/fukuoka");
+// 年度メタデータ: 新年度追加時はここだけ変更する
+export const YEAR_METADATA = [
+  {
+    slug: "r6",
+    label: "令和6年度（2024年度）",
+    description: "74事業の執行状況を評価",
+  },
+] as const;
 
-const AVAILABLE_YEARS = ["r6"] as const;
-export type JimuJigyoYear = (typeof AVAILABLE_YEARS)[number];
+export type JimuJigyoYear = (typeof YEAR_METADATA)[number]["slug"];
+
+export const AVAILABLE_YEARS = YEAR_METADATA.map(
+  (m) => m.slug
+) as JimuJigyoYear[];
 
 export function isValidYear(year: string): year is JimuJigyoYear {
-  return (AVAILABLE_YEARS as readonly string[]).includes(year);
+  return (AVAILABLE_YEARS as string[]).includes(year);
 }
+
+export function getYearLabel(year: JimuJigyoYear): string {
+  return (
+    YEAR_METADATA.find((m) => m.slug === year)?.label ?? year.toUpperCase()
+  );
+}
+
+// Next.js ビルド時の cwd は web/ パッケージディレクトリ
+const DATA_DIR = path.join(process.cwd(), "../packages/seed/fukuoka");
 
 async function loadAllJson(year: JimuJigyoYear): Promise<JimuJigyoData[]> {
   const files = await readdir(DATA_DIR);

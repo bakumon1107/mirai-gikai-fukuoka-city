@@ -127,7 +127,7 @@ export function JimuJigyoDetailPage({ record, basePath }: Props) {
                 label={kpi.内容}
                 r5Actual={kpi.実績?.R5}
                 r6Actual={kpi.実績?.R6}
-                r6Target={kpi.目標?.R6 ?? null}
+                r6Target={typeof kpi.目標?.R6 === "number" ? kpi.目標.R6 : null}
               />
 
               <KpiTrendChart kpi={kpi} />

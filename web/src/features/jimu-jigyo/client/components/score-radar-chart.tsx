@@ -37,8 +37,8 @@ export function ScoreRadarChart({ breakdown }: Props) {
         <PolarAngleAxis dataKey="subject" tick={{ fontSize: 11 }} />
         <Radar
           dataKey="value"
-          stroke="#3b82f6"
-          fill="#3b82f6"
+          stroke="var(--color-grade-b)"
+          fill="var(--color-grade-b)"
           fillOpacity={0.3}
         />
       </RadarChart>

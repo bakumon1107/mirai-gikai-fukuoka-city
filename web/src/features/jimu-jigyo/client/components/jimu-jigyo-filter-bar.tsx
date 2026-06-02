@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
+import { Button } from "@/components/ui/button";
 import type { Grade, WatchdogFlagType } from "../../shared/types/jimu-jigyo";
 
 const GRADES: Grade[] = ["A", "B", "C", "D"];
@@ -115,12 +116,13 @@ export function JimuJigyoFilterBar({ kyokuList }: Props) {
         <p className="text-xs text-mirai-text-muted mb-2">グレード</p>
         <div className="flex gap-2 flex-wrap">
           {GRADES.map((g) => (
-            <button
+            <Button
               key={g}
-              type="button"
+              variant="ghost"
+              size="sm"
               onClick={() => toggleMulti("grade", currentGrades, g)}
               className={`
-                px-3 py-1 rounded-full text-sm font-bold border transition-colors
+                rounded-full font-bold border transition-colors
                 ${
                   currentGrades.includes(g) || currentGrades.length === 0
                     ? `bg-grade-${g.toLowerCase()}-bg text-grade-${g.toLowerCase()} border-grade-${g.toLowerCase()}`
@@ -129,7 +131,7 @@ export function JimuJigyoFilterBar({ kyokuList }: Props) {
               `}
             >
               {g}
-            </button>
+            </Button>
           ))}
         </div>
       </div>
@@ -139,12 +141,13 @@ export function JimuJigyoFilterBar({ kyokuList }: Props) {
         <p className="text-xs text-mirai-text-muted mb-2">フラグ</p>
         <div className="flex gap-2 flex-wrap">
           {FLAGS.map((f) => (
-            <button
+            <Button
               key={f.type}
-              type="button"
+              variant="ghost"
+              size="sm"
               onClick={() => toggleMulti("flag", currentFlags, f.type)}
               className={`
-                inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs border transition-colors
+                rounded-full text-xs border transition-colors
                 ${
                   currentFlags.includes(f.type)
                     ? "bg-mirai-surface-warm border-mirai-border-light text-mirai-text"
@@ -153,53 +156,10 @@ export function JimuJigyoFilterBar({ kyokuList }: Props) {
               `}
             >
               {f.icon} {f.label}
-            </button>
+            </Button>
           ))}
         </div>
       </div>
     </div>
   );
-}
-
-export function filterAndSort(
-  records: import("../../shared/types/jimu-jigyo").JimuJigyoRecord[],
-  params: { kyoku: string; grade: string; flag: string; sort: string }
-) {
-  let filtered = [...records];
-
-  if (params.kyoku) {
-    filtered = filtered.filter((r) => r.所管局 === params.kyoku);
-  }
-
-  const grades = params.grade.split(",").filter(Boolean) as Grade[];
-  if (grades.length > 0) {
-    filtered = filtered.filter((r) => grades.includes(r.grade));
-  }
-
-  const flags = params.flag.split(",").filter(Boolean) as WatchdogFlagType[];
-  if (flags.length > 0) {
-    filtered = filtered.filter((r) =>
-      flags.every((f) => r.flags.some((rf) => rf.type === f))
-    );
-  }
-
-  switch (params.sort) {
-    case "score_desc":
-      filtered.sort((a, b) => b.score - a.score);
-      break;
-    case "name_asc":
-      filtered.sort((a, b) => a.事業名.localeCompare(b.事業名, "ja"));
-      break;
-    case "budget_desc":
-      filtered.sort(
-        (a, b) =>
-          (b.事業費_千円?.R6決算見込?.歳出 ?? 0) -
-          (a.事業費_千円?.R6決算見込?.歳出 ?? 0)
-      );
-      break;
-    default:
-      filtered.sort((a, b) => a.score - b.score);
-  }
-
-  return filtered;
 }

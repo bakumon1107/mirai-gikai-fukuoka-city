@@ -28,11 +28,12 @@ export type ScoreResult = {
 };
 
 // JSONデータの生の型
+// 目標値・実績値は数値の他に「120万人」「現状維持」「増加」等の文字列が含まれる
 export type KpiTarget = {
-  R5?: number | null;
-  R6?: number | null;
-  R7?: number | null;
-  最終年度目標値?: number | null;
+  R5?: number | string | null;
+  R6?: number | string | null;
+  R7?: number | string | null;
+  最終年度目標値?: number | string | null;
   最終年度?: string | null;
 };
 
