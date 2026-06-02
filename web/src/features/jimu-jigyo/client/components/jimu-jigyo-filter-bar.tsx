@@ -7,7 +7,7 @@ import type { Grade, WatchdogFlagType } from "../../shared/types/jimu-jigyo";
 
 const GRADES: Grade[] = ["A", "B", "C", "D"];
 const FLAGS: { type: WatchdogFlagType; label: string; icon: string }[] = [
-  { type: "low_target", label: "目標低すぎ", icon: "🎯" },
+  { type: "low_target", label: "達成率が過大", icon: "🎯" },
   { type: "missing_kpi", label: "KPI未設定", icon: "📊" },
   { type: "budget_surge", label: "予算急増", icon: "💰" },
   { type: "declining", label: "実績悪化", icon: "📉" },

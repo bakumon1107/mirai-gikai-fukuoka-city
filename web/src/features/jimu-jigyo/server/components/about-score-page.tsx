@@ -259,7 +259,7 @@ export function AboutScorePage() {
           {
             id: "low-target",
             icon: "🎯",
-            label: "目標が低すぎる",
+            label: "達成率が過大",
             desc: "達成率が150%超の指標が1つでもある場合に表示。行政が容易に達成できる目標を設定している可能性があります。",
           },
           {

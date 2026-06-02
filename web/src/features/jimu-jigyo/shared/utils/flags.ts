@@ -97,7 +97,7 @@ export function calcFlags(
   if (lowTarget.flagged) {
     flags.push({
       type: "low_target",
-      label: "目標が低すぎる",
+      label: "達成率が過大",
       detail: lowTarget.detail,
     });
   }
