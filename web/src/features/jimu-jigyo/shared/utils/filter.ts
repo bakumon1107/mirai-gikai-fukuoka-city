@@ -3,10 +3,22 @@ import type {
   JimuJigyoRecord,
   WatchdogFlagType,
 } from "../types/jimu-jigyo";
+import { getCurrentBudget } from "./budget-accessor";
+
+const VALID_GRADES: Grade[] = ["A", "B", "C", "D"];
+const VALID_FLAGS: WatchdogFlagType[] = [
+  "low_target",
+  "missing_kpi",
+  "budget_surge",
+  "declining",
+  "vague_goal",
+  "no_data",
+];
 
 export function filterAndSort(
   records: JimuJigyoRecord[],
-  params: { kyoku: string; grade: string; flag: string; sort: string }
+  params: { kyoku: string; grade: string; flag: string; sort: string },
+  year: string = "r6"
 ): JimuJigyoRecord[] {
   let filtered = [...records];
 
@@ -14,12 +26,18 @@ export function filterAndSort(
     filtered = filtered.filter((r) => r.所管局 === params.kyoku);
   }
 
-  const grades = params.grade.split(",").filter(Boolean) as Grade[];
+  const grades = params.grade
+    .split(",")
+    .filter((g): g is Grade => VALID_GRADES.includes(g as Grade));
   if (grades.length > 0) {
     filtered = filtered.filter((r) => grades.includes(r.grade));
   }
 
-  const flags = params.flag.split(",").filter(Boolean) as WatchdogFlagType[];
+  const flags = params.flag
+    .split(",")
+    .filter((f): f is WatchdogFlagType =>
+      VALID_FLAGS.includes(f as WatchdogFlagType)
+    );
   if (flags.length > 0) {
     filtered = filtered.filter((r) =>
       flags.every((f) => r.flags.some((rf) => rf.type === f))
@@ -36,8 +54,8 @@ export function filterAndSort(
     case "budget_desc":
       filtered.sort(
         (a, b) =>
-          (b.事業費_千円?.R6決算見込?.歳出 ?? 0) -
-          (a.事業費_千円?.R6決算見込?.歳出 ?? 0)
+          (getCurrentBudget(b, year)?.歳出 ?? 0) -
+          (getCurrentBudget(a, year)?.歳出 ?? 0)
       );
       break;
     default:

@@ -1,4 +1,5 @@
 import type { JimuJigyoData, KpiItem, WatchdogFlag } from "../types/jimu-jigyo";
+import { getCurrentBudget, getPrevBudget } from "./budget-accessor";
 
 const MISSING_VALUES = ["集計中", "調査未実施", "─", "設定なし", "-"];
 
@@ -30,18 +31,18 @@ function hasMissingKpi(kpis: KpiItem[]): boolean {
   return kpis.some((k) => isMissing(k.目標?.R6));
 }
 
-function hasBudgetSurge(data: JimuJigyoData): {
-  flagged: boolean;
-  detail: string;
-} {
-  const r5 = data.事業費_千円?.R5決算?.歳出;
-  const r6 = data.事業費_千円?.R6決算見込?.歳出;
+function hasBudgetSurge(
+  data: JimuJigyoData,
+  year: string
+): { flagged: boolean; detail: string } {
+  const r5 = getPrevBudget(data, year)?.歳出;
+  const r6 = getCurrentBudget(data, year)?.歳出;
   if (!r5 || !r6 || r5 === 0) return { flagged: false, detail: "" };
   const change = (r6 - r5) / r5;
   if (change > 0.3) {
     return {
       flagged: true,
-      detail: `R5:${r5.toLocaleString()}千円 → R6:${r6.toLocaleString()}千円（+${Math.round(change * 100)}%増）`,
+      detail: `前年:${r5.toLocaleString()}千円 → 当年:${r6.toLocaleString()}千円（+${Math.round(change * 100)}%増）`,
     };
   }
   return { flagged: false, detail: "" };
@@ -84,7 +85,10 @@ function hasNoData(kpis: KpiItem[]): boolean {
   return kpis.some((k) => isMissing(k.実績?.R6));
 }
 
-export function calcFlags(data: JimuJigyoData): WatchdogFlag[] {
+export function calcFlags(
+  data: JimuJigyoData,
+  year: string = "r6"
+): WatchdogFlag[] {
   const flags: WatchdogFlag[] = [];
   const seiskaKpis = data.指標?.成果指標 ?? [];
   const allKpis = [...(data.指標?.活動指標 ?? []), ...seiskaKpis];
@@ -106,7 +110,7 @@ export function calcFlags(data: JimuJigyoData): WatchdogFlag[] {
     });
   }
 
-  const budgetSurge = hasBudgetSurge(data);
+  const budgetSurge = hasBudgetSurge(data, year);
   if (budgetSurge.flagged) {
     flags.push({
       type: "budget_surge",

@@ -28,18 +28,22 @@ export async function JimuJigyoListPage({
   searchParams,
 }: Props) {
   const allRecords = await loadJimuJigyoList(year);
-  const summary = await getGradeSummary(allRecords);
+  const summary = await getGradeSummary(allRecords, year);
 
   const kyokuList = [...new Set(allRecords.map((r) => r.所管局))].sort((a, b) =>
     a.localeCompare(b, "ja")
   );
 
-  const filtered = filterAndSort(allRecords, {
-    kyoku: searchParams.kyoku ?? "",
-    grade: searchParams.grade ?? "",
-    flag: searchParams.flag ?? "",
-    sort: searchParams.sort ?? "score_asc",
-  });
+  const filtered = filterAndSort(
+    allRecords,
+    {
+      kyoku: searchParams.kyoku ?? "",
+      grade: searchParams.grade ?? "",
+      flag: searchParams.flag ?? "",
+      sort: searchParams.sort ?? "score_asc",
+    },
+    year
+  );
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 space-y-6">

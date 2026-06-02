@@ -7,6 +7,7 @@ import type {
 } from "../../shared/types/jimu-jigyo";
 import { calcFlags } from "../../shared/utils/flags";
 import { calcScore, slugify } from "../../shared/utils/score";
+import { getCurrentBudget } from "../../shared/utils/budget-accessor";
 
 // 年度メタデータ: 新年度追加時はここだけ変更する
 export const YEAR_METADATA = [
@@ -36,6 +37,16 @@ export function getYearLabel(year: JimuJigyoYear): string {
 // Next.js ビルド時の cwd は web/ パッケージディレクトリ
 const DATA_DIR = path.join(process.cwd(), "../packages/seed/fukuoka");
 
+/** JSON から読み込んだレコードの最低限の形を検証する */
+function sanitizeRecord(raw: unknown): JimuJigyoData | null {
+  if (!raw || typeof raw !== "object") return null;
+  const r = raw as Record<string, unknown>;
+  if (typeof r.事業名 !== "string" || !r.事業名) return null;
+  if (typeof r.所管局 !== "string" || !r.所管局) return null;
+  if (typeof r.所管課 !== "string" || !r.所管課) return null;
+  return r as unknown as JimuJigyoData;
+}
+
 async function loadAllJson(year: JimuJigyoYear): Promise<JimuJigyoData[]> {
   const files = await readdir(DATA_DIR);
   const jsonFiles = files.filter(
@@ -45,15 +56,22 @@ async function loadAllJson(year: JimuJigyoYear): Promise<JimuJigyoData[]> {
   const all: JimuJigyoData[] = [];
   for (const file of jsonFiles) {
     const raw = await readFile(path.join(DATA_DIR, file), "utf-8");
-    const records: JimuJigyoData[] = JSON.parse(raw);
-    all.push(...records);
+    const parsed: unknown[] = JSON.parse(raw);
+    for (const item of parsed) {
+      const record = sanitizeRecord(item);
+      if (record) {
+        all.push(record);
+      } else {
+        console.warn(`[jimu-jigyo] Skipping invalid record in ${file}`);
+      }
+    }
   }
   return all;
 }
 
-function toRecord(data: JimuJigyoData): JimuJigyoRecord {
-  const { score, grade, breakdown } = calcScore(data);
-  const flags = calcFlags(data);
+function toRecord(data: JimuJigyoData, year: JimuJigyoYear): JimuJigyoRecord {
+  const { score, grade, breakdown } = calcScore(data, year);
+  const flags = calcFlags(data, year);
   return {
     ...data,
     id: slugify(data.事業名),
@@ -71,12 +89,15 @@ export async function loadJimuJigyoList(
 ): Promise<JimuJigyoRecord[]> {
   if (cache.has(year)) return cache.get(year)!;
   const raw = await loadAllJson(year);
-  const records = raw.map(toRecord);
+  const records = raw.map((d) => toRecord(d, year));
   cache.set(year, records);
   return records;
 }
 
-export async function getGradeSummary(records: JimuJigyoRecord[]) {
+export async function getGradeSummary(
+  records: JimuJigyoRecord[],
+  year: JimuJigyoYear
+) {
   const counts = { A: 0, B: 0, C: 0, D: 0 };
   let totalBudget = 0;
   let totalScore = 0;
@@ -84,7 +105,7 @@ export async function getGradeSummary(records: JimuJigyoRecord[]) {
   for (const r of records) {
     counts[r.grade]++;
     totalScore += r.score;
-    totalBudget += r.事業費_千円?.R6決算見込?.歳出 ?? 0;
+    totalBudget += getCurrentBudget(r, year)?.歳出 ?? 0;
   }
 
   return {
