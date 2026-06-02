@@ -332,3 +332,8 @@
 button {
   cursor: pointer;
 }
+
+/* 動的幅を CSS 変数で受け取るプログレスバー */
+.progress-fill {
+  width: var(--progress-width, 0%);
+}

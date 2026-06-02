@@ -2,15 +2,14 @@ import "server-only";
 import Link from "next/link";
 import { GradeSummaryChart } from "../../client/components/grade-summary-chart";
 import { JimuJigyoCard } from "../../client/components/jimu-jigyo-card";
-import {
-  JimuJigyoFilterBar,
-  filterAndSort,
-} from "../../client/components/jimu-jigyo-filter-bar";
+import { filterAndSort } from "../../shared/utils/filter";
 import {
   type JimuJigyoYear,
   getGradeSummary,
+  getYearLabel,
   loadJimuJigyoList,
 } from "../loaders/load-jimu-jigyo-list";
+import { JimuJigyoFilterBar } from "../../client/components/jimu-jigyo-filter-bar";
 
 type Props = {
   year: JimuJigyoYear;
@@ -47,7 +46,7 @@ export async function JimuJigyoListPage({
       {/* ヘッダー */}
       <div>
         <h1 className="text-2xl font-bold text-mirai-text">
-          事務事業評価（令和6年度）
+          事務事業評価（{getYearLabel(year)}）
         </h1>
         <p className="text-sm text-mirai-text-secondary mt-1">
           福岡市 {summary.total}事業の執行状況を市民の目線で評価します。

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import type { WatchdogFlag } from "../../shared/types/jimu-jigyo";
 
 const FLAG_ICON: Record<string, string> = {
@@ -33,21 +34,28 @@ export function WatchdogFlagTooltip({ flags, compact = false }: Props) {
     <div className="flex flex-wrap gap-1">
       {flags.map((flag) => (
         <div key={flag.type} className="relative group">
-          <span
+          {/* フォーカス・ホバー両対応のトリガー */}
+          <Button
+            variant="ghost"
+            size="sm"
+            aria-label={`${flag.label}: ${flag.detail}`}
             className={`
-              inline-flex items-center gap-1 rounded-full border border-mirai-border
-              bg-mirai-surface-warm text-xs font-medium cursor-default
-              ${compact ? "px-1.5 py-0.5" : "px-2 py-1"}
+              rounded-full border border-mirai-border
+              bg-mirai-surface-warm text-xs font-medium
+              hover:bg-mirai-surface-warm focus-visible:ring-2
+              ${compact ? "px-1.5 py-0.5 h-auto" : "px-2 py-1 h-auto"}
             `}
           >
             <span>{FLAG_ICON[flag.type]}</span>
             {!compact && (
-              <span className="text-mirai-text-secondary">{flag.label}</span>
+              <span className="text-mirai-text-secondary ml-1">
+                {flag.label}
+              </span>
             )}
-          </span>
+          </Button>
 
-          {/* ツールチップ */}
-          <div className="absolute bottom-full left-0 mb-2 z-50 hidden group-hover:block w-64">
+          {/* ツールチップ: hover と focus-within で表示 */}
+          <div className="absolute bottom-full left-0 mb-2 z-50 w-64 hidden group-hover:block group-focus-within:block">
             <div className="bg-white border border-mirai-border rounded-lg shadow-lg p-3 text-xs">
               <p className="font-bold text-mirai-text mb-1">
                 {FLAG_ICON[flag.type]} {flag.label}

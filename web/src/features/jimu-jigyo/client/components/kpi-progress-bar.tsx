@@ -70,8 +70,10 @@ export function KpiProgressBar({
       {barWidth !== null && (
         <div className="relative h-2 rounded-full bg-mirai-surface-light overflow-hidden">
           <div
-            className={`absolute left-0 top-0 h-2 rounded-full transition-all ${barColor}`}
-            style={{ width: `${barWidth}%` }}
+            className={`absolute left-0 top-0 h-2 rounded-full transition-all progress-fill ${barColor}`}
+            style={
+              { "--progress-width": `${barWidth}%` } as React.CSSProperties
+            }
           />
         </div>
       )}

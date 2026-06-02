@@ -15,7 +15,7 @@ export function JimuJigyoCard({ record, basePath }: Props) {
   const r5Budget = record.事業費_千円?.R5決算?.歳出;
   const r6Budget = record.事業費_千円?.R6決算見込?.歳出;
   const budgetChange =
-    r5Budget && r6Budget && r5Budget > 0
+    r5Budget !== undefined && r6Budget !== undefined && r5Budget > 0
       ? ((r6Budget - r5Budget) / r5Budget) * 100
       : null;
 
@@ -61,7 +61,7 @@ export function JimuJigyoCard({ record, basePath }: Props) {
                 label={kpi.内容}
                 r5Actual={kpi.実績?.R5}
                 r6Actual={kpi.実績?.R6}
-                r6Target={kpi.目標?.R6 ?? null}
+                r6Target={typeof kpi.目標?.R6 === "number" ? kpi.目標.R6 : null}
               />
             ))}
           </div>

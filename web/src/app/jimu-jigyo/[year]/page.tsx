@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { JimuJigyoListPage } from "@/features/jimu-jigyo/server/components/jimu-jigyo-list-page";
-import { isValidYear } from "@/features/jimu-jigyo/server/loaders/load-jimu-jigyo-list";
-
-const YEAR_LABELS: Record<string, string> = {
-  r6: "令和6年度",
-};
+import {
+  YEAR_METADATA,
+  getYearLabel,
+  isValidYear,
+} from "@/features/jimu-jigyo/server/loaders/load-jimu-jigyo-list";
 
 type Props = {
   params: Promise<{ year: string }>;
@@ -18,16 +18,17 @@ type Props = {
   }>;
 };
 
-export async function generateStaticParams() {
-  return [{ year: "r6" }];
+export function generateStaticParams() {
+  return YEAR_METADATA.map((m) => ({ year: m.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { year } = await params;
-  const label = YEAR_LABELS[year] ?? year.toUpperCase();
+  if (!isValidYear(year)) return { title: "事務事業評価" };
   return {
-    title: `事務事業評価（${label}）`,
-    description: `福岡市の事務事業マネジメントシートをもとに、市民の視点で客観的に評価・可視化したページです。`,
+    title: `事務事業評価（${getYearLabel(year)}）`,
+    description:
+      "福岡市の事務事業マネジメントシートをもとに、市民の視点で客観的に評価・可視化したページです。",
   };
 }
 
