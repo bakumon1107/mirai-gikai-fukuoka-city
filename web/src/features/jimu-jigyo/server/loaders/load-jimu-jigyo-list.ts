@@ -10,10 +10,17 @@ import { calcScore, slugify } from "../../shared/utils/score";
 
 const DATA_DIR = path.join(process.cwd(), "../../packages/seed/fukuoka");
 
-async function loadAllJson(): Promise<JimuJigyoData[]> {
+const AVAILABLE_YEARS = ["r6"] as const;
+export type JimuJigyoYear = (typeof AVAILABLE_YEARS)[number];
+
+export function isValidYear(year: string): year is JimuJigyoYear {
+  return (AVAILABLE_YEARS as readonly string[]).includes(year);
+}
+
+async function loadAllJson(year: JimuJigyoYear): Promise<JimuJigyoData[]> {
   const files = await readdir(DATA_DIR);
   const jsonFiles = files.filter(
-    (f) => f.startsWith("jimu-jigyo-r6-") && f.endsWith(".json")
+    (f) => f.startsWith(`jimu-jigyo-${year}-`) && f.endsWith(".json")
   );
 
   const all: JimuJigyoData[] = [];
@@ -38,13 +45,16 @@ function toRecord(data: JimuJigyoData): JimuJigyoRecord {
   };
 }
 
-let cache: JimuJigyoRecord[] | null = null;
+const cache = new Map<JimuJigyoYear, JimuJigyoRecord[]>();
 
-export async function loadJimuJigyoList(): Promise<JimuJigyoRecord[]> {
-  if (cache) return cache;
-  const raw = await loadAllJson();
-  cache = raw.map(toRecord);
-  return cache;
+export async function loadJimuJigyoList(
+  year: JimuJigyoYear
+): Promise<JimuJigyoRecord[]> {
+  if (cache.has(year)) return cache.get(year)!;
+  const raw = await loadAllJson(year);
+  const records = raw.map(toRecord);
+  cache.set(year, records);
+  return records;
 }
 
 export async function getGradeSummary(records: JimuJigyoRecord[]) {

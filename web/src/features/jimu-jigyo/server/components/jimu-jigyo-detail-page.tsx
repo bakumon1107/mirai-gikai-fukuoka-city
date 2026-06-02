@@ -10,9 +10,10 @@ import type { JimuJigyoRecord } from "../../shared/types/jimu-jigyo";
 
 type Props = {
   record: JimuJigyoRecord;
+  basePath: string;
 };
 
-export function JimuJigyoDetailPage({ record }: Props) {
+export function JimuJigyoDetailPage({ record, basePath }: Props) {
   const r5Budget = record.事業費_千円?.R5決算?.歳出;
   const r6Budget = record.事業費_千円?.R6決算見込?.歳出;
   const budgetChange =
@@ -35,7 +36,7 @@ export function JimuJigyoDetailPage({ record }: Props) {
     <div className="max-w-4xl mx-auto px-4 py-8 space-y-8">
       {/* 戻るリンク */}
       <Link
-        href="/jimu-jigyo"
+        href={basePath}
         className="text-sm text-grade-b flex items-center gap-1"
       >
         ← 一覧に戻る

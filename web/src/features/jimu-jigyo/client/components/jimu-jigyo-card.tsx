@@ -8,9 +8,10 @@ import { WatchdogFlagTooltip } from "./watchdog-flag-tooltip";
 
 type Props = {
   record: JimuJigyoRecord;
+  basePath: string;
 };
 
-export function JimuJigyoCard({ record }: Props) {
+export function JimuJigyoCard({ record, basePath }: Props) {
   const r5Budget = record.事業費_千円?.R5決算?.歳出;
   const r6Budget = record.事業費_千円?.R6決算見込?.歳出;
   const budgetChange =
@@ -21,7 +22,7 @@ export function JimuJigyoCard({ record }: Props) {
   const kpis = record.指標?.成果指標?.slice(0, 2) ?? [];
 
   return (
-    <Link href={`/jimu-jigyo/${record.id}`} className="block group">
+    <Link href={`${basePath}/${record.id}`} className="block group">
       <div
         className={`
           bg-white rounded-lg border-l-4 ${gradeBorderColor(record.grade)}
