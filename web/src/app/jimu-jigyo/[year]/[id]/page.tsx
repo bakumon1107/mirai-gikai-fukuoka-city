@@ -5,19 +5,31 @@ import {
   getAllJimuJigyoIds,
   loadJimuJigyoDetail,
 } from "@/features/jimu-jigyo/server/loaders/load-jimu-jigyo-detail";
+import {
+  isValidYear,
+  type JimuJigyoYear,
+} from "@/features/jimu-jigyo/server/loaders/load-jimu-jigyo-list";
 
 type Props = {
-  params: Promise<{ id: string }>;
+  params: Promise<{ year: string; id: string }>;
 };
 
 export async function generateStaticParams() {
-  const ids = await getAllJimuJigyoIds();
-  return ids.map((id) => ({ id }));
+  const years: JimuJigyoYear[] = ["r6"];
+  const result = [];
+  for (const year of years) {
+    const ids = await getAllJimuJigyoIds(year);
+    for (const id of ids) {
+      result.push({ year, id });
+    }
+  }
+  return result;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = await params;
-  const record = await loadJimuJigyoDetail(id);
+  const { year, id } = await params;
+  if (!isValidYear(year)) return { title: "事業が見つかりません" };
+  const record = await loadJimuJigyoDetail(year, id);
   if (!record) return { title: "事業が見つかりません" };
   return {
     title: `${record.事業名} | 事務事業評価`,
@@ -26,8 +38,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function Page({ params }: Props) {
-  const { id } = await params;
-  const record = await loadJimuJigyoDetail(id);
+  const { year, id } = await params;
+  if (!isValidYear(year)) notFound();
+  const record = await loadJimuJigyoDetail(year, id);
   if (!record) notFound();
-  return <JimuJigyoDetailPage record={record} />;
+  return (
+    <JimuJigyoDetailPage record={record} basePath={`/jimu-jigyo/${year}`} />
+  );
 }

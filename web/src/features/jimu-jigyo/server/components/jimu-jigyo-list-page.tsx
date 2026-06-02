@@ -7,11 +7,14 @@ import {
   filterAndSort,
 } from "../../client/components/jimu-jigyo-filter-bar";
 import {
+  type JimuJigyoYear,
   getGradeSummary,
   loadJimuJigyoList,
 } from "../loaders/load-jimu-jigyo-list";
 
 type Props = {
+  year: JimuJigyoYear;
+  basePath: string;
   searchParams: {
     kyoku?: string;
     grade?: string;
@@ -20,8 +23,12 @@ type Props = {
   };
 };
 
-export async function JimuJigyoListPage({ searchParams }: Props) {
-  const allRecords = await loadJimuJigyoList();
+export async function JimuJigyoListPage({
+  year,
+  basePath,
+  searchParams,
+}: Props) {
+  const allRecords = await loadJimuJigyoList(year);
   const summary = await getGradeSummary(allRecords);
 
   const kyokuList = [...new Set(allRecords.map((r) => r.所管局))].sort((a, b) =>
@@ -84,7 +91,11 @@ export async function JimuJigyoListPage({ searchParams }: Props) {
       {filtered.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 pc:grid-cols-3 gap-4">
           {filtered.map((record) => (
-            <JimuJigyoCard key={record.id} record={record} />
+            <JimuJigyoCard
+              key={record.id}
+              record={record}
+              basePath={basePath}
+            />
           ))}
         </div>
       ) : (
