@@ -12,13 +12,17 @@ import { BillsByTagSection } from "@/features/bills/server/components/bills-by-t
 import { FeaturedBillSection } from "@/features/bills/server/components/featured-bill-section";
 import { loadHomeData } from "@/features/bills/server/loaders/load-home-data";
 import type { BillWithContent } from "@/features/bills/shared/types";
+import { getSessionsWithBudget } from "@/features/budget-overview/server/loaders/get-sessions-with-budget";
 import { HomeChatClient } from "@/features/chat/client/components/home-chat-client";
 import { CurrentCouncilSession } from "@/features/council-sessions/client/components/current-council-session";
 import { getActiveCouncilSession } from "@/features/council-sessions/server/loaders/get-active-council-session";
 import { getAllPastSessions } from "@/features/council-sessions/server/loaders/get-all-past-sessions";
 import { getCurrentCouncilSession } from "@/features/council-sessions/server/loaders/get-current-council-session";
-import { getSessionsWithBudget } from "@/features/budget-overview/server/loaders/get-sessions-with-budget";
 import { getLatestSessionWithQuestions } from "@/features/general-questions/server/loaders/get-latest-session-with-questions";
+import { PressConferenceArchiveSection } from "@/features/press-conferences/client/components/press-conference-archive-section";
+import { PressConferenceNoticeBanner } from "@/features/press-conferences/client/components/press-conference-notice-banner";
+import { getLatestPressConference } from "@/features/press-conferences/server/loaders/get-latest-press-conference";
+import { getPressConferences } from "@/features/press-conferences/server/loaders/get-press-conferences";
 import { getJapanTime } from "@/lib/utils/date";
 
 export default async function Home() {
@@ -32,6 +36,8 @@ export default async function Home() {
     pastSessions,
     budgetSessions,
     latestQuestionsSlug,
+    latestPressConference,
+    pressConferences,
   ] = await Promise.all([
     getCurrentCouncilSession(getJapanTime()),
     getActiveCouncilSession(),
@@ -39,6 +45,8 @@ export default async function Home() {
     getAllPastSessions(),
     getSessionsWithBudget(),
     getLatestSessionWithQuestions(),
+    getLatestPressConference(),
+    getPressConferences(),
   ]);
 
   const toBillChatContext = (bill: BillWithContent) => {
@@ -56,6 +64,15 @@ export default async function Home() {
 
       {/* 本日の定例会セクション */}
       <CurrentCouncilSession session={currentSession} />
+
+      {/* 市長記者会見バナー */}
+      {latestPressConference && (
+        <Container className="pt-4">
+          <PressConferenceNoticeBanner
+            pressConference={latestPressConference}
+          />
+        </Container>
+      )}
 
       {/* 予算概要バナー */}
       {activeSession?.slug && (
@@ -84,13 +101,18 @@ export default async function Home() {
         </div>
       </Container>
 
-      {/* 過去の定例会セクション（Archive） */}
+      {/* Archive セクション（過去の定例会・過去の予算・市長記者会見） */}
       <div className="bg-mirai-surface-muted py-10">
         <Container>
-          <PastSessionsSection
-            sessions={pastSessions}
-            budgetSessions={budgetSessions}
-          />
+          <div className="flex flex-col gap-8">
+            <PastSessionsSection
+              sessions={pastSessions}
+              budgetSessions={budgetSessions}
+            />
+            <PressConferenceArchiveSection
+              pressConferences={pressConferences}
+            />
+          </div>
         </Container>
       </div>
 

@@ -50,4 +50,52 @@ export interface JimuJigyoData {
     活動指標?: KpiItem[];
     成果指標?: KpiItem[];
   } | null;
+  基本計画?: {
+    事業区分?: string;
+    施策コード?: { 主?: string; 再?: string[] | null };
+    分野別目標?: string;
+    施策?: string;
+    事業群?: string;
+    施策成果指標?: string | null;
+  } | null;
+  行政運営プラン?: {
+    取組方針?: string | null;
+    推進項目?: string | null;
+  } | null;
 }
+
+// ─── 分析結果型 ───────────────────────────────────────────────
+
+export type ChangeDirection = "up" | "down" | "flat" | "unknown";
+
+export type KpiAnalysisResult = {
+  direction: ChangeDirection;
+  changeRate: number | null;
+  achievementRate: number | null;
+  text: string;
+};
+
+export type BudgetAnalysisResult = {
+  direction: ChangeDirection;
+  changeRate: number | null;
+  nextYearDirection: ChangeDirection;
+  nextYearChangeRate: number | null;
+  text: string;
+};
+
+export type EfficiencyAnalysisResult = {
+  direction: ChangeDirection;
+  changeRate: number | null;
+  text: string;
+};
+
+export type JimuJigyoAnalysis = {
+  kpi: KpiAnalysisResult;
+  budget: BudgetAnalysisResult;
+  efficiency: EfficiencyAnalysisResult;
+};
+
+export type JimuJigyoRecord = JimuJigyoData & {
+  id: string;
+  analysis: JimuJigyoAnalysis;
+};

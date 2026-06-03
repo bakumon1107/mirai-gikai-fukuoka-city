@@ -705,6 +705,115 @@ export type Database = {
           },
         ]
       }
+      press_conference_items: {
+        Row: {
+          created_at: string
+          id: string
+          item_type: string
+          order_index: number
+          press_conference_id: string
+          summary: string | null
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          item_type: string
+          order_index: number
+          press_conference_id: string
+          summary?: string | null
+          title: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          item_type?: string
+          order_index?: number
+          press_conference_id?: string
+          summary?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "press_conference_items_press_conference_id_fkey"
+            columns: ["press_conference_id"]
+            isOneToOne: false
+            referencedRelation: "press_conferences"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      press_conference_turns: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          order_index: number
+          press_conference_item_id: string
+          speaker: string
+          speaker_name: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          order_index: number
+          press_conference_item_id: string
+          speaker: string
+          speaker_name?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          order_index?: number
+          press_conference_item_id?: string
+          speaker?: string
+          speaker_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "press_conference_turns_press_conference_item_id_fkey"
+            columns: ["press_conference_item_id"]
+            isOneToOne: false
+            referencedRelation: "press_conference_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      press_conferences: {
+        Row: {
+          created_at: string
+          held_at: string
+          id: string
+          slug: string
+          status: string
+          title: string
+          updated_at: string
+          youtube_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          held_at: string
+          id?: string
+          slug: string
+          status?: string
+          title: string
+          updated_at?: string
+          youtube_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          held_at?: string
+          id?: string
+          slug?: string
+          status?: string
+          title?: string
+          updated_at?: string
+          youtube_url?: string | null
+        }
+        Relationships: []
+      }
       interview_configs: {
         Row: {
           bill_id: string
