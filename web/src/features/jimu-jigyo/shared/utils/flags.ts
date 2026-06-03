@@ -1,5 +1,6 @@
 import type { JimuJigyoData, KpiItem, WatchdogFlag } from "../types/jimu-jigyo";
 import { getCurrentBudget, getPrevBudget } from "./budget-accessor";
+import { calcBudgetScore } from "./score";
 
 // 「調査未実施」は定期調査年外のためMISSING扱いしない
 const MISSING_VALUES = ["集計中", "─", "設定なし", "-"];
@@ -40,13 +41,16 @@ function hasBudgetSurge(
   const r6 = getCurrentBudget(data, year)?.歳出;
   if (!r5 || !r6 || r5 === 0) return { flagged: false, detail: "" };
   const change = (r6 - r5) / r5;
-  if (change > 0.3) {
-    return {
-      flagged: true,
-      detail: `前年:${r5.toLocaleString()}千円 → 当年:${r6.toLocaleString()}千円（+${Math.round(change * 100)}%増）`,
-    };
-  }
-  return { flagged: false, detail: "" };
+  if (change <= 0.3) return { flagged: false, detail: "" };
+
+  // 予算30%超増加でも、コスト効率スコアが高い（KPIも相応に改善）なら非フラグ
+  const budgetScore = calcBudgetScore(data, year);
+  if (budgetScore >= 0.5) return { flagged: false, detail: "" };
+
+  return {
+    flagged: true,
+    detail: `前年:${r5.toLocaleString()}千円 → 当年:${r6.toLocaleString()}千円（+${Math.round(change * 100)}%増）かつKPI効率が悪化`,
+  };
 }
 
 function hasDeclining(kpis: KpiItem[]): { flagged: boolean; detail: string } {
