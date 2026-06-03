@@ -7,11 +7,18 @@ import type {
 } from "../types/jimu-jigyo";
 import { getCurrentBudget, getPrevBudget } from "./budget-accessor";
 
-const MISSING_VALUES = ["集計中", "調査未実施", "─", "設定なし", "-"];
+// 「調査未実施」は定期調査年でないだけで評価対象外（ペナルティなし）
+const MISSING_VALUES = ["集計中", "─", "設定なし", "-"];
 
 function isMissing(val: unknown): boolean {
   if (val === null || val === undefined) return true;
   if (typeof val === "string") return MISSING_VALUES.includes(val.trim());
+  return false;
+}
+
+/** 調査未実施: 定期調査年でないだけなのでスコアには影響させない */
+function isScheduledSurveyAbsent(val: unknown): boolean {
+  if (typeof val === "string") return val.trim() === "調査未実施";
   return false;
 }
 
@@ -20,6 +27,7 @@ function calcKpiItemCoeff(kpi: KpiItem, year: "R6"): number {
   const actual = kpi.実績?.[year];
   const target = kpi.目標?.[year];
 
+  if (isScheduledSurveyAbsent(actual)) return 0.5; // 調査未実施は中立（定期調査年外）
   if (isMissing(actual)) return 0.1;
   if (isMissing(target) || target === null || target === undefined) return 0.5;
 
@@ -73,7 +81,9 @@ export function calcTransparencyScore(data: JimuJigyoData): number {
   const primaryKpi = kpis[0];
   if (primaryKpi) {
     const r6actual = primaryKpi.実績?.R6;
-    if (isMissing(r6actual)) deduction += 5;
+    // 調査未実施は定期調査年外のため減点しない
+    if (!isScheduledSurveyAbsent(r6actual) && isMissing(r6actual))
+      deduction += 5;
   }
 
   const allKpis = [...(data.指標?.活動指標 ?? []), ...kpis];

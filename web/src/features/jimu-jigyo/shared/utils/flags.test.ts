@@ -113,7 +113,25 @@ describe("calcFlags", () => {
     expect(flags.some((f) => f.type === "vague_goal")).toBe(true);
   });
 
-  it("実績未集計でno_dataフラグ", () => {
+  it("集計中でno_dataフラグ", () => {
+    const data: JimuJigyoData = {
+      ...baseData,
+      指標: {
+        成果指標: [
+          {
+            内容: "割合",
+            目標: { R6: 100, 最終年度: "R8年度" },
+            実績: { R6: "集計中" },
+            達成率: {},
+          },
+        ],
+      },
+    };
+    const flags = calcFlags(data);
+    expect(flags.some((f) => f.type === "no_data")).toBe(true);
+  });
+
+  it("調査未実施はno_dataフラグにならない（定期調査年外）", () => {
     const data: JimuJigyoData = {
       ...baseData,
       指標: {
@@ -128,7 +146,7 @@ describe("calcFlags", () => {
       },
     };
     const flags = calcFlags(data);
-    expect(flags.some((f) => f.type === "no_data")).toBe(true);
+    expect(flags.some((f) => f.type === "no_data")).toBe(false);
   });
 
   it("複数フラグが同時に付く", () => {
