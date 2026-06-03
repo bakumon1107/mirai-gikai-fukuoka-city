@@ -10,12 +10,7 @@ import {
 
 type Props = {
   params: Promise<{ year: string }>;
-  searchParams: Promise<{
-    kyoku?: string;
-    grade?: string;
-    flag?: string;
-    sort?: string;
-  }>;
+  searchParams: Promise<{ kyoku?: string }>;
 };
 
 export function generateStaticParams() {
@@ -26,9 +21,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { year } = await params;
   if (!isValidYear(year)) return { title: "事務事業評価" };
   return {
-    title: `事務事業評価（${getYearLabel(year)}）`,
+    title: `事務事業分析（${getYearLabel(year)}）`,
     description:
-      "福岡市の事務事業マネジメントシートをもとに、市民の視点で客観的に評価・可視化したページです。",
+      "福岡市の事務事業マネジメントシートをもとに、KPI・予算・効率の動向を分析したページです。",
   };
 }
 
