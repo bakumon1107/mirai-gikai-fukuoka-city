@@ -16,7 +16,7 @@
     "paths": {
       "@mirai-gikai/supabase": ["../supabase/src/index.ts"],
       "@/features/jimu-jigyo/shared/types/jimu-jigyo": [
-        "../web/src/features/jimu-jigyo/shared/types/jimu-jigyo.ts"
+        "../../web/src/features/jimu-jigyo/shared/types/jimu-jigyo.ts"
       ]
     }
   },
