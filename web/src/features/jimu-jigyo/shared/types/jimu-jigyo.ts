@@ -1,32 +1,3 @@
-export type Grade = "A" | "B" | "C" | "D";
-
-export type WatchdogFlagType =
-  | "low_target"
-  | "missing_kpi"
-  | "budget_surge"
-  | "declining"
-  | "vague_goal"
-  | "no_data";
-
-export type WatchdogFlag = {
-  type: WatchdogFlagType;
-  label: string;
-  detail: string;
-};
-
-export type ScoreBreakdown = {
-  kpiScore: number;
-  trendScore: number;
-  transparencyScore: number;
-  budgetScore: number;
-};
-
-export type ScoreResult = {
-  score: number;
-  grade: Grade;
-  breakdown: ScoreBreakdown;
-};
-
 // JSONデータの生の型
 // 目標値・実績値は数値の他に「120万人」「現状維持」「増加」等の文字列が含まれる
 export type KpiTarget = {
@@ -97,11 +68,39 @@ export type JimuJigyoData = {
   };
 };
 
-// スコア計算後の完全なレコード型
+// ─── 分析結果型 ───────────────────────────────────────────────
+
+export type ChangeDirection = "up" | "down" | "flat" | "unknown";
+
+export type KpiAnalysisResult = {
+  direction: ChangeDirection;
+  changeRate: number | null; // 主要指標の R5→R6 実績変化率（小数）
+  achievementRate: number | null; // R6 達成率（%）
+  text: string; // 自動生成テキスト
+};
+
+export type BudgetAnalysisResult = {
+  direction: ChangeDirection;
+  changeRate: number | null; // R5→R6 歳出変化率（小数）
+  r7Direction: ChangeDirection; // R6→R7 予算方向
+  text: string;
+};
+
+export type EfficiencyAnalysisResult = {
+  direction: ChangeDirection;
+  changeRate: number | null; // 効率変化率（小数）
+  text: string;
+};
+
+export type JimuJigyoAnalysis = {
+  kpi: KpiAnalysisResult;
+  budget: BudgetAnalysisResult;
+  efficiency: EfficiencyAnalysisResult;
+};
+
+// ─── 完全なレコード型 ─────────────────────────────────────────
+
 export type JimuJigyoRecord = JimuJigyoData & {
   id: string;
-  score: number;
-  grade: Grade;
-  flags: WatchdogFlag[];
-  breakdown: ScoreBreakdown;
+  analysis: JimuJigyoAnalysis;
 };

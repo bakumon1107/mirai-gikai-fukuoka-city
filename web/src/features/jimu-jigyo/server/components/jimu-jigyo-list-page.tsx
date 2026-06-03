@@ -1,24 +1,18 @@
 import "server-only";
 import Link from "next/link";
-import { GradeSummaryChart } from "../../client/components/grade-summary-chart";
 import { JimuJigyoCard } from "../../client/components/jimu-jigyo-card";
-import { filterAndSort } from "../../shared/utils/filter";
 import {
   type JimuJigyoYear,
-  getGradeSummary,
+  getDirectionSummary,
   getYearLabel,
   loadJimuJigyoList,
 } from "../loaders/load-jimu-jigyo-list";
-import { JimuJigyoFilterBar } from "../../client/components/jimu-jigyo-filter-bar";
 
 type Props = {
   year: JimuJigyoYear;
   basePath: string;
   searchParams: {
     kyoku?: string;
-    grade?: string;
-    flag?: string;
-    sort?: string;
   };
 };
 
@@ -28,64 +22,93 @@ export async function JimuJigyoListPage({
   searchParams,
 }: Props) {
   const allRecords = await loadJimuJigyoList(year);
-  const summary = await getGradeSummary(allRecords, year);
+  const summary = await getDirectionSummary(allRecords, year);
 
+  // 局フィルター（絞り込みのみ、ソートなし）
   const kyokuList = [...new Set(allRecords.map((r) => r.所管局))].sort((a, b) =>
     a.localeCompare(b, "ja")
   );
-
-  const filtered = filterAndSort(
-    allRecords,
-    {
-      kyoku: searchParams.kyoku ?? "",
-      grade: searchParams.grade ?? "",
-      flag: searchParams.flag ?? "",
-      sort: searchParams.sort ?? "score_asc",
-    },
-    year
-  );
+  const filtered = searchParams.kyoku
+    ? allRecords.filter((r) => r.所管局 === searchParams.kyoku)
+    : allRecords;
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 space-y-6">
       {/* ヘッダー */}
       <div>
         <h1 className="text-2xl font-bold text-mirai-text">
-          事務事業評価（{getYearLabel(year)}）
+          事務事業 分析（{getYearLabel(year)}）
         </h1>
         <p className="text-sm text-mirai-text-secondary mt-1">
-          福岡市 {summary.total}事業の執行状況を市民の目線で評価します。
+          福岡市 {summary.total}事業のKPI・予算・効率の動向を分析します。
         </p>
         <div className="mt-2">
           <Link
             href="/jimu-jigyo/about-score"
             className="text-sm text-grade-b underline"
           >
-            このスコアの計算方法について →
+            この分析の見方について →
           </Link>
         </div>
-
-        {/* 監視者注意書き */}
         <div className="mt-4 p-3 bg-mirai-surface-warm border border-mirai-border rounded-lg text-xs text-mirai-text-secondary">
-          ⚠️ このページは市民・議員の視点から、行政の自己評価ではなく
-          <strong>客観的な指標達成状況</strong>を可視化したものです。
-          スコアは公開データをもとに算出した参考値であり、事業の優劣を断定するものではありません。
+          ⚠️
+          このページは公開データをもとにした参考分析です。事業の優劣を断定するものではありません。
         </div>
       </div>
 
-      {/* サマリーチャート */}
-      <GradeSummaryChart
-        counts={summary.counts}
-        total={summary.total}
-        averageScore={summary.averageScore}
-        totalBudgetManYen={summary.totalBudgetManYen}
-      />
+      {/* サマリー */}
+      <div className="bg-white border border-mirai-border rounded-lg p-4 grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+        <div>
+          <p className="text-2xl font-bold text-mirai-text">{summary.total}</p>
+          <p className="text-xs text-mirai-text-muted">総事業数</p>
+        </div>
+        <div>
+          <p className="text-2xl font-bold text-grade-a">{summary.kpiUp}</p>
+          <p className="text-xs text-mirai-text-muted">KPI改善</p>
+        </div>
+        <div>
+          <p className="text-2xl font-bold text-grade-d">{summary.kpiDown}</p>
+          <p className="text-xs text-mirai-text-muted">KPI悪化</p>
+        </div>
+        <div>
+          <p className="text-2xl font-bold text-mirai-text">
+            {summary.totalBudgetManYen.toLocaleString()}
+          </p>
+          <p className="text-xs text-mirai-text-muted">総事業費（万円）</p>
+        </div>
+      </div>
 
-      {/* フィルター */}
-      <JimuJigyoFilterBar kyokuList={kyokuList} />
+      {/* 局フィルター */}
+      <div className="flex flex-wrap gap-2 items-center">
+        <span className="text-xs text-mirai-text-muted">所管局:</span>
+        <Link
+          href={`${basePath}`}
+          className={`text-xs px-3 py-1 rounded-full border transition-colors ${
+            !searchParams.kyoku
+              ? "bg-mirai-text text-white border-mirai-text"
+              : "bg-white border-mirai-border text-mirai-text-secondary hover:border-mirai-text"
+          }`}
+        >
+          全て
+        </Link>
+        {kyokuList.map((k) => (
+          <Link
+            key={k}
+            href={`${basePath}?kyoku=${encodeURIComponent(k)}`}
+            className={`text-xs px-3 py-1 rounded-full border transition-colors ${
+              searchParams.kyoku === k
+                ? "bg-mirai-text text-white border-mirai-text"
+                : "bg-white border-mirai-border text-mirai-text-secondary hover:border-mirai-text"
+            }`}
+          >
+            {k}
+          </Link>
+        ))}
+      </div>
 
       {/* 件数 */}
       <p className="text-sm text-mirai-text-secondary">
-        {filtered.length}件表示
+        {filtered.length}件
         {filtered.length !== allRecords.length &&
           `（全${allRecords.length}件中）`}
       </p>
@@ -103,7 +126,7 @@ export async function JimuJigyoListPage({
         </div>
       ) : (
         <div className="text-center py-12 text-mirai-text-muted">
-          条件に合う事業が見つかりませんでした。
+          該当する事業が見つかりませんでした。
         </div>
       )}
     </div>

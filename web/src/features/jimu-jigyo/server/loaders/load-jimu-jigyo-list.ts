@@ -3,8 +3,9 @@ import type {
   JimuJigyoData,
   JimuJigyoRecord,
 } from "../../shared/types/jimu-jigyo";
-import { calcFlags } from "../../shared/utils/flags";
-import { calcScore, slugify } from "../../shared/utils/score";
+import { analyzeJimuJigyo } from "../../shared/utils/analysis";
+import { slugify } from "../../shared/utils/score";
+import r6Analysis from "../data/jimu-jigyo-r6-analysis.json";
 import { getCurrentBudget } from "../../shared/utils/budget-accessor";
 import r6Fukushi from "../data/jimu-jigyo-r6-fukushi.json";
 import r6Hoken from "../data/jimu-jigyo-r6-hoken.json";
@@ -23,7 +24,7 @@ export const YEAR_METADATA = [
   {
     slug: "r6",
     label: "令和6年度（2024年度）",
-    description: "74事業の執行状況を評価",
+    description: "74事業の執行状況を分析",
   },
 ] as const;
 
@@ -69,17 +70,16 @@ function sanitizeRecord(raw: unknown): JimuJigyoData | null {
   return r as unknown as JimuJigyoData;
 }
 
+/** 事前生成された AI 分析テキスト。なければルールベースにフォールバック */
+const ANALYSIS_DATA = r6Analysis as Record<string, unknown>;
+
 function toRecord(data: JimuJigyoData, year: JimuJigyoYear): JimuJigyoRecord {
-  const { score, grade, breakdown } = calcScore(data, year);
-  const flags = calcFlags(data, year);
-  return {
-    ...data,
-    id: slugify(data.事業名),
-    score,
-    grade,
-    breakdown,
-    flags,
-  };
+  const id = slugify(data.事業名);
+  const pregenerated = ANALYSIS_DATA[id];
+  const analysis = pregenerated
+    ? (pregenerated as JimuJigyoRecord["analysis"])
+    : analyzeJimuJigyo(data, year);
+  return { ...data, id, analysis };
 }
 
 const cache = new Map<JimuJigyoYear, JimuJigyoRecord[]>();
@@ -97,24 +97,58 @@ export async function loadJimuJigyoList(
   return records;
 }
 
-export async function getGradeSummary(
+export type DirectionSummary = {
+  total: number;
+  kpiUp: number;
+  kpiDown: number;
+  kpiFlat: number;
+  kpiUnknown: number;
+  budgetUp: number;
+  budgetDown: number;
+  efficiencyUp: number;
+  efficiencyDown: number;
+  totalBudgetManYen: number;
+};
+
+export async function getDirectionSummary(
   records: JimuJigyoRecord[],
   year: JimuJigyoYear
-) {
-  const counts = { A: 0, B: 0, C: 0, D: 0 };
+): Promise<DirectionSummary> {
   let totalBudget = 0;
-  let totalScore = 0;
+  let kpiUp = 0,
+    kpiDown = 0,
+    kpiFlat = 0,
+    kpiUnknown = 0;
+  let budgetUp = 0,
+    budgetDown = 0;
+  let efficiencyUp = 0,
+    efficiencyDown = 0;
 
   for (const r of records) {
-    counts[r.grade]++;
-    totalScore += r.score;
     totalBudget += getCurrentBudget(r, year)?.歳出 ?? 0;
+    const kd = r.analysis.kpi.direction;
+    if (kd === "up") kpiUp++;
+    else if (kd === "down") kpiDown++;
+    else if (kd === "flat") kpiFlat++;
+    else kpiUnknown++;
+
+    if (r.analysis.budget.direction === "up") budgetUp++;
+    else if (r.analysis.budget.direction === "down") budgetDown++;
+
+    if (r.analysis.efficiency.direction === "up") efficiencyUp++;
+    else if (r.analysis.efficiency.direction === "down") efficiencyDown++;
   }
 
   return {
     total: records.length,
-    counts,
-    averageScore: records.length ? Math.round(totalScore / records.length) : 0,
+    kpiUp,
+    kpiDown,
+    kpiFlat,
+    kpiUnknown,
+    budgetUp,
+    budgetDown,
+    efficiencyUp,
+    efficiencyDown,
     totalBudgetManYen: Math.round(totalBudget / 100),
   };
 }
