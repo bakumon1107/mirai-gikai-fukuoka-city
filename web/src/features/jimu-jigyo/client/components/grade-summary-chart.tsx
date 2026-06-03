@@ -1,6 +1,6 @@
 "use client";
 
-import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+import { Pie, PieChart, Tooltip } from "recharts";
 
 type GradeCounts = { A: number; B: number; C: number; D: number };
 
@@ -12,10 +12,10 @@ type Props = {
 };
 
 const GRADE_COLORS = {
-  A: "#22c55e",
-  B: "#3b82f6",
-  C: "#f59e0b",
-  D: "#ef4444",
+  A: "var(--color-grade-a)",
+  B: "var(--color-grade-b)",
+  C: "var(--color-grade-c)",
+  D: "var(--color-grade-d)",
 };
 
 export function GradeSummaryChart({
@@ -25,41 +25,32 @@ export function GradeSummaryChart({
   totalBudgetManYen,
 }: Props) {
   const data = [
-    { name: "A", count: counts.A },
-    { name: "B", count: counts.B },
-    { name: "C", count: counts.C },
-    { name: "D", count: counts.D },
+    { name: "A", count: counts.A, fill: GRADE_COLORS.A },
+    { name: "B", count: counts.B, fill: GRADE_COLORS.B },
+    { name: "C", count: counts.C, fill: GRADE_COLORS.C },
+    { name: "D", count: counts.D, fill: GRADE_COLORS.D },
   ].filter((d) => d.count > 0);
 
   return (
     <div className="bg-white border border-mirai-border rounded-lg p-4">
       <div className="flex flex-col md:flex-row items-center gap-6">
-        {/* ドーナツチャート */}
+        {/* ドーナツチャート: 固定サイズで SSR 時の width=-1 を回避 */}
         <div className="w-40 h-40 shrink-0">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={data}
-                dataKey="count"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                innerRadius={45}
-                outerRadius={65}
-                strokeWidth={0}
-              >
-                {data.map((entry) => (
-                  <Cell
-                    key={entry.name}
-                    fill={GRADE_COLORS[entry.name as keyof typeof GRADE_COLORS]}
-                  />
-                ))}
-              </Pie>
-              <Tooltip
-                formatter={(value, name) => [`${value}件`, `グレード${name}`]}
-              />
-            </PieChart>
-          </ResponsiveContainer>
+          <PieChart width={160} height={160}>
+            <Pie
+              data={data}
+              dataKey="count"
+              nameKey="name"
+              cx="50%"
+              cy="50%"
+              innerRadius={45}
+              outerRadius={65}
+              strokeWidth={0}
+            />
+            <Tooltip
+              formatter={(value, name) => [`${value}件`, `グレード${name}`]}
+            />
+          </PieChart>
         </div>
 
         {/* サマリー数値 */}
