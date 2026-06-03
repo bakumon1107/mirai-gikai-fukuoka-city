@@ -51,11 +51,13 @@ function KpiEfficiencyBadge({
 function BudgetBadge({
   direction,
   changeRate,
-  r7Direction,
+  nextYearDirection,
+  nextYearChangeRate,
 }: {
   direction: ChangeDirection;
   changeRate: number | null;
-  r7Direction: ChangeDirection;
+  nextYearDirection: ChangeDirection;
+  nextYearChangeRate: number | null;
 }) {
   // 予算は +が青・-が赤（良悪の判断なし、変化方向のみ）
   const isUp = direction === "up";
@@ -78,18 +80,18 @@ function BudgetBadge({
       ? `${changeRate >= 0 ? "+" : ""}${(changeRate * 100).toFixed(1)}%`
       : "";
 
-  const r7Icon =
-    r7Direction === "up"
+  const nextYearIcon =
+    nextYearDirection === "up"
       ? "↑"
-      : r7Direction === "down"
+      : nextYearDirection === "down"
         ? "↓"
-        : r7Direction === "flat"
+        : nextYearDirection === "flat"
           ? "→"
           : null;
-  const r7Color =
-    r7Direction === "up"
+  const nextYearColor =
+    nextYearDirection === "up"
       ? "text-grade-b"
-      : r7Direction === "down"
+      : nextYearDirection === "down"
         ? "text-grade-d"
         : "text-mirai-text-muted";
 
@@ -99,9 +101,16 @@ function BudgetBadge({
       <span className={`font-bold ${color}`}>{icon}</span>
       <span className={color}>{label}</span>
       {rateText && <span className="text-mirai-text-muted">({rateText})</span>}
-      {r7Icon && (
+      {nextYearIcon && (
         <span className="text-mirai-text-muted">
-          · 次年度<span className={`font-bold ${r7Color}`}>{r7Icon}</span>
+          · 次年度
+          <span className={`font-bold ${nextYearColor}`}>{nextYearIcon}</span>
+          {nextYearChangeRate !== null && (
+            <span className={nextYearColor}>
+              {nextYearChangeRate >= 0 ? "+" : ""}
+              {(nextYearChangeRate * 100).toFixed(1)}%
+            </span>
+          )}
         </span>
       )}
     </div>
@@ -138,7 +147,8 @@ export function JimuJigyoCard({ record, basePath }: Props) {
           <BudgetBadge
             direction={analysis.budget.direction}
             changeRate={analysis.budget.changeRate}
-            r7Direction={analysis.budget.r7Direction}
+            nextYearDirection={analysis.budget.nextYearDirection}
+            nextYearChangeRate={analysis.budget.nextYearChangeRate}
           />
           <KpiEfficiencyBadge
             direction={analysis.efficiency.direction}
