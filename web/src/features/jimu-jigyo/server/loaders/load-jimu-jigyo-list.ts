@@ -5,6 +5,7 @@ import type {
 } from "../../shared/types/jimu-jigyo";
 import { analyzeJimuJigyo } from "../../shared/utils/analysis";
 import { slugify } from "../../shared/utils/score";
+import r6Analysis from "../data/jimu-jigyo-r6-analysis.json";
 import { getCurrentBudget } from "../../shared/utils/budget-accessor";
 import r6Fukushi from "../data/jimu-jigyo-r6-fukushi.json";
 import r6Hoken from "../data/jimu-jigyo-r6-hoken.json";
@@ -69,12 +70,16 @@ function sanitizeRecord(raw: unknown): JimuJigyoData | null {
   return r as unknown as JimuJigyoData;
 }
 
+/** 事前生成された AI 分析テキスト。なければルールベースにフォールバック */
+const ANALYSIS_DATA = r6Analysis as Record<string, unknown>;
+
 function toRecord(data: JimuJigyoData, year: JimuJigyoYear): JimuJigyoRecord {
-  return {
-    ...data,
-    id: slugify(data.事業名),
-    analysis: analyzeJimuJigyo(data, year),
-  };
+  const id = slugify(data.事業名);
+  const pregenerated = ANALYSIS_DATA[id];
+  const analysis = pregenerated
+    ? (pregenerated as JimuJigyoRecord["analysis"])
+    : analyzeJimuJigyo(data, year);
+  return { ...data, id, analysis };
 }
 
 const cache = new Map<JimuJigyoYear, JimuJigyoRecord[]>();
