@@ -45,7 +45,8 @@ function hasBudgetSurge(
 
   // 予算30%超増加でも、コスト効率スコアが高い（KPIも相応に改善）なら非フラグ
   const budgetScore = calcBudgetScore(data, year);
-  if (budgetScore >= 0.5) return { flagged: false, detail: "" };
+  // 0.75 = 効率が維持または改善（0〜+10%以上）。0.5は-10%まで悪化を許容するため除外
+  if (budgetScore >= 0.75) return { flagged: false, detail: "" };
 
   return {
     flagged: true,
@@ -147,7 +148,7 @@ export function calcFlags(
       type: "no_data",
       label: "データ未集計",
       detail:
-        "成果指標の実績値が「集計中」のため、現時点では評価に必要なデータが揃っていません。",
+        "成果指標の実績値が未設定または集計中のため、現時点では評価に必要なデータが揃っていません。",
     });
   }
 
