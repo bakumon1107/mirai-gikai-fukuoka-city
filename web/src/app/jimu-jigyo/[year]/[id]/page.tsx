@@ -10,6 +10,9 @@ import {
   type JimuJigyoYear,
 } from "@/features/jimu-jigyo/server/loaders/load-jimu-jigyo-list";
 
+// generateStaticParams が空でも動的レンダリングにフォールバックする
+export const dynamicParams = true;
+
 type Props = {
   params: Promise<{ year: string; id: string }>;
 };
