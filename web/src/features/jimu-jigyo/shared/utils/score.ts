@@ -45,12 +45,14 @@ function calcKpiItemCoeff(kpi: KpiItem, year: "R6"): number {
   const target = kpi.目標?.[year];
 
   if (isScheduledSurveyAbsent(actual)) return 0.5;
-  if (isMissing(actual)) return 0.1;
 
-  // 達成率テキスト（"達成"/"未達成"）で判定
-  const rateText = kpi.達成率?.[year];
+  // 達成率テキスト（"達成"/"未達成"）を実績の数値チェックより先に判定
+  // ※ 実績が null/undefined でも達成率テキストがあれば評価できる
+  const rateText = kpi.達成率?.[year]?.trim();
   if (rateText === "達成") return 1.0;
   if (rateText === "未達成") return 0.4;
+
+  if (isMissing(actual)) return 0.1;
 
   if (isMissing(target) || target === null || target === undefined) return 0.5;
 
@@ -109,14 +111,17 @@ export function calcTargetAmbitionScore(data: JimuJigyoData): number {
     const r6Target = kpi.目標?.R6;
     const r5Actual = kpi.実績?.R5;
 
-    // 目標値や前年実績が数値でない場合は中立
-    const t = Number(r6Target);
-    const prev = Number(r5Actual);
+    // 空文字・空白も未設定として中立扱い（Number("") = 0 を防ぐ）
+    const normalizedTarget =
+      typeof r6Target === "string" ? r6Target.trim() : r6Target;
+    const normalizedPrev =
+      typeof r5Actual === "string" ? r5Actual.trim() : r5Actual;
+
+    const t = Number(normalizedTarget);
+    const prev = Number(normalizedPrev);
     if (
-      r6Target === null ||
-      r6Target === undefined ||
-      r5Actual === null ||
-      r5Actual === undefined ||
+      !normalizedTarget ||
+      !normalizedPrev ||
       Number.isNaN(t) ||
       Number.isNaN(prev) ||
       prev === 0
@@ -185,12 +190,15 @@ export function calcBudgetScore(
 
 // ─── コスト効率サマリー（詳細ページ表示用） ─────────────────
 
+/** フィールド名は年度非依存（prev=前年度, curr=当年度）*/
 export type KpiEfficiency = {
   label: string;
-  r5Rate: number | null;
-  r6Rate: number | null;
-  r5Budget: number | null;
-  r6Budget: number | null;
+  prevRate: number | null;
+  currRate: number | null;
+  prevBudget: number | null;
+  currBudget: number | null;
+  prevYearLabel: string; // e.g. "R5"
+  currYearLabel: string; // e.g. "R6"
   efficiencyChangeRate: number | null;
 };
 
@@ -199,36 +207,38 @@ export function calcKpiEfficiencies(
   year: string = "r6"
 ): KpiEfficiency[] {
   const kpis = data.指標?.成果指標 ?? [];
-  const prevBudget = getPrevBudget(data, year)?.歳出 ?? null;
-  const currBudget = getCurrentBudget(data, year)?.歳出 ?? null;
+  const prevBudgetVal = getPrevBudget(data, year)?.歳出 ?? null;
+  const currBudgetVal = getCurrentBudget(data, year)?.歳出 ?? null;
   const yearNum = Number(year.replace(/^r/i, ""));
   const prevKey = `R${yearNum - 1}` as keyof KpiAchievement;
   const currKey = `R${yearNum}` as keyof KpiAchievement;
 
   return kpis.map((kpi) => {
-    const r5Rate = parseAchievementRate(kpi.達成率?.[prevKey]);
-    const r6Rate = parseAchievementRate(kpi.達成率?.[currKey]);
+    const prevRate = parseAchievementRate(kpi.達成率?.[prevKey]);
+    const currRate = parseAchievementRate(kpi.達成率?.[currKey]);
 
     let efficiencyChangeRate: number | null = null;
     if (
-      r5Rate !== null &&
-      r6Rate !== null &&
-      prevBudget !== null &&
-      currBudget !== null &&
-      prevBudget > 0 &&
-      r5Rate > 0
+      prevRate !== null &&
+      currRate !== null &&
+      prevBudgetVal !== null &&
+      currBudgetVal !== null &&
+      prevBudgetVal > 0 &&
+      prevRate > 0
     ) {
-      const r5Eff = r5Rate / prevBudget;
-      const r6Eff = r6Rate / currBudget;
-      efficiencyChangeRate = (r6Eff - r5Eff) / r5Eff;
+      const prevEff = prevRate / prevBudgetVal;
+      const currEff = currRate / currBudgetVal;
+      efficiencyChangeRate = (currEff - prevEff) / prevEff;
     }
 
     return {
       label: kpi.内容,
-      r5Rate,
-      r6Rate,
-      r5Budget: prevBudget,
-      r6Budget: currBudget,
+      prevRate,
+      currRate,
+      prevBudget: prevBudgetVal,
+      currBudget: currBudgetVal,
+      prevYearLabel: `R${yearNum - 1}`,
+      currYearLabel: `R${yearNum}`,
       efficiencyChangeRate,
     };
   });
