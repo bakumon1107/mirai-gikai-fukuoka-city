@@ -1,11 +1,8 @@
-import "server-only";
 import { createAdminClient } from "@mirai-gikai/supabase";
 import type {
   JimuJigyoData,
   KpiItem,
-  KpiActual,
-  KpiTarget,
-  KpiAchievement,
+  ReiwaYear,
 } from "@/features/jimu-jigyo/shared/types/jimu-jigyo";
 import * as fs from "fs";
 import * as path from "path";
@@ -217,10 +214,10 @@ async function importKpiData(
     }
 
     // KPI 実績を登録
-    const targetValue = kpi.目標?.[`R${fiscalYear - 2018}` as keyof KpiTarget];
-    const actualValue = kpi.実績?.[`R${fiscalYear - 2018}` as keyof KpiActual];
-    const achievementRate =
-      kpi.達成率?.[`R${fiscalYear - 2018}` as keyof KpiAchievement];
+    const reiwaKey = `R${fiscalYear - 2018}` as ReiwaYear;
+    const targetValue = kpi.目標?.[reiwaKey];
+    const actualValue = kpi.実績?.[reiwaKey];
+    const achievementRate = kpi.達成率?.[reiwaKey];
 
     const { error: resultError } = await supabase
       .from("jimu_jigyo_kpi_results")
@@ -234,7 +231,7 @@ async function importKpiData(
           actual_value: actualValue
             ? JSON.stringify(actualValue)
             : null,
-          achievement_rate: achievementRate || null,
+          achievement_rate: achievementRate != null ? String(achievementRate) : null,
         },
         {
           onConflict: "kpi_item_id,fiscal_year",
@@ -282,7 +279,6 @@ async function importBureauFile(
         );
 
         let itemId: string;
-        let isNew = false;
 
         if (existingItem) {
           // 既存事業の場合、マッチングログを記録
@@ -337,42 +333,41 @@ async function importBureauFile(
           }
 
           itemId = newItem[0].id;
-          isNew = true;
           totalInserted++;
         }
 
         // 年度別データ（予算）を登録
         const budgetData = item.事業費_千円;
         if (budgetData) {
-          let expenditure = 0;
-          let specificRevenue = 0;
-          let generalRevenue = 0;
-          let expenditureType = "決算見込";
+          const reiwaYear = `R${fiscalYear - 2018}` as ReiwaYear;
+          const nextReiwaYear = `R${fiscalYear - 2017}` as ReiwaYear;
 
-          if (fiscalYear === 2024 && budgetData.R6決算見込) {
-            expenditure = budgetData.R6決算見込.歳出;
-            specificRevenue = budgetData.R6決算見込.特定財源;
-            generalRevenue = budgetData.R6決算見込.一般財源;
-          } else if (fiscalYear === 2023 && budgetData.R5決算) {
-            expenditure = budgetData.R5決算.歳出;
-            specificRevenue = budgetData.R5決算.特定財源;
-            generalRevenue = budgetData.R5決算.一般財源;
-            expenditureType = "決算";
-          }
+          // 会計区分なし（合算）を優先、なければ最初のエントリを使用
+          const entry =
+            budgetData.明細.find(
+              (m) => m.年度 === reiwaYear && m.会計区分 === null
+            ) ?? budgetData.明細.find((m) => m.年度 === reiwaYear);
+          const nextYearEntry =
+            budgetData.明細.find(
+              (m) =>
+                m.年度 === nextReiwaYear &&
+                m.種別 === "予算" &&
+                m.会計区分 === null
+            ) ??
+            budgetData.明細.find(
+              (m) => m.年度 === nextReiwaYear && m.種別 === "予算"
+            );
 
-          if (expenditure > 0) {
+          if (entry && entry.歳出 > 0) {
             await supabase.from("jimu_jigyo_fiscal_years").upsert(
               {
                 item_id: itemId,
                 fiscal_year: fiscalYear,
-                expenditure_amount: expenditure,
-                expenditure_type: expenditureType,
-                specific_revenue: specificRevenue,
-                general_revenue: generalRevenue,
-                next_year_budget:
-                  fiscalYear === 2024
-                    ? budgetData.R7予算?.歳出
-                    : null,
+                expenditure_amount: entry.歳出,
+                expenditure_type: entry.種別,
+                specific_revenue: entry.特定財源,
+                general_revenue: entry.一般財源,
+                next_year_budget: nextYearEntry?.歳出 ?? null,
                 data_source: "福岡市HP",
                 imported_by: "import-r6-data-json",
               },
@@ -385,23 +380,8 @@ async function importBureauFile(
 
         // KPI データを登録
         if (item.指標) {
-          // 活動指標
-          const activityInserted = await importKpiData(
-            supabase,
-            itemId,
-            item.指標.活動指標,
-            "activity",
-            fiscalYear
-          );
-
-          // 成果指標
-          const achievementInserted = await importKpiData(
-            supabase,
-            itemId,
-            item.指標.成果指標,
-            "achievement",
-            fiscalYear
-          );
+          await importKpiData(supabase, itemId, item.指標.活動指標, "activity", fiscalYear);
+          await importKpiData(supabase, itemId, item.指標.成果指標, "achievement", fiscalYear);
         }
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error);

@@ -1,4 +1,3 @@
-import "server-only";
 import { createAdminClient } from "@mirai-gikai/supabase";
 import type { JimuJigyoData } from "@/features/jimu-jigyo/shared/types/jimu-jigyo";
 import * as fs from "fs";
@@ -17,16 +16,6 @@ import * as path from "path";
  * 3. データマッチングログを記録
  */
 
-interface R5ExtractedData {
-  item_name: string;
-  bureau_code: string;
-  department_code: string;
-  budget?: {
-    expenditure_amount: number;
-    specific_revenue: number;
-    general_revenue: number;
-  };
-}
 
 const BUREAU_MAPPING: Record<string, { code: string; name: string }> = {
   "jimu-jigyo-r6-somu": { code: "somu", name: "総務企画局" },
@@ -86,7 +75,7 @@ async function linkR5DataToExistingItem(
 async function importR5Data(
   supabase: ReturnType<typeof createAdminClient>,
   bureauCode: string,
-  bureauName: string,
+  _bureauName: string,
   items: JimuJigyoData[]
 ): Promise<{
   inserted: number;
@@ -99,8 +88,15 @@ async function importR5Data(
 
   for (const item of items) {
     try {
-      // R5データが存在するか確認
-      if (!item.事業費_千円?.R5決算) {
+      // R5データが存在するか確認（会計区分なし優先）
+      const r5Entry =
+        item.事業費_千円?.明細.find(
+          (m) => m.年度 === "R5" && m.種別 === "決算" && m.会計区分 === null
+        ) ??
+        item.事業費_千円?.明細.find(
+          (m) => m.年度 === "R5" && m.種別 === "決算"
+        );
+      if (!r5Entry) {
         skipped++;
         continue;
       }
@@ -114,13 +110,11 @@ async function importR5Data(
 
       if (!result) {
         // R6に該当事業がない場合、新規登録は行わない
-        // （ユーザーの確認が必要）
         skipped++;
         continue;
       }
 
       const itemId = result.itemId;
-      const budgetData = item.事業費_千円.R5決算;
 
       // R5の年度データを登録（UPSERT）
       const { error: upsertError } = await supabase
@@ -129,10 +123,10 @@ async function importR5Data(
           {
             item_id: itemId,
             fiscal_year: 2023, // 令和5年
-            expenditure_amount: budgetData.歳出,
-            expenditure_type: "決算",
-            specific_revenue: budgetData.特定財源,
-            general_revenue: budgetData.一般財源,
+            expenditure_amount: r5Entry.歳出,
+            expenditure_type: r5Entry.種別,
+            specific_revenue: r5Entry.特定財源,
+            general_revenue: r5Entry.一般財源,
             data_source: "福岡市HP",
             imported_by: "import-r5-data-json",
           },
