@@ -46,7 +46,7 @@ export function KpiTrendChart({ kpi }: Props) {
       <LineChart data={data} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#e5e5ea" />
         <XAxis dataKey="year" tick={{ fontSize: 11 }} />
-        <YAxis tick={{ fontSize: 11 }} width={45} />
+        <YAxis tick={{ fontSize: 11 }} width={45} domain={["auto", "auto"]} />
         <Tooltip />
         <Line
           dataKey="value"
