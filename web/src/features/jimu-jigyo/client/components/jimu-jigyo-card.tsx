@@ -11,7 +11,7 @@ type Props = {
   basePath: string;
 };
 
-function DirectionBadge({
+function KpiEfficiencyBadge({
   direction,
   changeRate,
   label,
@@ -43,7 +43,45 @@ function DirectionBadge({
     <div className="flex items-center gap-1 text-xs">
       <span className="text-mirai-text-muted w-8 shrink-0">{label}</span>
       <span className={`font-bold ${color}`}>{icon}</span>
-      {rateText && <span className={`${color}`}>{rateText}</span>}
+      {rateText && <span className={color}>{rateText}</span>}
+    </div>
+  );
+}
+
+function BudgetBadge({
+  direction,
+  changeRate,
+}: {
+  direction: ChangeDirection;
+  changeRate: number | null;
+}) {
+  // 予算は +が青・-が赤（良悪の判断なし、変化方向のみ）
+  const isUp = direction === "up";
+  const isDown = direction === "down";
+  const label = isUp
+    ? "増加"
+    : isDown
+      ? "減少"
+      : direction === "flat"
+        ? "横ばい"
+        : "─";
+  const color = isUp
+    ? "text-grade-b"
+    : isDown
+      ? "text-grade-d"
+      : "text-mirai-text-muted";
+  const icon = isUp ? "↑" : isDown ? "↓" : direction === "flat" ? "→" : "─";
+  const rateText =
+    changeRate !== null
+      ? `${changeRate >= 0 ? "+" : ""}${(changeRate * 100).toFixed(1)}%`
+      : "";
+
+  return (
+    <div className="flex items-center gap-1 text-xs">
+      <span className="text-mirai-text-muted w-8 shrink-0">予算</span>
+      <span className={`font-bold ${color}`}>{icon}</span>
+      <span className={color}>{label}</span>
+      {rateText && <span className="text-mirai-text-muted">({rateText})</span>}
     </div>
   );
 }
@@ -70,17 +108,16 @@ export function JimuJigyoCard({ record, basePath }: Props) {
 
         {/* 3軸サマリー */}
         <div className="space-y-1 border-t border-mirai-border pt-2">
-          <DirectionBadge
+          <KpiEfficiencyBadge
             direction={analysis.kpi.direction}
             changeRate={analysis.kpi.changeRate}
             label="KPI"
           />
-          <DirectionBadge
+          <BudgetBadge
             direction={analysis.budget.direction}
             changeRate={analysis.budget.changeRate}
-            label="予算"
           />
-          <DirectionBadge
+          <KpiEfficiencyBadge
             direction={analysis.efficiency.direction}
             changeRate={analysis.efficiency.changeRate}
             label="効率"
