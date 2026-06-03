@@ -223,7 +223,7 @@ describe("calcBudgetScore", () => {
     expect(calcBudgetScore(data)).toBe(1.0);
   });
 
-  it("予算増加 + KPI効率悪化は0", () => {
+  it("予算増加 + KPI効率悪化は最低0.25（下限あり）", () => {
     const data: JimuJigyoData = {
       ...baseData,
       指標: {
@@ -243,7 +243,7 @@ describe("calcBudgetScore", () => {
     };
     // R5効率 = 90/10000 = 0.009, R6効率 = 80/13000 ≈ 0.00615
     // 効率変化 ≈ -32% → 0
-    expect(calcBudgetScore(data)).toBe(0);
+    expect(calcBudgetScore(data)).toBe(0.25);
   });
 });
 
