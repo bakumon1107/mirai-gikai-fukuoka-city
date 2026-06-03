@@ -51,9 +51,11 @@ function KpiEfficiencyBadge({
 function BudgetBadge({
   direction,
   changeRate,
+  r7Direction,
 }: {
   direction: ChangeDirection;
   changeRate: number | null;
+  r7Direction: ChangeDirection;
 }) {
   // 予算は +が青・-が赤（良悪の判断なし、変化方向のみ）
   const isUp = direction === "up";
@@ -76,12 +78,32 @@ function BudgetBadge({
       ? `${changeRate >= 0 ? "+" : ""}${(changeRate * 100).toFixed(1)}%`
       : "";
 
+  const r7Icon =
+    r7Direction === "up"
+      ? "↑"
+      : r7Direction === "down"
+        ? "↓"
+        : r7Direction === "flat"
+          ? "→"
+          : null;
+  const r7Color =
+    r7Direction === "up"
+      ? "text-grade-b"
+      : r7Direction === "down"
+        ? "text-grade-d"
+        : "text-mirai-text-muted";
+
   return (
-    <div className="flex items-center gap-1 text-xs">
+    <div className="flex items-center gap-1 text-xs flex-wrap">
       <span className="text-mirai-text-muted w-8 shrink-0">予算</span>
       <span className={`font-bold ${color}`}>{icon}</span>
       <span className={color}>{label}</span>
       {rateText && <span className="text-mirai-text-muted">({rateText})</span>}
+      {r7Icon && (
+        <span className="text-mirai-text-muted">
+          · 次年度<span className={`font-bold ${r7Color}`}>{r7Icon}</span>
+        </span>
+      )}
     </div>
   );
 }
@@ -116,6 +138,7 @@ export function JimuJigyoCard({ record, basePath }: Props) {
           <BudgetBadge
             direction={analysis.budget.direction}
             changeRate={analysis.budget.changeRate}
+            r7Direction={analysis.budget.r7Direction}
           />
           <KpiEfficiencyBadge
             direction={analysis.efficiency.direction}
