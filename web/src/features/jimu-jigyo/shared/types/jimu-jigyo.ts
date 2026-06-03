@@ -81,8 +81,9 @@ export type KpiAnalysisResult = {
 
 export type BudgetAnalysisResult = {
   direction: ChangeDirection;
-  changeRate: number | null; // R5→R6 歳出変化率（小数）
-  r7Direction: ChangeDirection; // R6→R7 予算方向
+  changeRate: number | null; // 当年度の歳出変化率（小数）
+  nextYearDirection: ChangeDirection; // 次年度予算の方向
+  nextYearChangeRate: number | null; // 次年度予算の変化率（小数）
   text: string;
 };
 

@@ -9,8 +9,9 @@
     "budget": {
       "direction": "up",
       "changeRate": 0.325,
-      "r7Direction": "down",
-      "text": "令和5年度の27,282千円から令和6年度の36,144千円へ約32%増加しています。令和7年度予算は29,096千円と減少する見込みです。"
+      "text": "令和5年度の27,282千円から令和6年度の36,144千円へ約32%増加しています。令和7年度予算は29,096千円と減少する見込みです。",
+      "nextYearDirection": "down",
+      "nextYearChangeRate": -0.194998
     },
     "efficiency": {
       "direction": "unknown",
@@ -28,8 +29,9 @@
     "budget": {
       "direction": "down",
       "changeRate": -0.238,
-      "r7Direction": "flat",
-      "text": "令和5年度の152,278千円から令和6年度の115,951千円へ約24%削減されました。令和7年度予算は115,289千円とほぼ横ばいの見込みです。一般財源への依存を抑えつつ相談件数増加に対応しています。"
+      "text": "令和5年度の152,278千円から令和6年度の115,951千円へ約24%削減されました。令和7年度予算は115,289千円とほぼ横ばいの見込みです。一般財源への依存を抑えつつ相談件数増加に対応しています。",
+      "nextYearDirection": "flat",
+      "nextYearChangeRate": -0.005709
     },
     "efficiency": {
       "direction": "up",
@@ -47,8 +49,9 @@
     "budget": {
       "direction": "up",
       "changeRate": 1.037,
-      "r7Direction": "up",
-      "text": "令和5年度の5,016千円から令和6年度の10,218千円へ約104%と倍増しています。令和7年度予算はさらに11,553千円へ増加の見込みです。バリアフリー啓発活動や環境整備への投資が拡大しています。"
+      "text": "令和5年度の5,016千円から令和6年度の10,218千円へ約104%と倍増しています。令和7年度予算はさらに11,553千円へ増加の見込みです。バリアフリー啓発活動や環境整備への投資が拡大しています。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.130652
     },
     "efficiency": {
       "direction": "down",
@@ -66,8 +69,9 @@
     "budget": {
       "direction": "down",
       "changeRate": -0.941,
-      "r7Direction": "up",
-      "text": "令和5年度の5,891千円から令和6年度の350千円へ94%の大幅削減となりました。これは大規模整備工事の完了等によるものと考えられます。令和7年度予算は3,993千円と回復する見込みです。"
+      "text": "令和5年度の5,891千円から令和6年度の350千円へ94%の大幅削減となりました。これは大規模整備工事の完了等によるものと考えられます。令和7年度予算は3,993千円と回復する見込みです。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 10.408571
     },
     "efficiency": {
       "direction": "unknown",
@@ -85,8 +89,9 @@
     "budget": {
       "direction": "up",
       "changeRate": 0.082,
-      "r7Direction": "up",
-      "text": "令和5年度の17,154千円から令和6年度の18,573千円へ約8%増加しています。令和7年度予算は21,704千円とさらに増加の見込みです。"
+      "text": "令和5年度の17,154千円から令和6年度の18,573千円へ約8%増加しています。令和7年度予算は21,704千円とさらに増加の見込みです。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.168578
     },
     "efficiency": {
       "direction": "up",
@@ -104,8 +109,9 @@
     "budget": {
       "direction": "up",
       "changeRate": 1.27,
-      "r7Direction": "down",
-      "text": "令和5年度の47,021千円から令和6年度の106,690千円へ約127%と大幅増加しています。住民主体の通い場や生活支援コーディネーターの体制整備に係る投資が急増した年度です。令和7年度予算は56,284千円と大幅減少の見込みです。"
+      "text": "令和5年度の47,021千円から令和6年度の106,690千円へ約127%と大幅増加しています。住民主体の通い場や生活支援コーディネーターの体制整備に係る投資が急増した年度です。令和7年度予算は56,284千円と大幅減少の見込みです。",
+      "nextYearDirection": "down",
+      "nextYearChangeRate": -0.472453
     },
     "efficiency": {
       "direction": "unknown",
@@ -123,8 +129,9 @@
     "budget": {
       "direction": "up",
       "changeRate": 0.074,
-      "r7Direction": "up",
-      "text": "令和5年度の25,662千円から令和6年度の27,574千円へ約7%増加しています。令和7年度予算は31,125千円とさらに増加の見込みです。在宅医療・介護連携の体制強化に継続的な投資が行われています。"
+      "text": "令和5年度の25,662千円から令和6年度の27,574千円へ約7%増加しています。令和7年度予算は31,125千円とさらに増加の見込みです。在宅医療・介護連携の体制強化に継続的な投資が行われています。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.128781
     },
     "efficiency": {
       "direction": "up",
@@ -142,8 +149,9 @@
     "budget": {
       "direction": "up",
       "changeRate": 3.153,
-      "r7Direction": "down",
-      "text": "令和5年度の251,146千円から令和6年度の1,042,967千円へ約315%と急増しています。令和7年度予算は559,104千円と半減する見込みです。"
+      "text": "令和5年度の251,146千円から令和6年度の1,042,967千円へ約315%と急増しています。令和7年度予算は559,104千円と半減する見込みです。",
+      "nextYearDirection": "down",
+      "nextYearChangeRate": -0.463929
     },
     "efficiency": {
       "direction": "unknown",
@@ -161,8 +169,9 @@
     "budget": {
       "direction": "unknown",
       "changeRate": null,
-      "r7Direction": "unknown",
-      "text": "事業費データが設定されていません。特別会計を含む複合事業のため、詳細な予算情報の整備が求められます。"
+      "text": "事業費データが設定されていません。特別会計を含む複合事業のため、詳細な予算情報の整備が求められます。",
+      "nextYearDirection": "unknown",
+      "nextYearChangeRate": null
     },
     "efficiency": {
       "direction": "unknown",
@@ -180,8 +189,9 @@
     "budget": {
       "direction": "flat",
       "changeRate": -0.001,
-      "r7Direction": "up",
-      "text": "令和5年度の19,992千円から令和6年度の19,963千円へほぼ横ばいです。令和7年度予算は21,345千円と増加の見込みです。安定した予算規模でマッチング件数を着実に伸ばしています。"
+      "text": "令和5年度の19,992千円から令和6年度の19,963千円へほぼ横ばいです。令和7年度予算は21,345千円と増加の見込みです。安定した予算規模でマッチング件数を着実に伸ばしています。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.069228
     },
     "efficiency": {
       "direction": "up",
@@ -199,8 +209,9 @@
     "budget": {
       "direction": "up",
       "changeRate": 0.246,
-      "r7Direction": "up",
-      "text": "令和5年度の27,475千円から令和6年度の34,233千円へ約25%増加しています。令和7年度予算は48,580千円とさらに大幅に増加する見込みです。口腔健康施策の強化・拡大が計画されています。"
+      "text": "令和5年度の27,475千円から令和6年度の34,233千円へ約25%増加しています。令和7年度予算は48,580千円とさらに大幅に増加する見込みです。口腔健康施策の強化・拡大が計画されています。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.419099
     },
     "efficiency": {
       "direction": "unknown",
@@ -218,8 +229,9 @@
     "budget": {
       "direction": "flat",
       "changeRate": -0.039,
-      "r7Direction": "up",
-      "text": "令和5年度の662,751千円から令和6年度の636,946千円へ約4%削減されました。令和7年度予算は673,440千円と増加の見込みです。"
+      "text": "令和5年度の662,751千円から令和6年度の636,946千円へ約4%削減されました。令和7年度予算は673,440千円と増加の見込みです。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.057295
     },
     "efficiency": {
       "direction": "unknown",
@@ -237,8 +249,9 @@
     "budget": {
       "direction": "flat",
       "changeRate": 0.009,
-      "r7Direction": "up",
-      "text": "令和5年度の47,999千円から令和6年度の48,447千円へほぼ横ばいです。令和7年度予算は62,957千円と大幅に増加する見込みで、遠隔保健指導の拡充投資が予定されています。"
+      "text": "令和5年度の47,999千円から令和6年度の48,447千円へほぼ横ばいです。令和7年度予算は62,957千円と大幅に増加する見込みで、遠隔保健指導の拡充投資が予定されています。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.299503
     },
     "efficiency": {
       "direction": "unknown",
@@ -256,8 +269,9 @@
     "budget": {
       "direction": "up",
       "changeRate": 0.294,
-      "r7Direction": "flat",
-      "text": "令和5年度の1,765千円から令和6年度の2,286千円へ約29%増加しています。令和7年度予算は2,280千円とほぼ横ばいの見込みです。"
+      "text": "令和5年度の1,765千円から令和6年度の2,286千円へ約29%増加しています。令和7年度予算は2,280千円とほぼ横ばいの見込みです。",
+      "nextYearDirection": "flat",
+      "nextYearChangeRate": -0.002625
     },
     "efficiency": {
       "direction": "unknown",
@@ -275,8 +289,9 @@
     "budget": {
       "direction": "down",
       "changeRate": -0.365,
-      "r7Direction": "up",
-      "text": "令和5年度の32,400千円から令和6年度の20,585千円へ約37%削減されました。令和7年度予算は44,308千円と大幅に回復する見込みです。"
+      "text": "令和5年度の32,400千円から令和6年度の20,585千円へ約37%削減されました。令和7年度予算は44,308千円と大幅に回復する見込みです。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 1.152441
     },
     "efficiency": {
       "direction": "up",
@@ -294,8 +309,9 @@
     "budget": {
       "direction": "up",
       "changeRate": 0.052,
-      "r7Direction": "up",
-      "text": "令和5年度の102,824千円から令和6年度の108,123千円へ約5%増加しています。令和7年度予算は148,913千円と大幅に増加する見込みで、新たな不便地対策や補助路線の追加が計画されています。"
+      "text": "令和5年度の102,824千円から令和6年度の108,123千円へ約5%増加しています。令和7年度予算は148,913千円と大幅に増加する見込みで、新たな不便地対策や補助路線の追加が計画されています。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.377256
     },
     "efficiency": {
       "direction": "flat",
@@ -313,8 +329,9 @@
     "budget": {
       "direction": "flat",
       "changeRate": 0.029,
-      "r7Direction": "up",
-      "text": "令和5年度の69千円から令和6年度の71千円へほぼ横ばいです。令和7年度予算は141千円と倍増する見込みです。"
+      "text": "令和5年度の69千円から令和6年度の71千円へほぼ横ばいです。令和7年度予算は141千円と倍増する見込みです。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.985915
     },
     "efficiency": {
       "direction": "up",
@@ -332,8 +349,9 @@
     "budget": {
       "direction": "up",
       "changeRate": 0.656,
-      "r7Direction": "down",
-      "text": "令和5年度の220,004千円から令和6年度の364,304千円へ約66%増加しています。令和7年度予算は0千円と、事業の集中整備が完了または計画変更があった可能性があります。"
+      "text": "令和5年度の220,004千円から令和6年度の364,304千円へ約66%増加しています。令和7年度予算は0千円と、事業の集中整備が完了または計画変更があった可能性があります。",
+      "nextYearDirection": "down",
+      "nextYearChangeRate": null
     },
     "efficiency": {
       "direction": "unknown",
@@ -351,8 +369,9 @@
     "budget": {
       "direction": "down",
       "changeRate": -0.408,
-      "r7Direction": "up",
-      "text": "令和5年度の4,988千円から令和6年度の2,953千円へ約41%削減されました。令和7年度予算は14,128千円と大幅に増加する見込みで、国際展開の本格化が計画されています。"
+      "text": "令和5年度の4,988千円から令和6年度の2,953千円へ約41%削減されました。令和7年度予算は14,128千円と大幅に増加する見込みで、国際展開の本格化が計画されています。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 3.784287
     },
     "efficiency": {
       "direction": "up",
@@ -370,8 +389,9 @@
     "budget": {
       "direction": "flat",
       "changeRate": 0.015,
-      "r7Direction": "up",
-      "text": "令和5年度の101,649千円から令和6年度の103,155千円へほぼ横ばいです。令和7年度予算は144,943千円と大幅に増加する見込みで、EV普及加速に向けた大規模投資が予定されています。"
+      "text": "令和5年度の101,649千円から令和6年度の103,155千円へほぼ横ばいです。令和7年度予算は144,943千円と大幅に増加する見込みで、EV普及加速に向けた大規模投資が予定されています。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.405099
     },
     "efficiency": {
       "direction": "up",
@@ -389,8 +409,9 @@
     "budget": {
       "direction": "down",
       "changeRate": -1.0,
-      "r7Direction": "up",
-      "text": "令和5年度の300,000千円から令和6年度は0千円へ大幅減少しました。令和7年度予算は920千円です。"
+      "text": "令和5年度の300,000千円から令和6年度は0千円へ大幅減少しました。令和7年度予算は920千円です。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": null
     },
     "efficiency": {
       "direction": "unknown",
@@ -408,8 +429,9 @@
     "budget": {
       "direction": "down",
       "changeRate": -0.12,
-      "r7Direction": "up",
-      "text": "令和5年度の41,223千円から令和6年度の36,287千円へ約12%削減されました。令和7年度予算は51,584千円と大幅増加の見込みで、プラスチック資源循環の拡充が計画されています。"
+      "text": "令和5年度の41,223千円から令和6年度の36,287千円へ約12%削減されました。令和7年度予算は51,584千円と大幅増加の見込みで、プラスチック資源循環の拡充が計画されています。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.421556
     },
     "efficiency": {
       "direction": "unknown",
@@ -427,8 +449,9 @@
     "budget": {
       "direction": "up",
       "changeRate": 0.055,
-      "r7Direction": "down",
-      "text": "令和5年度の16,683千円から令和6年度の17,608千円へ約5.5%増加しています。令和7年度予算は16,791千円と若干減少する見込みです。"
+      "text": "令和5年度の16,683千円から令和6年度の17,608千円へ約5.5%増加しています。令和7年度予算は16,791千円と若干減少する見込みです。",
+      "nextYearDirection": "down",
+      "nextYearChangeRate": -0.046399
     },
     "efficiency": {
       "direction": "down",
@@ -446,8 +469,9 @@
     "budget": {
       "direction": "up",
       "changeRate": 0.857,
-      "r7Direction": "down",
-      "text": "令和5年度の51,738千円から令和6年度の96,086千円へ約86%増加しました。令和7年度予算は91,139千円と若干減少の見込みです。"
+      "text": "令和5年度の51,738千円から令和6年度の96,086千円へ約86%増加しました。令和7年度予算は91,139千円と若干減少の見込みです。",
+      "nextYearDirection": "down",
+      "nextYearChangeRate": -0.051485
     },
     "efficiency": {
       "direction": "up",
@@ -465,8 +489,9 @@
     "budget": {
       "direction": "down",
       "changeRate": -0.367,
-      "r7Direction": "up",
-      "text": "令和5年度の75,796千円から令和6年度の47,991千円へ約37%削減されました。令和7年度予算は84,242千円と大幅に増加する見込みで、博多旧市街の魅力向上事業の拡充が計画されています。"
+      "text": "令和5年度の75,796千円から令和6年度の47,991千円へ約37%削減されました。令和7年度予算は84,242千円と大幅に増加する見込みで、博多旧市街の魅力向上事業の拡充が計画されています。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.755371
     },
     "efficiency": {
       "direction": "down",
@@ -484,8 +509,9 @@
     "budget": {
       "direction": "up",
       "changeRate": 0.168,
-      "r7Direction": "down",
-      "text": "令和5年度の204,121千円から令和6年度の238,362千円へ約17%増加しています。令和7年度予算は197,045千円と減少の見込みです。城跡整備工事の進捗に応じた予算変動が続いています。"
+      "text": "令和5年度の204,121千円から令和6年度の238,362千円へ約17%増加しています。令和7年度予算は197,045千円と減少の見込みです。城跡整備工事の進捗に応じた予算変動が続いています。",
+      "nextYearDirection": "down",
+      "nextYearChangeRate": -0.173337
     },
     "efficiency": {
       "direction": "up",
@@ -503,8 +529,9 @@
     "budget": {
       "direction": "up",
       "changeRate": 2.554,
-      "r7Direction": "up",
-      "text": "令和5年度の32,804千円から令和6年度の116,613千円へ約255%と急増しています。令和7年度予算はさらに629,831千円と大幅増加の見込みで、鴻臚館の本格的な整備・活用事業の開始が予定されています。"
+      "text": "令和5年度の32,804千円から令和6年度の116,613千円へ約255%と急増しています。令和7年度予算はさらに629,831千円と大幅増加の見込みで、鴻臚館の本格的な整備・活用事業の開始が予定されています。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 4.401036
     },
     "efficiency": {
       "direction": "down",
@@ -522,8 +549,9 @@
     "budget": {
       "direction": "flat",
       "changeRate": 0.036,
-      "r7Direction": "up",
-      "text": "令和5年度の25,599千円から令和6年度の26,509千円へ約4%と小幅に増加しています。令和7年度予算は31,850千円と増加の見込みです。"
+      "text": "令和5年度の25,599千円から令和6年度の26,509千円へ約4%と小幅に増加しています。令和7年度予算は31,850千円と増加の見込みです。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.201479
     },
     "efficiency": {
       "direction": "up",
@@ -541,8 +569,9 @@
     "budget": {
       "direction": "up",
       "changeRate": 4.552,
-      "r7Direction": "down",
-      "text": "令和5年度の54,443千円から令和6年度の302,059千円へ約455%と急増しています。海辺エリアの大規模整備・イベント投資が集中した年度とみられます。令和7年度予算は213,297千円と減少の見込みです。"
+      "text": "令和5年度の54,443千円から令和6年度の302,059千円へ約455%と急増しています。海辺エリアの大規模整備・イベント投資が集中した年度とみられます。令和7年度予算は213,297千円と減少の見込みです。",
+      "nextYearDirection": "down",
+      "nextYearChangeRate": -0.293856
     },
     "efficiency": {
       "direction": "down",
@@ -560,8 +589,9 @@
     "budget": {
       "direction": "up",
       "changeRate": 0.676,
-      "r7Direction": "up",
-      "text": "令和5年度の109,864千円から令和6年度の184,255千円へ約68%増加しています。令和7年度予算は226,488千円とさらに増加の見込みで、MICE誘致の積極展開が計画されています。"
+      "text": "令和5年度の109,864千円から令和6年度の184,255千円へ約68%増加しています。令和7年度予算は226,488千円とさらに増加の見込みで、MICE誘致の積極展開が計画されています。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.22921
     },
     "efficiency": {
       "direction": "unknown",
@@ -579,8 +609,9 @@
     "budget": {
       "direction": "up",
       "changeRate": 1.272,
-      "r7Direction": "up",
-      "text": "令和5年度の34,582千円から令和6年度の78,598千円へ約127%増加しています。令和7年度予算は99,200千円とさらに増加の見込みで、福岡都市圏を核とした広域観光プロモーションが強化されます。"
+      "text": "令和5年度の34,582千円から令和6年度の78,598千円へ約127%増加しています。令和7年度予算は99,200千円とさらに増加の見込みで、福岡都市圏を核とした広域観光プロモーションが強化されます。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.262119
     },
     "efficiency": {
       "direction": "unknown",
@@ -598,8 +629,9 @@
     "budget": {
       "direction": "down",
       "changeRate": -0.486,
-      "r7Direction": "down",
-      "text": "令和5年度の28,135千円から令和6年度の14,463千円へ約49%削減されました。令和7年度予算は5,784千円とさらに減少の見込みです。"
+      "text": "令和5年度の28,135千円から令和6年度の14,463千円へ約49%削減されました。令和7年度予算は5,784千円とさらに減少の見込みです。",
+      "nextYearDirection": "down",
+      "nextYearChangeRate": -0.600083
     },
     "efficiency": {
       "direction": "up",
@@ -617,8 +649,9 @@
     "budget": {
       "direction": "up",
       "changeRate": 1.841,
-      "r7Direction": "up",
-      "text": "令和5年度の143,291千円から令和6年度の407,207千円へ約184%増加しています。令和7年度予算は1,128,095千円と約2.8倍に急増する見込みで、水素インフラ整備への大規模投資が計画されています。"
+      "text": "令和5年度の143,291千円から令和6年度の407,207千円へ約184%増加しています。令和7年度予算は1,128,095千円と約2.8倍に急増する見込みで、水素インフラ整備への大規模投資が計画されています。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 1.770323
     },
     "efficiency": {
       "direction": "up",
@@ -636,8 +669,9 @@
     "budget": {
       "direction": "down",
       "changeRate": -0.055,
-      "r7Direction": "up",
-      "text": "令和5年度の40,235千円から令和6年度の38,028千円へ約5.5%削減されました。令和7年度予算は39,595千円と若干回復の見込みです。"
+      "text": "令和5年度の40,235千円から令和6年度の38,028千円へ約5.5%削減されました。令和7年度予算は39,595千円と若干回復の見込みです。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.041206
     },
     "efficiency": {
       "direction": "up",
@@ -655,8 +689,9 @@
     "budget": {
       "direction": "up",
       "changeRate": 0.154,
-      "r7Direction": "up",
-      "text": "令和5年度の49,020千円から令和6年度の56,574千円へ約15%増加しています。令和7年度予算は76,071千円と大幅増加の見込みで、児童家庭支援センターの機能強化が予定されています。"
+      "text": "令和5年度の49,020千円から令和6年度の56,574千円へ約15%増加しています。令和7年度予算は76,071千円と大幅増加の見込みで、児童家庭支援センターの機能強化が予定されています。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.344628
     },
     "efficiency": {
       "direction": "flat",
@@ -674,8 +709,9 @@
     "budget": {
       "direction": "up",
       "changeRate": 0.619,
-      "r7Direction": "up",
-      "text": "令和5年度の94,298千円から令和6年度の152,622千円へ約62%増加しています。令和7年度予算は159,585千円と更に増加の見込みで、利用者増加への対応と受入施設拡充が進んでいます。"
+      "text": "令和5年度の94,298千円から令和6年度の152,622千円へ約62%増加しています。令和7年度予算は159,585千円と更に増加の見込みで、利用者増加への対応と受入施設拡充が進んでいます。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.045623
     },
     "efficiency": {
       "direction": "down",
@@ -693,8 +729,9 @@
     "budget": {
       "direction": "flat",
       "changeRate": 0.009,
-      "r7Direction": "up",
-      "text": "令和5年度の11,225千円から令和6年度の11,327千円へほぼ横ばいです。令和7年度予算は11,559千円と微増の見込みです。"
+      "text": "令和5年度の11,225千円から令和6年度の11,327千円へほぼ横ばいです。令和7年度予算は11,559千円と微増の見込みです。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.020482
     },
     "efficiency": {
       "direction": "up",
@@ -712,8 +749,9 @@
     "budget": {
       "direction": "flat",
       "changeRate": 0.049,
-      "r7Direction": "up",
-      "text": "令和5年度の609,853千円から令和6年度の639,901千円へ約5%増加しています。令和7年度予算は713,124千円と大幅増加の見込みで、受け入れ拡充への投資が続きます。"
+      "text": "令和5年度の609,853千円から令和6年度の639,901千円へ約5%増加しています。令和7年度予算は713,124千円と大幅増加の見込みで、受け入れ拡充への投資が続きます。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.114429
     },
     "efficiency": {
       "direction": "flat",
@@ -731,8 +769,9 @@
     "budget": {
       "direction": "up",
       "changeRate": 0.223,
-      "r7Direction": "up",
-      "text": "令和5年度の839千円から令和6年度の1,026千円へ約22%増加しています。令和7年度予算は1,178千円と継続的に増加の見込みです。"
+      "text": "令和5年度の839千円から令和6年度の1,026千円へ約22%増加しています。令和7年度予算は1,178千円と継続的に増加の見込みです。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.148148
     },
     "efficiency": {
       "direction": "up",
@@ -750,8 +789,9 @@
     "budget": {
       "direction": "up",
       "changeRate": 0.548,
-      "r7Direction": "up",
-      "text": "令和5年度の147,567千円から令和6年度の228,515千円へ約55%増加しています。令和7年度予算は333,178千円と更に大幅増加の見込みで、産前産後サポートの大幅拡充が計画されています。"
+      "text": "令和5年度の147,567千円から令和6年度の228,515千円へ約55%増加しています。令和7年度予算は333,178千円と更に大幅増加の見込みで、産前産後サポートの大幅拡充が計画されています。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.458014
     },
     "efficiency": {
       "direction": "up",
@@ -769,8 +809,9 @@
     "budget": {
       "direction": "up",
       "changeRate": 0.339,
-      "r7Direction": "up",
-      "text": "令和5年度の21,829千円から令和6年度の29,234千円へ約34%増加しています。令和7年度予算は30,232千円と微増の見込みです。補助団体数の増加（75→105団体）に対応した予算拡大です。"
+      "text": "令和5年度の21,829千円から令和6年度の29,234千円へ約34%増加しています。令和7年度予算は30,232千円と微増の見込みです。補助団体数の増加（75→105団体）に対応した予算拡大です。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.034138
     },
     "efficiency": {
       "direction": "unknown",
@@ -788,8 +829,9 @@
     "budget": {
       "direction": "up",
       "changeRate": 0.359,
-      "r7Direction": "up",
-      "text": "令和5年度の280,660千円から令和6年度の381,427千円へ約36%増加しています。令和7年度予算は399,418千円と引き続き増加の見込みで、支援対象の拡大が続いています。"
+      "text": "令和5年度の280,660千円から令和6年度の381,427千円へ約36%増加しています。令和7年度予算は399,418千円と引き続き増加の見込みで、支援対象の拡大が続いています。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.047168
     },
     "efficiency": {
       "direction": "flat",
@@ -807,8 +849,9 @@
     "budget": {
       "direction": "down",
       "changeRate": -0.064,
-      "r7Direction": "up",
-      "text": "令和5年度の3,540千円から令和6年度の3,312千円へ約6%削減されました。令和7年度予算は7,712千円と倍増以上の大幅増加で、保育士の処遇改善・魅力向上策の強化が予定されています。"
+      "text": "令和5年度の3,540千円から令和6年度の3,312千円へ約6%削減されました。令和7年度予算は7,712千円と倍増以上の大幅増加で、保育士の処遇改善・魅力向上策の強化が予定されています。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 1.328502
     },
     "efficiency": {
       "direction": "up",
@@ -826,8 +869,9 @@
     "budget": {
       "direction": "down",
       "changeRate": -0.172,
-      "r7Direction": "up",
-      "text": "令和5年度の3,681千円から令和6年度の3,046千円へ約17%削減されました。令和7年度予算は4,975千円と増加の見込みで、更なる誘致活動の強化が計画されています。"
+      "text": "令和5年度の3,681千円から令和6年度の3,046千円へ約17%削減されました。令和7年度予算は4,975千円と増加の見込みで、更なる誘致活動の強化が計画されています。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.63329
     },
     "efficiency": {
       "direction": "up",
@@ -845,8 +889,9 @@
     "budget": {
       "direction": "up",
       "changeRate": 0.218,
-      "r7Direction": "up",
-      "text": "令和5年度の3,921,747千円から令和6年度の4,778,070千円へ約22%増加しています。令和7年度予算は6,395,716千円と大幅増加の見込みで、児童クラブの拡充・待機解消への大規模投資が続きます。"
+      "text": "令和5年度の3,921,747千円から令和6年度の4,778,070千円へ約22%増加しています。令和7年度予算は6,395,716千円と大幅増加の見込みで、児童クラブの拡充・待機解消への大規模投資が続きます。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.338556
     },
     "efficiency": {
       "direction": "down",
@@ -864,8 +909,9 @@
     "budget": {
       "direction": "flat",
       "changeRate": -0.008,
-      "r7Direction": "up",
-      "text": "令和5年度の29,912千円から令和6年度の29,674千円へほぼ横ばいです。令和7年度予算は34,828千円と増加の見込みです。"
+      "text": "令和5年度の29,912千円から令和6年度の29,674千円へほぼ横ばいです。令和7年度予算は34,828千円と増加の見込みです。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.173687
     },
     "efficiency": {
       "direction": "up",
@@ -883,8 +929,9 @@
     "budget": {
       "direction": "flat",
       "changeRate": 0.003,
-      "r7Direction": "up",
-      "text": "令和5年度の1,412,930千円から令和6年度の1,416,512千円へほぼ横ばいです。令和7年度予算は1,418,698千円と微増の見込みです。"
+      "text": "令和5年度の1,412,930千円から令和6年度の1,416,512千円へほぼ横ばいです。令和7年度予算は1,418,698千円と微増の見込みです。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.001543
     },
     "efficiency": {
       "direction": "up",
@@ -902,8 +949,9 @@
     "budget": {
       "direction": "up",
       "changeRate": 0.673,
-      "r7Direction": "up",
-      "text": "令和5年度の457,387千円から令和6年度の764,749千円へ約67%増加しています。令和7年度予算は1,089,487千円と更に大幅増加の見込みで、支援ニーズの拡大に対応した積極投資が続いています。"
+      "text": "令和5年度の457,387千円から令和6年度の764,749千円へ約67%増加しています。令和7年度予算は1,089,487千円と更に大幅増加の見込みで、支援ニーズの拡大に対応した積極投資が続いています。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.424633
     },
     "efficiency": {
       "direction": "down",
@@ -921,8 +969,9 @@
     "budget": {
       "direction": "up",
       "changeRate": 0.619,
-      "r7Direction": "up",
-      "text": "令和5年度の113,317千円から令和6年度の183,497千円へ約62%増加しています。令和7年度予算は594,956千円と約3.2倍に急増する見込みで、特別支援学級の大幅拡充が計画されています。"
+      "text": "令和5年度の113,317千円から令和6年度の183,497千円へ約62%増加しています。令和7年度予算は594,956千円と約3.2倍に急増する見込みで、特別支援学級の大幅拡充が計画されています。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 2.24232
     },
     "efficiency": {
       "direction": "flat",
@@ -940,8 +989,9 @@
     "budget": {
       "direction": "up",
       "changeRate": 0.151,
-      "r7Direction": "down",
-      "text": "令和5年度の7,732千円から令和6年度の8,902千円へ約15%増加しています。令和7年度予算は8,170千円とやや減少の見込みです。"
+      "text": "令和5年度の7,732千円から令和6年度の8,902千円へ約15%増加しています。令和7年度予算は8,170千円とやや減少の見込みです。",
+      "nextYearDirection": "down",
+      "nextYearChangeRate": -0.082229
     },
     "efficiency": {
       "direction": "down",
@@ -959,8 +1009,9 @@
     "budget": {
       "direction": "down",
       "changeRate": -0.508,
-      "r7Direction": "up",
-      "text": "令和5年度の2,561千円から令和6年度の1,260千円へ約51%削減されました。令和7年度予算は3,680千円と大幅増加の見込みで、取組みの再活性化への投資が計画されています。"
+      "text": "令和5年度の2,561千円から令和6年度の1,260千円へ約51%削減されました。令和7年度予算は3,680千円と大幅増加の見込みで、取組みの再活性化への投資が計画されています。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 1.920635
     },
     "efficiency": {
       "direction": "down",
@@ -978,8 +1029,9 @@
     "budget": {
       "direction": "flat",
       "changeRate": -0.001,
-      "r7Direction": "up",
-      "text": "令和5年度の4,088千円から令和6年度の4,082千円へほぼ横ばいです。令和7年度予算は4,895千円と増加の見込みです。"
+      "text": "令和5年度の4,088千円から令和6年度の4,082千円へほぼ横ばいです。令和7年度予算は4,895千円と増加の見込みです。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.199167
     },
     "efficiency": {
       "direction": "up",
@@ -997,8 +1049,9 @@
     "budget": {
       "direction": "flat",
       "changeRate": -0.001,
-      "r7Direction": "up",
-      "text": "令和5年度の4,088千円から令和6年度の4,082千円へほぼ横ばいです。令和7年度予算は4,895千円と増加の見込みです。"
+      "text": "令和5年度の4,088千円から令和6年度の4,082千円へほぼ横ばいです。令和7年度予算は4,895千円と増加の見込みです。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.199167
     },
     "efficiency": {
       "direction": "flat",
@@ -1016,8 +1069,9 @@
     "budget": {
       "direction": "down",
       "changeRate": -0.076,
-      "r7Direction": "up",
-      "text": "令和5年度の765千円から令和6年度の707千円へ約8%削減されました。令和7年度予算は4,304千円と約6倍に急増する見込みで、スマート農業の大規模展開フェーズへの移行が計画されています。"
+      "text": "令和5年度の765千円から令和6年度の707千円へ約8%削減されました。令和7年度予算は4,304千円と約6倍に急増する見込みで、スマート農業の大規模展開フェーズへの移行が計画されています。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 5.087694
     },
     "efficiency": {
       "direction": "up",
@@ -1035,8 +1089,9 @@
     "budget": {
       "direction": "up",
       "changeRate": 0.054,
-      "r7Direction": "up",
-      "text": "令和5年度の93,117千円から令和6年度の98,118千円へ約5%増加しています。令和7年度予算は125,700千円と大幅増加の見込みで、農業施設整備補助の拡充が計画されています。"
+      "text": "令和5年度の93,117千円から令和6年度の98,118千円へ約5%増加しています。令和7年度予算は125,700千円と大幅増加の見込みで、農業施設整備補助の拡充が計画されています。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.28111
     },
     "efficiency": {
       "direction": "up",
@@ -1054,8 +1109,9 @@
     "budget": {
       "direction": "up",
       "changeRate": 2.744,
-      "r7Direction": "down",
-      "text": "令和5年度の4,385千円から令和6年度の16,412千円へ約274%と急増しています。令和7年度予算は3,943千円と大幅減少の見込みです。"
+      "text": "令和5年度の4,385千円から令和6年度の16,412千円へ約274%と急増しています。令和7年度予算は3,943千円と大幅減少の見込みです。",
+      "nextYearDirection": "down",
+      "nextYearChangeRate": -0.759749
     },
     "efficiency": {
       "direction": "down",
@@ -1073,8 +1129,9 @@
     "budget": {
       "direction": "down",
       "changeRate": -0.072,
-      "r7Direction": "down",
-      "text": "令和5年度の1,578,285千円から令和6年度の1,464,734千円へ約7%削減されました。令和7年度予算は289,325千円と大幅減少の見込みで、大規模設備工事の完了が主因と考えられます。"
+      "text": "令和5年度の1,578,285千円から令和6年度の1,464,734千円へ約7%削減されました。令和7年度予算は289,325千円と大幅減少の見込みで、大規模設備工事の完了が主因と考えられます。",
+      "nextYearDirection": "down",
+      "nextYearChangeRate": -0.802473
     },
     "efficiency": {
       "direction": "flat",
@@ -1092,8 +1149,9 @@
     "budget": {
       "direction": "flat",
       "changeRate": 0.003,
-      "r7Direction": "up",
-      "text": "令和5年度の8,965千円から令和6年度の8,995千円へほぼ横ばいです。令和7年度予算は9,000千円とほぼ同水準が続きます。"
+      "text": "令和5年度の8,965千円から令和6年度の8,995千円へほぼ横ばいです。令和7年度予算は9,000千円とほぼ同水準が続きます。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.000556
     },
     "efficiency": {
       "direction": "flat",
@@ -1111,8 +1169,9 @@
     "budget": {
       "direction": "flat",
       "changeRate": 0.028,
-      "r7Direction": "up",
-      "text": "令和5年度の540,583千円から令和6年度の555,846千円へ約3%増加しています。令和7年度予算は560,598千円と微増の見込みです。"
+      "text": "令和5年度の540,583千円から令和6年度の555,846千円へ約3%増加しています。令和7年度予算は560,598千円と微増の見込みです。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.008549
     },
     "efficiency": {
       "direction": "up",
@@ -1130,8 +1189,9 @@
     "budget": {
       "direction": "up",
       "changeRate": 0.183,
-      "r7Direction": "up",
-      "text": "令和5年度の24,245千円から令和6年度の28,679千円へ約18%増加しています。令和7年度予算は40,871千円と大幅増加の見込みで、町内会活動支援の強化が計画されています。"
+      "text": "令和5年度の24,245千円から令和6年度の28,679千円へ約18%増加しています。令和7年度予算は40,871千円と大幅増加の見込みで、町内会活動支援の強化が計画されています。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.425119
     },
     "efficiency": {
       "direction": "flat",
@@ -1149,8 +1209,9 @@
     "budget": {
       "direction": "flat",
       "changeRate": -0.021,
-      "r7Direction": "up",
-      "text": "令和5年度の2,584千円から令和6年度の2,530千円へわずかに削減されました。令和7年度予算は2,954千円と増加の見込みです。"
+      "text": "令和5年度の2,584千円から令和6年度の2,530千円へわずかに削減されました。令和7年度予算は2,954千円と増加の見込みです。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.167589
     },
     "efficiency": {
       "direction": "flat",
@@ -1168,8 +1229,9 @@
     "budget": {
       "direction": "down",
       "changeRate": -0.116,
-      "r7Direction": "up",
-      "text": "令和5年度の16,201千円から令和6年度の14,326千円へ約12%削減されました。令和7年度予算は22,478千円と大幅増加の見込みで、個別避難計画の実効性向上への投資が予定されています。"
+      "text": "令和5年度の16,201千円から令和6年度の14,326千円へ約12%削減されました。令和7年度予算は22,478千円と大幅増加の見込みで、個別避難計画の実効性向上への投資が予定されています。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.569035
     },
     "efficiency": {
       "direction": "up",
@@ -1187,8 +1249,9 @@
     "budget": {
       "direction": "up",
       "changeRate": 0.468,
-      "r7Direction": "down",
-      "text": "令和5年度の9,123千円から令和6年度の13,392千円へ約47%増加しています。令和7年度予算は11,260千円と若干減少の見込みです。"
+      "text": "令和5年度の9,123千円から令和6年度の13,392千円へ約47%増加しています。令和7年度予算は11,260千円と若干減少の見込みです。",
+      "nextYearDirection": "down",
+      "nextYearChangeRate": -0.1592
     },
     "efficiency": {
       "direction": "down",
@@ -1206,8 +1269,9 @@
     "budget": {
       "direction": "down",
       "changeRate": -0.426,
-      "r7Direction": "up",
-      "text": "令和5年度の441千円から令和6年度の253千円へ約43%削減されました。令和7年度予算は1,417千円と大幅増加の見込みで、避難所運営体制の更なる強化が計画されています。"
+      "text": "令和5年度の441千円から令和6年度の253千円へ約43%削減されました。令和7年度予算は1,417千円と大幅増加の見込みで、避難所運営体制の更なる強化が計画されています。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 4.600791
     },
     "efficiency": {
       "direction": "up",
@@ -1225,8 +1289,9 @@
     "budget": {
       "direction": "down",
       "changeRate": -0.418,
-      "r7Direction": "flat",
-      "text": "令和5年度の2,342千円から令和6年度の1,364千円へ約42%削減されました。令和7年度予算は1,364千円で横ばいの見込みです。"
+      "text": "令和5年度の2,342千円から令和6年度の1,364千円へ約42%削減されました。令和7年度予算は1,364千円で横ばいの見込みです。",
+      "nextYearDirection": "flat",
+      "nextYearChangeRate": 0.0
     },
     "efficiency": {
       "direction": "up",
@@ -1244,8 +1309,9 @@
     "budget": {
       "direction": "up",
       "changeRate": 3.42,
-      "r7Direction": "down",
-      "text": "令和5年度の5,163千円から令和6年度の22,826千円へ約342%と急増しています。令和7年度予算は21,514千円とほぼ同水準の見込みです。大規模な啓発キャンペーンへの集中投資が行われました。"
+      "text": "令和5年度の5,163千円から令和6年度の22,826千円へ約342%と急増しています。令和7年度予算は21,514千円とほぼ同水準の見込みです。大規模な啓発キャンペーンへの集中投資が行われました。",
+      "nextYearDirection": "down",
+      "nextYearChangeRate": -0.057478
     },
     "efficiency": {
       "direction": "down",
@@ -1263,8 +1329,9 @@
     "budget": {
       "direction": "flat",
       "changeRate": 0.043,
-      "r7Direction": "up",
-      "text": "令和5年度の5,425千円から令和6年度の5,660千円へ約4%増加しています。令和7年度予算は7,040千円と大幅増加の見込みで、特殊詐欺対策等の強化が計画されています。"
+      "text": "令和5年度の5,425千円から令和6年度の5,660千円へ約4%増加しています。令和7年度予算は7,040千円と大幅増加の見込みで、特殊詐欺対策等の強化が計画されています。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.243816
     },
     "efficiency": {
       "direction": "down",
@@ -1282,8 +1349,9 @@
     "budget": {
       "direction": "up",
       "changeRate": 0.241,
-      "r7Direction": "down",
-      "text": "令和5年度の7,944千円から令和6年度の9,856千円へ約24%増加しています。令和7年度予算は7,893千円と削減の見込みです。"
+      "text": "令和5年度の7,944千円から令和6年度の9,856千円へ約24%増加しています。令和7年度予算は7,893千円と削減の見込みです。",
+      "nextYearDirection": "down",
+      "nextYearChangeRate": -0.199168
     },
     "efficiency": {
       "direction": "flat",
@@ -1301,8 +1369,9 @@
     "budget": {
       "direction": "down",
       "changeRate": -0.204,
-      "r7Direction": "up",
-      "text": "令和5年度の9,950千円から令和6年度の7,920千円へ約20%削減されました。令和7年度予算は50,000千円と約6倍に急増する見込みで、市街化調整区域の活性化策の抜本的な強化が予定されています。"
+      "text": "令和5年度の9,950千円から令和6年度の7,920千円へ約20%削減されました。令和7年度予算は50,000千円と約6倍に急増する見込みで、市街化調整区域の活性化策の抜本的な強化が予定されています。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 5.313131
     },
     "efficiency": {
       "direction": "down",
@@ -1320,8 +1389,9 @@
     "budget": {
       "direction": "flat",
       "changeRate": -0.006,
-      "r7Direction": "flat",
-      "text": "令和5年度の24,180千円から令和6年度の24,044千円へほぼ横ばいです。令和7年度予算も24,180千円とほぼ同水準が続きます。"
+      "text": "令和5年度の24,180千円から令和6年度の24,044千円へほぼ横ばいです。令和7年度予算も24,180千円とほぼ同水準が続きます。",
+      "nextYearDirection": "flat",
+      "nextYearChangeRate": 0.005656
     },
     "efficiency": {
       "direction": "flat",
@@ -1339,8 +1409,9 @@
     "budget": {
       "direction": "flat",
       "changeRate": 0.0,
-      "r7Direction": "flat",
-      "text": "令和5年度・6年度ともに35,000千円で固定されています。令和7年度予算も35,000千円で継続の見込みです。"
+      "text": "令和5年度・6年度ともに35,000千円で固定されています。令和7年度予算も35,000千円で継続の見込みです。",
+      "nextYearDirection": "flat",
+      "nextYearChangeRate": 0.0
     },
     "efficiency": {
       "direction": "unknown",
@@ -1358,8 +1429,9 @@
     "budget": {
       "direction": "down",
       "changeRate": -0.246,
-      "r7Direction": "up",
-      "text": "令和5年度の11,729千円から令和6年度の8,839千円へ約25%削減されました。令和7年度予算は15,117千円と大幅増加の見込みで、留学生支援・グローバル人材育成の強化が計画されています。"
+      "text": "令和5年度の11,729千円から令和6年度の8,839千円へ約25%削減されました。令和7年度予算は15,117千円と大幅増加の見込みで、留学生支援・グローバル人材育成の強化が計画されています。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.710261
     },
     "efficiency": {
       "direction": "up",
@@ -1377,8 +1449,9 @@
     "budget": {
       "direction": "flat",
       "changeRate": -0.018,
-      "r7Direction": "up",
-      "text": "令和5年度の3,755千円から令和6年度の3,688千円へほぼ横ばいです。令和7年度予算は3,877千円と微増の見込みです。"
+      "text": "令和5年度の3,755千円から令和6年度の3,688千円へほぼ横ばいです。令和7年度予算は3,877千円と微増の見込みです。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.051247
     },
     "efficiency": {
       "direction": "up",
@@ -1396,8 +1469,9 @@
     "budget": {
       "direction": "up",
       "changeRate": 0.287,
-      "r7Direction": "up",
-      "text": "令和5年度の30,995千円から令和6年度の39,906千円へ約29%増加しています。令和7年度予算は54,558千円と更に大幅増加の見込みで、外国人住民の急増に対応したサービス拡充が計画されています。"
+      "text": "令和5年度の30,995千円から令和6年度の39,906千円へ約29%増加しています。令和7年度予算は54,558千円と更に大幅増加の見込みで、外国人住民の急増に対応したサービス拡充が計画されています。",
+      "nextYearDirection": "up",
+      "nextYearChangeRate": 0.367163
     },
     "efficiency": {
       "direction": "flat",

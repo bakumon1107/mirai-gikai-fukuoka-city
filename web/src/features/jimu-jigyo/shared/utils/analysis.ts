@@ -159,7 +159,8 @@ export function analyzeBudget(
     return {
       direction: "unknown",
       changeRate: null,
-      r7Direction: "unknown",
+      nextYearDirection: "unknown",
+      nextYearChangeRate: null,
       text: "事業費データがありません。",
     };
   }
@@ -167,29 +168,29 @@ export function analyzeBudget(
   const changeRate = prev > 0 ? (curr - prev) / prev : null;
   const dir = direction(changeRate);
 
-  let r7Direction: ChangeDirection = "unknown";
-  if (r7 !== undefined && curr > 0) {
-    const r7rate = (r7 - curr) / curr;
-    r7Direction = direction(r7rate);
+  // 次年度予算の方向と変化率
+  const nextYearBudget = data.事業費_千円?.R7予算?.歳出;
+  let nextYearDirection: ChangeDirection = "unknown";
+  let nextYearChangeRate: number | null = null;
+  if (nextYearBudget !== undefined && curr > 0) {
+    nextYearChangeRate = (nextYearBudget - curr) / curr;
+    nextYearDirection = direction(nextYearChangeRate);
   }
 
   let trendDesc: string;
   if (changeRate === null) trendDesc = "事業費の変化を計算できません。";
   else if (changeRate >= 0.3)
-    trendDesc = `令和5年度の${prev.toLocaleString()}千円から令和6年度の${curr.toLocaleString()}千円へ${pct(changeRate)}と大幅に増加しています。`;
+    trendDesc = `前年度の${prev.toLocaleString()}千円から当年度の${curr.toLocaleString()}千円へ${pct(changeRate)}と大幅に増加しています。`;
   else if (changeRate >= 0.05)
-    trendDesc = `令和5年度の${prev.toLocaleString()}千円から令和6年度の${curr.toLocaleString()}千円へ${pct(changeRate)}増加しています。`;
+    trendDesc = `前年度の${prev.toLocaleString()}千円から当年度の${curr.toLocaleString()}千円へ${pct(changeRate)}増加しています。`;
   else if (changeRate >= -0.05)
-    trendDesc = `歳出は令和5年度の${prev.toLocaleString()}千円から令和6年度の${curr.toLocaleString()}千円でほぼ横ばいです（${pct(changeRate)}）。`;
+    trendDesc = `歳出は前年度の${prev.toLocaleString()}千円から当年度の${curr.toLocaleString()}千円でほぼ横ばいです（${pct(changeRate)}）。`;
   else
-    trendDesc = `令和5年度の${prev.toLocaleString()}千円から令和6年度の${curr.toLocaleString()}千円へ${pct(changeRate)}削減されました。`;
+    trendDesc = `前年度の${prev.toLocaleString()}千円から当年度の${curr.toLocaleString()}千円へ${pct(changeRate)}削減されました。`;
 
-  let r7Text = "";
-  if (r7 !== undefined) {
-    const r7rate = curr > 0 ? (r7 - curr) / curr : null;
-    if (r7rate !== null) {
-      r7Text = `令和7年度予算は${r7.toLocaleString()}千円（前年度比${pct(r7rate)}）の見込みです。`;
-    }
+  let nextYearText = "";
+  if (nextYearBudget !== undefined && nextYearChangeRate !== null) {
+    nextYearText = `次年度予算は${nextYearBudget.toLocaleString()}千円（前年度比${pct(nextYearChangeRate)}）の見込みです。`;
   }
 
   // 財源構成の特記
@@ -207,8 +208,9 @@ export function analyzeBudget(
   return {
     direction: dir,
     changeRate,
-    r7Direction,
-    text: [trendDesc, r7Text, zaigenText].filter(Boolean).join(""),
+    nextYearDirection,
+    nextYearChangeRate,
+    text: [trendDesc, nextYearText, zaigenText].filter(Boolean).join(""),
   };
 }
 
