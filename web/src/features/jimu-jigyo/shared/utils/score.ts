@@ -1,6 +1,7 @@
 import type {
   Grade,
   JimuJigyoData,
+  KpiAchievement,
   KpiItem,
   ScoreBreakdown,
   ScoreResult,
@@ -129,18 +130,24 @@ export function calcBudgetScore(
   if (!prevBudget || !currBudget || prevBudget === 0) return 0.5;
 
   const kpis = data.指標?.成果指標 ?? [];
+  const yearNum = Number(year.replace(/^r/i, "")); // "r6" → 6
+  const prevKey = `R${yearNum - 1}` as keyof KpiAchievement;
+  const currKey = `R${yearNum}` as keyof KpiAchievement;
 
-  // 達成率ベースでコスト効率を計算
-  const r5Rates = kpis
-    .map((k) => parseAchievementRate(k.達成率?.R5))
-    .filter((r): r is number => r !== null);
-  const r6Rates = kpis
-    .map((k) => parseAchievementRate(k.達成率?.R6))
-    .filter((r): r is number => r !== null);
+  // 同一KPIに前年・当年の達成率が両方ある組み合わせのみ比較
+  const paired = kpis
+    .map((k) => ({
+      prev: parseAchievementRate(k.達成率?.[prevKey]),
+      curr: parseAchievementRate(k.達成率?.[currKey]),
+    }))
+    .filter(
+      (p): p is { prev: number; curr: number } =>
+        p.prev !== null && p.curr !== null
+    );
 
-  if (r5Rates.length > 0 && r6Rates.length > 0) {
-    const r5AvgRate = r5Rates.reduce((a, b) => a + b, 0) / r5Rates.length;
-    const r6AvgRate = r6Rates.reduce((a, b) => a + b, 0) / r6Rates.length;
+  if (paired.length > 0) {
+    const r5AvgRate = paired.reduce((a, p) => a + p.prev, 0) / paired.length;
+    const r6AvgRate = paired.reduce((a, p) => a + p.curr, 0) / paired.length;
 
     if (r5AvgRate > 0 && prevBudget > 0 && currBudget > 0) {
       const r5Efficiency = r5AvgRate / prevBudget;
