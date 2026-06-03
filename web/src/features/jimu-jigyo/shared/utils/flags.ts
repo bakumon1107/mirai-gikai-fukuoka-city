@@ -1,7 +1,8 @@
 import type { JimuJigyoData, KpiItem, WatchdogFlag } from "../types/jimu-jigyo";
 import { getCurrentBudget, getPrevBudget } from "./budget-accessor";
 
-const MISSING_VALUES = ["集計中", "調査未実施", "─", "設定なし", "-"];
+// 「調査未実施」は定期調査年外のためMISSING扱いしない
+const MISSING_VALUES = ["集計中", "─", "設定なし", "-"];
 
 function isMissing(val: unknown): boolean {
   if (val === null || val === undefined) return true;
@@ -141,7 +142,8 @@ export function calcFlags(
     flags.push({
       type: "no_data",
       label: "データ未集計",
-      detail: "成果指標の実績値が「集計中」または「調査未実施」です。",
+      detail:
+        "成果指標の実績値が「集計中」のため、現時点では評価に必要なデータが揃っていません。",
     });
   }
 

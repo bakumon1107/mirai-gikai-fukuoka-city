@@ -33,7 +33,7 @@ export function WatchdogFlagTooltip({ flags, compact = false }: Props) {
   return (
     <div className="flex flex-wrap gap-1">
       {flags.map((flag) => (
-        <div key={flag.type} className="relative group">
+        <div key={flag.type} className="relative group/flag">
           {/* フォーカス・ホバー両対応のトリガー */}
           <Button
             variant="ghost"
@@ -55,7 +55,7 @@ export function WatchdogFlagTooltip({ flags, compact = false }: Props) {
           </Button>
 
           {/* ツールチップ: hover と focus-within で表示 */}
-          <div className="absolute bottom-full left-0 mb-2 z-50 w-64 hidden group-hover:block group-focus-within:block">
+          <div className="absolute bottom-full left-0 mb-2 z-50 w-64 hidden group-hover/flag:block group-focus-within/flag:block">
             <div className="bg-white border border-mirai-border rounded-lg shadow-lg p-3 text-xs">
               <p className="font-bold text-mirai-text mb-1">
                 {FLAG_ICON[flag.type]} {flag.label}
