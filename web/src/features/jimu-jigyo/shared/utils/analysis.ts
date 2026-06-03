@@ -125,12 +125,13 @@ export function analyzeKpi(data: JimuJigyoData): KpiAnalysisResult {
       ? `目標に対する達成率は${achievementRate.toFixed(1)}%です。`
       : "";
 
+  // direction() の ±5% 閾値と揃えてテキストとアイコンが矛盾しないようにする
   let trendDesc: string;
   if (changeRate >= 0.1)
     trendDesc = `前年度比${pct(changeRate)}と大幅に改善しました。`;
-  else if (changeRate > 0.01)
-    trendDesc = `前年度比${pct(changeRate)}と微増しました。`;
-  else if (changeRate >= -0.01)
+  else if (changeRate >= 0.05)
+    trendDesc = `前年度比${pct(changeRate)}と改善しました。`;
+  else if (changeRate >= -0.05)
     trendDesc = `前年度とほぼ同水準です（${pct(changeRate)}）。`;
   else if (changeRate >= -0.1)
     trendDesc = `前年度比${pct(changeRate)}とやや悪化しました。`;
@@ -245,9 +246,9 @@ export function analyzeEfficiency(
     );
 
   if (pairs.length === 0) {
-    // 予算変化のみで判定
+    // 予算変化のみで判定（絶対値で判定して削減をほぼ維持と誤表示しない）
     const budgetChange = (currBudget - prevBudget) / prevBudget;
-    if (budgetChange <= 0.05) {
+    if (Math.abs(budgetChange) <= 0.05) {
       return {
         direction: "flat",
         changeRate: null,
@@ -255,7 +256,7 @@ export function analyzeEfficiency(
       };
     }
     return {
-      direction: "unknown",
+      direction: budgetChange > 0.05 ? "down" : "up", // 予算増 = 効率悪化傾向、減 = 効率向上傾向
       changeRate: null,
       text: `達成率の数値データが不足しているため定量的な効率分析は困難です。予算は前年度比${pct(budgetChange)}変化しています。`,
     };
