@@ -5,7 +5,6 @@ import {
   Line,
   LineChart,
   ReferenceLine,
-  ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
@@ -41,29 +40,49 @@ export function KpiTrendChart({ kpi }: Props) {
   const isImproving =
     r5actual !== null && r6actual !== null && r6actual >= r5actual;
 
+  // 目標値を含めた上で余白を加えたドメインを計算
+  const allValues = data
+    .map((d) => d.value)
+    .filter((v): v is number => v !== null);
+  if (finalTarget !== null) allValues.push(finalTarget);
+  if (r7target !== null) allValues.push(r7target);
+
+  const minVal = Math.min(...allValues);
+  const maxVal = Math.max(...allValues);
+  const padding = (maxVal - minVal) * 0.15 || maxVal * 0.1;
+  const domainMin = Math.max(0, minVal - padding);
+  const domainMax = maxVal + padding;
+
   return (
-    <ResponsiveContainer width="100%" height={160}>
-      <LineChart data={data} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#e5e5ea" />
-        <XAxis dataKey="year" tick={{ fontSize: 11 }} />
-        <YAxis tick={{ fontSize: 11 }} width={45} domain={["auto", "auto"]} />
-        <Tooltip />
-        <Line
-          dataKey="value"
-          stroke={isImproving ? "#22c55e" : "#ef4444"}
-          strokeWidth={2}
-          dot={{ r: 4 }}
-          name="実績"
+    <LineChart
+      width={400}
+      height={160}
+      data={data}
+      margin={{ top: 5, right: 60, left: 0, bottom: 5 }}
+    >
+      <CartesianGrid strokeDasharray="3 3" stroke="var(--color-mirai-border)" />
+      <XAxis dataKey="year" tick={{ fontSize: 11 }} />
+      <YAxis
+        tick={{ fontSize: 11 }}
+        width={45}
+        domain={[domainMin, domainMax]}
+      />
+      <Tooltip />
+      <Line
+        dataKey="value"
+        stroke={isImproving ? "var(--color-grade-a)" : "var(--color-grade-d)"}
+        strokeWidth={2}
+        dot={{ r: 4 }}
+        name="実績"
+      />
+      {finalTarget !== null && (
+        <ReferenceLine
+          y={finalTarget}
+          stroke="var(--color-grade-d)"
+          strokeDasharray="5 5"
+          label={{ value: "最終目標", position: "right", fontSize: 11 }}
         />
-        {finalTarget !== null && (
-          <ReferenceLine
-            y={finalTarget}
-            stroke="#dc2626"
-            strokeDasharray="5 5"
-            label={{ value: "最終目標", position: "right", fontSize: 11 }}
-          />
-        )}
-      </LineChart>
-    </ResponsiveContainer>
+      )}
+    </LineChart>
   );
 }

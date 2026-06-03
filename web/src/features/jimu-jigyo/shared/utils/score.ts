@@ -17,16 +17,24 @@ function isMissing(val: unknown): boolean {
   return false;
 }
 
-/** 調査未実施: 定期調査年でないだけなのでスコアには影響させない */
 function isScheduledSurveyAbsent(val: unknown): boolean {
   if (typeof val === "string") return val.trim() === "調査未実施";
   return false;
 }
 
-/** 達成率文字列 "87.0%" → 87.0（数値）にパース。失敗時 null */
+/**
+ * 達成率をパースして 0〜100 の数値に変換する。
+ * "87.0%" → 87.0
+ * "達成"  → 100（目標未設定でも行政判断で達成扱い）
+ * "未達成" → 60（未達成は60%相当として扱う）
+ * それ以外の文字列・null → null（計算不能）
+ */
 function parseAchievementRate(rateStr: string | undefined): number | null {
   if (!rateStr) return null;
-  const n = Number.parseFloat(rateStr.replace("%", "").trim());
+  const trimmed = rateStr.trim();
+  if (trimmed === "達成") return 100;
+  if (trimmed === "未達成") return 60;
+  const n = Number.parseFloat(trimmed.replace("%", ""));
   return Number.isNaN(n) ? null : n;
 }
 
@@ -38,6 +46,12 @@ function calcKpiItemCoeff(kpi: KpiItem, year: "R6"): number {
 
   if (isScheduledSurveyAbsent(actual)) return 0.5;
   if (isMissing(actual)) return 0.1;
+
+  // 達成率テキスト（"達成"/"未達成"）で判定
+  const rateText = kpi.達成率?.[year];
+  if (rateText === "達成") return 1.0;
+  if (rateText === "未達成") return 0.4;
+
   if (isMissing(target) || target === null || target === undefined) return 0.5;
 
   const t = Number(target);
@@ -81,45 +95,46 @@ export function calcTrendScore(data: JimuJigyoData): number {
   return 0;
 }
 
-// ─── 透明性スコア（0〜1）※ 最大10点に対応 ───────────────────
+// ─── 目標設定の挑戦性スコア（0〜1）※ 最大10点に対応 ──────────
+//
+// 候補A: R6目標値 vs R5実績値 を比較して「目標を引き上げているか」を評価。
+// 挑戦的な目標設定 → 高評価。後退・現状維持 → 低評価。
+// 目標値が非数値（"増加"等）や未設定の場合は中立（0.5）。
 
-export function calcTransparencyScore(data: JimuJigyoData): number {
-  let deduction = 0;
+export function calcTargetAmbitionScore(data: JimuJigyoData): number {
   const kpis = data.指標?.成果指標 ?? [];
+  if (kpis.length === 0) return 0.5;
 
-  if (kpis.some((k) => isMissing(k.目標?.R6))) deduction += 5;
+  const scores = kpis.map((kpi) => {
+    const r6Target = kpi.目標?.R6;
+    const r5Actual = kpi.実績?.R5;
 
-  const primaryKpi = kpis[0];
-  if (primaryKpi) {
-    const r6actual = primaryKpi.実績?.R6;
-    if (!isScheduledSurveyAbsent(r6actual) && isMissing(r6actual))
-      deduction += 5;
-  }
+    // 目標値や前年実績が数値でない場合は中立
+    const t = Number(r6Target);
+    const prev = Number(r5Actual);
+    if (
+      r6Target === null ||
+      r6Target === undefined ||
+      r5Actual === null ||
+      r5Actual === undefined ||
+      Number.isNaN(t) ||
+      Number.isNaN(prev) ||
+      prev === 0
+    ) {
+      return 0.5;
+    }
 
-  const allKpis = [...(data.指標?.活動指標 ?? []), ...kpis];
-  const missingRateCount = allKpis.filter((k) => {
-    const r = k.達成率?.R6;
-    return !r || ["─", "設定なし", "-"].includes(r.trim());
-  }).length;
-  if (missingRateCount >= 2) deduction += 5;
+    const ambitionRate = (t - prev) / prev;
+    if (ambitionRate > 0.05) return 1.0; // 前年実績より5%超高い目標 → 挑戦的
+    if (ambitionRate >= -0.05) return 0.5; // ±5%以内 → 現状維持
+    return 0.2; // 前年実績より低い目標 → 後退
+  });
 
-  if (
-    allKpis.some(
-      (k) => k.目標?.最終年度 === "R年度" || k.目標?.最終年度 === null
-    )
-  )
-    deduction += 3;
-
-  return Math.max(0, 20 - deduction) / 20;
+  return scores.reduce((a, b) => a + b, 0) / scores.length;
 }
 
 // ─── 予算効率スコア（0〜1）※ 最大20点に対応 ─────────────────
 
-/**
- * コスト効率 = 全成果指標の達成率平均（%） ÷ 歳出（千円）
- * R5→R6 でこの効率がどれだけ改善したかで評価する。
- * 達成率データがない場合は予算変化量でフォールバック。
- */
 export function calcBudgetScore(
   data: JimuJigyoData,
   year: string = "r6"
@@ -130,11 +145,11 @@ export function calcBudgetScore(
   if (!prevBudget || !currBudget || prevBudget === 0) return 0.5;
 
   const kpis = data.指標?.成果指標 ?? [];
-  const yearNum = Number(year.replace(/^r/i, "")); // "r6" → 6
+  const yearNum = Number(year.replace(/^r/i, ""));
   const prevKey = `R${yearNum - 1}` as keyof KpiAchievement;
   const currKey = `R${yearNum}` as keyof KpiAchievement;
 
-  // 同一KPIに前年・当年の達成率が両方ある組み合わせのみ比較
+  // 同一KPIで前年・当年の達成率が両方ある組み合わせのみ比較
   const paired = kpis
     .map((k) => ({
       prev: parseAchievementRate(k.達成率?.[prevKey]),
@@ -149,7 +164,7 @@ export function calcBudgetScore(
     const r5AvgRate = paired.reduce((a, p) => a + p.prev, 0) / paired.length;
     const r6AvgRate = paired.reduce((a, p) => a + p.curr, 0) / paired.length;
 
-    if (r5AvgRate > 0 && prevBudget > 0 && currBudget > 0) {
+    if (r5AvgRate > 0) {
       const r5Efficiency = r5AvgRate / prevBudget;
       const r6Efficiency = r6AvgRate / currBudget;
       const efficiencyChange = (r6Efficiency - r5Efficiency) / r5Efficiency;
@@ -157,7 +172,7 @@ export function calcBudgetScore(
       if (efficiencyChange >= 0.1) return 1.0;
       if (efficiencyChange >= 0) return 0.75;
       if (efficiencyChange >= -0.1) return 0.5;
-      return 0;
+      return 0.25; // 下限 0.25（0点は厳しすぎる）
     }
   }
 
@@ -176,7 +191,7 @@ export type KpiEfficiency = {
   r6Rate: number | null;
   r5Budget: number | null;
   r6Budget: number | null;
-  efficiencyChangeRate: number | null; // null = 計算不能
+  efficiencyChangeRate: number | null;
 };
 
 export function calcKpiEfficiencies(
@@ -186,10 +201,13 @@ export function calcKpiEfficiencies(
   const kpis = data.指標?.成果指標 ?? [];
   const prevBudget = getPrevBudget(data, year)?.歳出 ?? null;
   const currBudget = getCurrentBudget(data, year)?.歳出 ?? null;
+  const yearNum = Number(year.replace(/^r/i, ""));
+  const prevKey = `R${yearNum - 1}` as keyof KpiAchievement;
+  const currKey = `R${yearNum}` as keyof KpiAchievement;
 
   return kpis.map((kpi) => {
-    const r5Rate = parseAchievementRate(kpi.達成率?.R5);
-    const r6Rate = parseAchievementRate(kpi.達成率?.R6);
+    const r5Rate = parseAchievementRate(kpi.達成率?.[prevKey]);
+    const r6Rate = parseAchievementRate(kpi.達成率?.[currKey]);
 
     let efficiencyChangeRate: number | null = null;
     if (
@@ -198,13 +216,11 @@ export function calcKpiEfficiencies(
       prevBudget !== null &&
       currBudget !== null &&
       prevBudget > 0 &&
-      currBudget > 0
+      r5Rate > 0
     ) {
       const r5Eff = r5Rate / prevBudget;
       const r6Eff = r6Rate / currBudget;
-      if (r5Eff > 0) {
-        efficiencyChangeRate = (r6Eff - r5Eff) / r5Eff;
-      }
+      efficiencyChangeRate = (r6Eff - r5Eff) / r5Eff;
     }
 
     return {
@@ -229,10 +245,10 @@ function scoreToGrade(score: number): Grade {
 
 /**
  * スコア配分（合計100点）:
- *   成果KPI達成  40点
- *   改善トレンド 30点
- *   透明性       10点
- *   予算効率     20点
+ *   成果KPI達成      40点
+ *   改善トレンド     30点
+ *   目標設定の挑戦性 10点（旧: 透明性）
+ *   予算効率         20点
  */
 export function calcScore(
   data: JimuJigyoData,
@@ -240,13 +256,13 @@ export function calcScore(
 ): ScoreResult {
   const kpiCoeff = calcKpiScore(data.指標?.成果指標);
   const trendCoeff = calcTrendScore(data);
-  const transparencyCoeff = calcTransparencyScore(data);
+  const ambitionCoeff = calcTargetAmbitionScore(data);
   const budgetCoeff = calcBudgetScore(data, year);
 
   const kpiScore = kpiCoeff * 40;
   const trendScore = trendCoeff * 30;
-  const transparencyScore = transparencyCoeff * 10; // 10点満点に変更
-  const budgetScore = budgetCoeff * 20; // 20点満点に変更
+  const transparencyScore = ambitionCoeff * 10;
+  const budgetScore = budgetCoeff * 20;
 
   const total = kpiScore + trendScore + transparencyScore + budgetScore;
   const rounded = Math.round(total);
