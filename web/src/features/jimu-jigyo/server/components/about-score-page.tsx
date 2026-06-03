@@ -30,8 +30,8 @@ export function AboutScorePage() {
         {[
           { label: "成果KPI達成", max: 40, anchor: "kpi" },
           { label: "改善トレンド", max: 30, anchor: "trend" },
-          { label: "透明性", max: 20, anchor: "transparency" },
-          { label: "予算効率", max: 10, anchor: "budget" },
+          { label: "透明性", max: 10, anchor: "transparency" },
+          { label: "予算効率", max: 20, anchor: "budget" },
         ].map((item) => (
           <a
             key={item.anchor}
@@ -138,7 +138,7 @@ export function AboutScorePage() {
       {/* 軸③ */}
       <section id="transparency" className="space-y-4">
         <h2 className="text-lg font-bold text-mirai-text">
-          軸③: 透明性（最大20点）
+          軸③: 透明性（最大10点）
         </h2>
         <p className="text-sm text-mirai-text-secondary">
           成果指標の目標値が設定されているか、データが公開されているか、
@@ -158,7 +158,7 @@ export function AboutScorePage() {
           <tbody>
             {[
               ["成果指標に目標値未設定が1件以上", "-5点"],
-              ["主要KPIが「調査未実施」「集計中」", "-5点"],
+              ["主要KPIが「集計中」（データ取集中）", "-5点"],
               ["最終年度が「R年度」（未定）", "-3点"],
               ["達成率欄が「─」等が2件以上", "-5点"],
             ].map(([cond, penalty]) => (
@@ -178,16 +178,19 @@ export function AboutScorePage() {
       {/* 軸④ */}
       <section id="budget" className="space-y-4">
         <h2 className="text-lg font-bold text-mirai-text">
-          軸④: 予算効率（最大10点）
+          軸④: 予算効率（最大20点）
         </h2>
         <p className="text-sm text-mirai-text-secondary">
-          前年度（令和5年度）から令和6年度にかけて歳出がどう変化したかを評価します。
+          予算の増減だけでなく、その予算でKPIがどれだけ改善したかを評価します。
+          「コスト効率」（成果指標の達成率平均 ÷
+          歳出）が前年度と比べてどう変化したかを見ます。
+          予算が増えても、それ以上に成果が伸びていれば高評価になります。
         </p>
         <table className="w-full text-sm border-collapse">
           <thead>
             <tr className="bg-mirai-surface">
               <th className="border border-mirai-border px-3 py-2 text-left">
-                歳出変化率（R5→R6）
+                コスト効率の変化率（R5→R6）
               </th>
               <th className="border border-mirai-border px-3 py-2 text-left">
                 得点
@@ -196,9 +199,10 @@ export function AboutScorePage() {
           </thead>
           <tbody>
             {[
-              ["減少または±5%以内", "10点"],
-              ["5〜30%増加", "5点"],
-              ["30%超増加", "0点"],
+              ["+10%以上向上", "20点（満点）"],
+              ["0〜+10%向上", "15点"],
+              ["-10〜0%（微低下）", "10点"],
+              ["-10%超低下", "0点"],
             ].map(([rate, score]) => (
               <tr key={rate}>
                 <td className="border border-mirai-border px-3 py-2">{rate}</td>
@@ -209,6 +213,12 @@ export function AboutScorePage() {
             ))}
           </tbody>
         </table>
+        <div className="bg-mirai-surface-warm border border-mirai-border rounded-lg p-3 text-sm text-mirai-text-secondary">
+          <p className="font-medium text-mirai-text mb-1">
+            達成率データがない場合のフォールバック
+          </p>
+          KPIの達成率が取得できない場合は、予算変化量のみで評価します（予算安定→15点、5〜30%増加→10点、30%超増加→5点）。
+        </div>
       </section>
 
       <hr className="border-mirai-border" />
@@ -290,7 +300,7 @@ export function AboutScorePage() {
             id: "no-data",
             icon: "🔒",
             label: "データ未集計",
-            desc: "実績値が「集計中」や「調査未実施」となっている場合。現時点では評価に必要なデータが揃っていません。",
+            desc: "実績値が「集計中」となっている場合。現時点では評価に必要なデータが揃っていません。なお「調査未実施」は定期調査年でないためフラグ対象外です。",
           },
         ].map((flag) => (
           <div key={flag.id} id={flag.id} className="flex gap-3">
