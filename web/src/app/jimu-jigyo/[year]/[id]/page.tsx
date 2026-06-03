@@ -32,7 +32,8 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { year, id } = await params;
   if (!isValidYear(year)) return { title: "事業が見つかりません" };
-  const record = await loadJimuJigyoDetail(year, id);
+  const decodedId = decodeURIComponent(id);
+  const record = await loadJimuJigyoDetail(year, decodedId);
   if (!record) return { title: "事業が見つかりません" };
   return {
     title: `${record.事業名} | 事務事業評価`,
@@ -43,7 +44,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function Page({ params }: Props) {
   const { year, id } = await params;
   if (!isValidYear(year)) notFound();
-  const record = await loadJimuJigyoDetail(year, id);
+
+  // params.id がエンコードされている場合も考慮してデコード
+  const decodedId = decodeURIComponent(id);
+  const record = await loadJimuJigyoDetail(year, decodedId);
   if (!record) notFound();
   return (
     <JimuJigyoDetailPage record={record} basePath={`/jimu-jigyo/${year}`} />
