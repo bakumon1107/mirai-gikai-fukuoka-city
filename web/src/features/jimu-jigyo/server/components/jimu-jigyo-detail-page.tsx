@@ -176,7 +176,7 @@ export function JimuJigyoDetailPage({ record, basePath, year = "r6" }: Props) {
                             <p className="text-mirai-text-muted">
                               目標: {target ?? "─"}
                             </p>
-                            {rate && (
+                            {rate != null && (
                               <p className="text-mirai-text-secondary">
                                 {rate}
                               </p>
@@ -184,7 +184,7 @@ export function JimuJigyoDetailPage({ record, basePath, year = "r6" }: Props) {
                           </div>
                         );
                       })}
-                      {nextYearTarget && nextYearKey && (
+                      {nextYearTarget != null && nextYearKey && (
                         <div className="bg-mirai-surface rounded p-2 opacity-70">
                           <p className="text-mirai-text-muted">
                             {nextYearKey}目標
