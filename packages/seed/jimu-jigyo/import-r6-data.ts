@@ -98,16 +98,16 @@ async function matchExistingItem(
     };
   }
 
-  // 2. 部分一致（同一部局内で事業名に部分一致）
+  // 2. 部分一致（同一部局・同一課内で事業名に部分一致）
   const { data: partialMatch } = await supabase
     .from("jimu_jigyo_items")
     .select("id, item_name")
     .ilike("item_name", `%${itemName}%`)
     .eq("bureau_code", bureauCode)
+    .eq("department_code", departmentCode)
     .limit(5);
 
   if (partialMatch && partialMatch.length > 0) {
-    // 最初の候補を返す（確信度は75%）
     return {
       id: partialMatch[0].id,
       matchScore: 75,
@@ -396,7 +396,7 @@ async function importBureauFile(
   return {
     fiscal_year: fiscalYear,
     bureau_code: bureauCode,
-    total_processed: 0,
+    total_processed: totalInserted + totalUpdated + errors.length,
     total_inserted: totalInserted,
     total_updated: totalUpdated,
     errors,
@@ -471,10 +471,11 @@ async function main() {
 
   // インポートログを更新
   if (logId) {
+    const allErrors = results.flatMap((r) => r.errors);
     await supabase
       .from("jimu_jigyo_import_logs")
       .update({
-        status: "completed",
+        status: allErrors.length > 0 ? "completed_with_errors" : "completed",
         total_items_inserted: totalInserted,
         total_items_updated: totalUpdated,
       })
