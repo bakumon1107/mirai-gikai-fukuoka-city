@@ -7,10 +7,30 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: "14.4"
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
   }
   public: {
     Tables: {
@@ -629,51 +649,51 @@ export type Database = {
       general_questions: {
         Row: {
           council_session_id: string
-          created_at: string
+          created_at: string | null
           id: string
           publish_status: string
           question_order: number
           questioner_name: string
           questioner_number: number | null
           questioner_party: string | null
-          raw_text: string
+          raw_text: string | null
           session_day: number
           source_url: string | null
-          summary: string
+          summary: string | null
           topics: Json
-          updated_at: string
+          updated_at: string | null
         }
         Insert: {
           council_session_id: string
-          created_at?: string
+          created_at?: string | null
           id?: string
           publish_status?: string
-          question_order: number
+          question_order?: number
           questioner_name: string
           questioner_number?: number | null
           questioner_party?: string | null
-          raw_text: string
-          session_day: number
+          raw_text?: string | null
+          session_day?: number
           source_url?: string | null
-          summary: string
+          summary?: string | null
           topics?: Json
-          updated_at?: string
+          updated_at?: string | null
         }
         Update: {
           council_session_id?: string
-          created_at?: string
+          created_at?: string | null
           id?: string
           publish_status?: string
           question_order?: number
           questioner_name?: string
           questioner_number?: number | null
           questioner_party?: string | null
-          raw_text?: string
+          raw_text?: string | null
           session_day?: number
           source_url?: string | null
-          summary?: string
+          summary?: string | null
           topics?: Json
-          updated_at?: string
+          updated_at?: string | null
         }
         Relationships: [
           {
@@ -1027,6 +1047,427 @@ export type Database = {
           },
         ]
       }
+      jimu_jigyo_bureaus: {
+        Row: {
+          bureau_code: string
+          bureau_name: string
+          created_at: string | null
+          display_order: number | null
+        }
+        Insert: {
+          bureau_code: string
+          bureau_name: string
+          created_at?: string | null
+          display_order?: number | null
+        }
+        Update: {
+          bureau_code?: string
+          bureau_name?: string
+          created_at?: string | null
+          display_order?: number | null
+        }
+        Relationships: []
+      }
+      jimu_jigyo_fiscal_years: {
+        Row: {
+          administrative_plan_data: Json | null
+          basic_plan_data: Json | null
+          created_at: string | null
+          data_source: string | null
+          expenditure_amount: number | null
+          expenditure_type: string | null
+          fiscal_year: number
+          general_revenue: number | null
+          id: string
+          imported_at: string | null
+          imported_by: string | null
+          item_id: string
+          next_year_budget: number | null
+          specific_revenue: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          administrative_plan_data?: Json | null
+          basic_plan_data?: Json | null
+          created_at?: string | null
+          data_source?: string | null
+          expenditure_amount?: number | null
+          expenditure_type?: string | null
+          fiscal_year: number
+          general_revenue?: number | null
+          id?: string
+          imported_at?: string | null
+          imported_by?: string | null
+          item_id: string
+          next_year_budget?: number | null
+          specific_revenue?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          administrative_plan_data?: Json | null
+          basic_plan_data?: Json | null
+          created_at?: string | null
+          data_source?: string | null
+          expenditure_amount?: number | null
+          expenditure_type?: string | null
+          fiscal_year?: number
+          general_revenue?: number | null
+          id?: string
+          imported_at?: string | null
+          imported_by?: string | null
+          item_id?: string
+          next_year_budget?: number | null
+          specific_revenue?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jimu_jigyo_fiscal_years_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "jimu_jigyo_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jimu_jigyo_fiscal_years_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "jimu_jigyo_latest"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      jimu_jigyo_import_logs: {
+        Row: {
+          error_message: string | null
+          fiscal_year: number
+          id: string
+          imported_at: string | null
+          imported_by: string | null
+          source_type: string
+          source_url: string | null
+          status: string | null
+          total_items_inserted: number | null
+          total_items_processed: number | null
+          total_items_updated: number | null
+        }
+        Insert: {
+          error_message?: string | null
+          fiscal_year: number
+          id?: string
+          imported_at?: string | null
+          imported_by?: string | null
+          source_type: string
+          source_url?: string | null
+          status?: string | null
+          total_items_inserted?: number | null
+          total_items_processed?: number | null
+          total_items_updated?: number | null
+        }
+        Update: {
+          error_message?: string | null
+          fiscal_year?: number
+          id?: string
+          imported_at?: string | null
+          imported_by?: string | null
+          source_type?: string
+          source_url?: string | null
+          status?: string | null
+          total_items_inserted?: number | null
+          total_items_processed?: number | null
+          total_items_updated?: number | null
+        }
+        Relationships: []
+      }
+      jimu_jigyo_items: {
+        Row: {
+          achievement_criteria: string | null
+          activity_output: string | null
+          administrative_plan: string | null
+          bureau_code: string
+          bureau_name: string
+          created_at: string | null
+          department_code: string
+          department_name: string
+          establishment_trigger: string | null
+          final_outcome: string | null
+          id: string
+          implementation_content: string | null
+          intermediate_outcome: string | null
+          is_active: boolean | null
+          item_code: string
+          item_name: string
+          result_output: string | null
+          root_law: string | null
+          start_fiscal_year: string | null
+          target_description: string | null
+          target_goal_state: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          achievement_criteria?: string | null
+          activity_output?: string | null
+          administrative_plan?: string | null
+          bureau_code: string
+          bureau_name: string
+          created_at?: string | null
+          department_code: string
+          department_name: string
+          establishment_trigger?: string | null
+          final_outcome?: string | null
+          id?: string
+          implementation_content?: string | null
+          intermediate_outcome?: string | null
+          is_active?: boolean | null
+          item_code: string
+          item_name: string
+          result_output?: string | null
+          root_law?: string | null
+          start_fiscal_year?: string | null
+          target_description?: string | null
+          target_goal_state?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          achievement_criteria?: string | null
+          activity_output?: string | null
+          administrative_plan?: string | null
+          bureau_code?: string
+          bureau_name?: string
+          created_at?: string | null
+          department_code?: string
+          department_name?: string
+          establishment_trigger?: string | null
+          final_outcome?: string | null
+          id?: string
+          implementation_content?: string | null
+          intermediate_outcome?: string | null
+          is_active?: boolean | null
+          item_code?: string
+          item_name?: string
+          result_output?: string | null
+          root_law?: string | null
+          start_fiscal_year?: string | null
+          target_description?: string | null
+          target_goal_state?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jimu_jigyo_items_bureau_code_fkey"
+            columns: ["bureau_code"]
+            isOneToOne: false
+            referencedRelation: "jimu_jigyo_bureaus"
+            referencedColumns: ["bureau_code"]
+          },
+        ]
+      }
+      jimu_jigyo_kpi_items: {
+        Row: {
+          created_at: string | null
+          id: string
+          item_id: string
+          kpi_name: string
+          kpi_order: number | null
+          kpi_type_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          item_id: string
+          kpi_name: string
+          kpi_order?: number | null
+          kpi_type_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          item_id?: string
+          kpi_name?: string
+          kpi_order?: number | null
+          kpi_type_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jimu_jigyo_kpi_items_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "jimu_jigyo_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jimu_jigyo_kpi_items_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "jimu_jigyo_latest"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jimu_jigyo_kpi_items_kpi_type_id_fkey"
+            columns: ["kpi_type_id"]
+            isOneToOne: false
+            referencedRelation: "jimu_jigyo_kpi_types"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      jimu_jigyo_kpi_results: {
+        Row: {
+          achievement_rate: string | null
+          actual_value: string | null
+          created_at: string | null
+          fiscal_year: number
+          id: string
+          kpi_item_id: string
+          target_value: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          achievement_rate?: string | null
+          actual_value?: string | null
+          created_at?: string | null
+          fiscal_year: number
+          id?: string
+          kpi_item_id: string
+          target_value?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          achievement_rate?: string | null
+          actual_value?: string | null
+          created_at?: string | null
+          fiscal_year?: number
+          id?: string
+          kpi_item_id?: string
+          target_value?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jimu_jigyo_kpi_results_kpi_item_id_fkey"
+            columns: ["kpi_item_id"]
+            isOneToOne: false
+            referencedRelation: "jimu_jigyo_kpi_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      jimu_jigyo_kpi_targets: {
+        Row: {
+          created_at: string | null
+          id: string
+          kpi_item_id: string
+          target_fiscal_year: number | null
+          target_value: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          kpi_item_id: string
+          target_fiscal_year?: number | null
+          target_value?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          kpi_item_id?: string
+          target_fiscal_year?: number | null
+          target_value?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jimu_jigyo_kpi_targets_kpi_item_id_fkey"
+            columns: ["kpi_item_id"]
+            isOneToOne: false
+            referencedRelation: "jimu_jigyo_kpi_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      jimu_jigyo_kpi_types: {
+        Row: {
+          created_at: string | null
+          display_order: number | null
+          id: string
+          kpi_type_code: string
+          kpi_type_name: string
+        }
+        Insert: {
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          kpi_type_code: string
+          kpi_type_name: string
+        }
+        Update: {
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          kpi_type_code?: string
+          kpi_type_name?: string
+        }
+        Relationships: []
+      }
+      jimu_jigyo_matching_logs: {
+        Row: {
+          fiscal_year: number
+          id: string
+          item_id: string
+          match_method: string
+          match_score: number | null
+          matched_at: string | null
+          matched_by: string | null
+          source_bureau_code: string
+          source_department_name: string
+          source_item_name: string
+        }
+        Insert: {
+          fiscal_year: number
+          id?: string
+          item_id: string
+          match_method: string
+          match_score?: number | null
+          matched_at?: string | null
+          matched_by?: string | null
+          source_bureau_code: string
+          source_department_name: string
+          source_item_name: string
+        }
+        Update: {
+          fiscal_year?: number
+          id?: string
+          item_id?: string
+          match_method?: string
+          match_score?: number | null
+          matched_at?: string | null
+          matched_by?: string | null
+          source_bureau_code?: string
+          source_department_name?: string
+          source_item_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jimu_jigyo_matching_logs_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "jimu_jigyo_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jimu_jigyo_matching_logs_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "jimu_jigyo_latest"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       preview_tokens: {
         Row: {
           bill_id: string
@@ -1263,7 +1704,41 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      jimu_jigyo_budget_timeline: {
+        Row: {
+          bureau_name: string | null
+          change_rate_percent: number | null
+          expenditure_amount: number | null
+          fiscal_year: number | null
+          general_revenue: number | null
+          item_name: string | null
+          prev_year_amount: number | null
+          specific_revenue: number | null
+        }
+        Relationships: []
+      }
+      jimu_jigyo_latest: {
+        Row: {
+          available_years: number | null
+          bureau_code: string | null
+          bureau_name: string | null
+          department_code: string | null
+          department_name: string | null
+          id: string | null
+          item_code: string | null
+          item_name: string | null
+          latest_fiscal_year: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jimu_jigyo_items_bureau_code_fkey"
+            columns: ["bureau_code"]
+            isOneToOne: false
+            referencedRelation: "jimu_jigyo_bureaus"
+            referencedColumns: ["bureau_code"]
+          },
+        ]
+      }
     }
     Functions: {
       count_reactions_by_report_ids: {
@@ -1288,6 +1763,16 @@ export type Database = {
         Returns: {
           interview_session_id: string
           message_count: number
+        }[]
+      }
+      get_jimu_jigyo_statistics: {
+        Args: { target_fiscal_year: number }
+        Returns: {
+          avg_achievement_rate: number
+          bureau_breakdown: Json
+          fiscal_year: number
+          total_budget: number
+          total_items: number
         }[]
       }
       is_admin: { Args: never; Returns: boolean }
@@ -1451,6 +1936,9 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {
       bill_publish_status: ["draft", "published", "coming_soon"],
@@ -1488,3 +1976,4 @@ export const Constants = {
     },
   },
 } as const
+

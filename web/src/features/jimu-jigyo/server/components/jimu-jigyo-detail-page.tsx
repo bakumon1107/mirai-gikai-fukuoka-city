@@ -2,6 +2,10 @@ import "server-only";
 import Link from "next/link";
 import { BudgetBarChart } from "../../client/components/budget-bar-chart";
 import { KpiTrendChart } from "../../client/components/kpi-trend-chart";
+import {
+  getCurrentBudget,
+  getPrevBudget,
+} from "../../shared/utils/budget-accessor";
 import type {
   ChangeDirection,
   JimuJigyoRecord,
@@ -10,6 +14,7 @@ import type {
 type Props = {
   record: JimuJigyoRecord;
   basePath: string;
+  year?: string;
 };
 
 function DirectionIcon({ direction }: { direction: ChangeDirection }) {
@@ -22,7 +27,7 @@ function DirectionIcon({ direction }: { direction: ChangeDirection }) {
   return <span className="text-mirai-text-muted">─ 不明</span>;
 }
 
-export function JimuJigyoDetailPage({ record, basePath }: Props) {
+export function JimuJigyoDetailPage({ record, basePath, year = "r6" }: Props) {
   const { analysis } = record;
   const allKpis = [
     ...(record.指標?.活動指標 ?? []).map((k) => ({
@@ -35,8 +40,16 @@ export function JimuJigyoDetailPage({ record, basePath }: Props) {
     })),
   ];
 
-  const r5Budget = record.事業費_千円?.R5決算?.歳出;
-  const r6Budget = record.事業費_千円?.R6決算見込?.歳出;
+  const prevBudgetEntry = getPrevBudget(record, year);
+  const currBudgetEntry = getCurrentBudget(record, year);
+  const r5Budget = prevBudgetEntry?.歳出;
+  const r6Budget = currBudgetEntry?.歳出;
+  const prevLabel = prevBudgetEntry
+    ? `${prevBudgetEntry.年度}${prevBudgetEntry.種別}`
+    : "前年度";
+  const currLabel = currBudgetEntry
+    ? `${currBudgetEntry.年度}${currBudgetEntry.種別}`
+    : "当年度";
   const budgetChange =
     r5Budget !== undefined && r6Budget !== undefined && r5Budget > 0
       ? ((r6Budget - r5Budget) / r5Budget) * 100
@@ -99,7 +112,7 @@ export function JimuJigyoDetailPage({ record, basePath }: Props) {
       </div>
 
       {/* 事業概要 */}
-      {record.事業概要.実施内容 && (
+      {record.事業概要?.実施内容 && (
         <section className="space-y-2">
           <h2 className="text-base font-bold text-mirai-text">事業概要</h2>
           <p className="text-sm text-mirai-text whitespace-pre-line">
@@ -134,33 +147,56 @@ export function JimuJigyoDetailPage({ record, basePath }: Props) {
                 </div>
 
                 {/* 達成率・実績サマリー */}
-                <div className="grid grid-cols-3 gap-2 text-xs text-center">
-                  {["R5", "R6"].map((yr) => {
-                    const actual = kpi.実績?.[yr as "R5" | "R6"];
-                    const target = kpi.目標?.[yr as "R5" | "R6"];
-                    const rate = kpi.達成率?.[yr as "R5" | "R6"];
-                    return (
-                      <div key={yr} className="bg-mirai-surface rounded p-2">
-                        <p className="text-mirai-text-muted">{yr}年度</p>
-                        <p className="font-bold text-mirai-text">
-                          {actual ?? "─"}
-                        </p>
-                        <p className="text-mirai-text-muted">
-                          目標: {target ?? "─"}
-                        </p>
-                        {rate && (
-                          <p className="text-mirai-text-secondary">{rate}</p>
-                        )}
-                      </div>
-                    );
-                  })}
-                  {kpi.目標?.R7 && (
-                    <div className="bg-mirai-surface rounded p-2 opacity-70">
-                      <p className="text-mirai-text-muted">R7目標</p>
-                      <p className="font-bold text-mirai-text">{kpi.目標.R7}</p>
+                {(() => {
+                  const years = Object.keys(kpi.実績 ?? {})
+                    .filter((k) => /^R\d+$/.test(k))
+                    .sort() as import("../../shared/types/jimu-jigyo").ReiwaYear[];
+                  const lastYear = years.at(-1);
+                  const nextYearKey = lastYear
+                    ? (`R${Number(lastYear.slice(1)) + 1}` as import("../../shared/types/jimu-jigyo").ReiwaYear)
+                    : null;
+                  const nextYearTarget = nextYearKey
+                    ? kpi.目標?.[nextYearKey]
+                    : null;
+                  return (
+                    <div className="grid grid-cols-3 gap-2 text-xs text-center">
+                      {years.map((yr) => {
+                        const actual = kpi.実績?.[yr];
+                        const target = kpi.目標?.[yr];
+                        const rate = kpi.達成率?.[yr];
+                        return (
+                          <div
+                            key={yr}
+                            className="bg-mirai-surface rounded p-2"
+                          >
+                            <p className="text-mirai-text-muted">{yr}年度</p>
+                            <p className="font-bold text-mirai-text">
+                              {actual ?? "─"}
+                            </p>
+                            <p className="text-mirai-text-muted">
+                              目標: {target ?? "─"}
+                            </p>
+                            {rate != null && (
+                              <p className="text-mirai-text-secondary">
+                                {rate}
+                              </p>
+                            )}
+                          </div>
+                        );
+                      })}
+                      {nextYearTarget != null && nextYearKey && (
+                        <div className="bg-mirai-surface rounded p-2 opacity-70">
+                          <p className="text-mirai-text-muted">
+                            {nextYearKey}目標
+                          </p>
+                          <p className="font-bold text-mirai-text">
+                            {nextYearTarget}
+                          </p>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
+                  );
+                })()}
 
                 <KpiTrendChart kpi={kpi} />
               </div>
@@ -183,8 +219,8 @@ export function JimuJigyoDetailPage({ record, basePath }: Props) {
             <BudgetBarChart budgetData={record.事業費_千円} />
             <div className="text-sm text-mirai-text-secondary">
               <span>
-                歳出: R5={r5Budget?.toLocaleString() ?? "─"}千円 → R6=
-                {r6Budget?.toLocaleString() ?? "─"}千円
+                歳出: {prevLabel}={r5Budget?.toLocaleString() ?? "─"}千円 →{" "}
+                {currLabel}={r6Budget?.toLocaleString() ?? "─"}千円
               </span>
               {budgetChange !== null && (
                 <span className="ml-2">

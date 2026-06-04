@@ -5,8 +5,13 @@ import type {
   JimuJigyoAnalysis,
   JimuJigyoData,
   KpiAnalysisResult,
+  ReiwaYear,
 } from "../types/jimu-jigyo";
-import { getCurrentBudget, getPrevBudget } from "./budget-accessor";
+import {
+  getCurrentBudget,
+  getNextBudget,
+  getPrevBudget,
+} from "./budget-accessor";
 
 // ─── ユーティリティ ──────────────────────────────────────────
 
@@ -19,9 +24,10 @@ function toNum(val: unknown): number | null {
   return Number.isNaN(n) ? null : n;
 }
 
-function parseRate(rateStr: string | undefined): number | null {
-  if (!rateStr) return null;
-  const trimmed = rateStr.trim();
+function parseRate(rateVal: string | number | null | undefined): number | null {
+  if (rateVal === null || rateVal === undefined) return null;
+  if (typeof rateVal === "number") return rateVal;
+  const trimmed = rateVal.trim();
   if (trimmed === "達成") return 100;
   if (trimmed === "未達成") return 60;
   const n = Number.parseFloat(trimmed.replace("%", ""));
@@ -58,7 +64,8 @@ export function analyzeKpi(data: JimuJigyoData): KpiAnalysisResult {
   const r5 = toNum(primary.実績?.R5);
   const r6 = toNum(primary.実績?.R6);
   const r6target = toNum(primary.目標?.R6);
-  const rateText = primary.達成率?.R6?.trim();
+  const rateRaw = primary.達成率?.R6;
+  const rateText = rateRaw != null ? String(rateRaw).trim() : undefined;
 
   // 実績が調査未実施
   if (
@@ -153,7 +160,6 @@ export function analyzeBudget(
 ): BudgetAnalysisResult {
   const prev = getPrevBudget(data, year)?.歳出;
   const curr = getCurrentBudget(data, year)?.歳出;
-  const r7 = data.事業費_千円?.R7予算?.歳出;
 
   if (prev === undefined || curr === undefined) {
     return {
@@ -169,7 +175,7 @@ export function analyzeBudget(
   const dir = direction(changeRate);
 
   // 次年度予算の方向と変化率
-  const nextYearBudget = data.事業費_千円?.R7予算?.歳出;
+  const nextYearBudget = getNextBudget(data, year)?.歳出;
   let nextYearDirection: ChangeDirection = "unknown";
   let nextYearChangeRate: number | null = null;
   if (nextYearBudget !== undefined && curr > 0) {
@@ -225,8 +231,8 @@ export function analyzeEfficiency(
   const kpis = data.指標?.成果指標 ?? [];
 
   const yearNum = Number(year.replace(/^r/i, ""));
-  const prevKey = `R${yearNum - 1}` as "R5";
-  const currKey = `R${yearNum}` as "R6";
+  const prevKey = `R${yearNum - 1}` as ReiwaYear;
+  const currKey = `R${yearNum}` as ReiwaYear;
 
   if (!prevBudget || !currBudget || prevBudget === 0) {
     return {

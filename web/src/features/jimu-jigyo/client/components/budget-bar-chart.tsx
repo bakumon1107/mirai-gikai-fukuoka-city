@@ -10,41 +10,22 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-
-type BudgetData = {
-  R5決算?: { 歳出?: number; 特定財源?: number; 一般財源?: number };
-  R6決算見込?: { 歳出?: number; 特定財源?: number; 一般財源?: number };
-  R7予算?: { 歳出?: number; 特定財源?: number; 一般財源?: number };
-};
+import type { BudgetData } from "../../shared/types/jimu-jigyo";
 
 type Props = {
-  budgetData?: BudgetData;
+  budgetData?: BudgetData | null;
 };
 
 export function BudgetBarChart({ budgetData }: Props) {
   if (!budgetData) return null;
 
-  const data = [
-    {
-      year: "R5決算",
-      一般財源: budgetData.R5決算?.一般財源,
-      特定財源: budgetData.R5決算?.特定財源,
-    },
-    {
-      year: "R6決算見込",
-      一般財源: budgetData.R6決算見込?.一般財源,
-      特定財源: budgetData.R6決算見込?.特定財源,
-    },
-    ...(budgetData.R7予算
-      ? [
-          {
-            year: "R7予算",
-            一般財源: budgetData.R7予算?.一般財源,
-            特定財源: budgetData.R7予算?.特定財源,
-          },
-        ]
-      : []),
-  ];
+  const data = budgetData.明細
+    .filter((m) => m.会計区分 === null)
+    .map((m) => ({
+      year: `${m.年度}${m.種別}`,
+      一般財源: m.一般財源,
+      特定財源: m.特定財源,
+    }));
 
   return (
     <ResponsiveContainer width="100%" height={200}>
