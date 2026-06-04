@@ -252,24 +252,8 @@ ALTER TABLE jimu_jigyo_kpi_items ENABLE ROW LEVEL SECURITY;
 ALTER TABLE jimu_jigyo_kpi_results ENABLE ROW LEVEL SECURITY;
 ALTER TABLE jimu_jigyo_kpi_targets ENABLE ROW LEVEL SECURITY;
 
--- 公開テーブル：全員読取可能
-CREATE POLICY "jimu_jigyo_items_read_public" ON jimu_jigyo_items
-  FOR SELECT USING (true);
-
-CREATE POLICY "jimu_jigyo_fiscal_years_read_public" ON jimu_jigyo_fiscal_years
-  FOR SELECT USING (true);
-
-CREATE POLICY "jimu_jigyo_kpi_items_read_public" ON jimu_jigyo_kpi_items
-  FOR SELECT USING (true);
-
-CREATE POLICY "jimu_jigyo_kpi_results_read_public" ON jimu_jigyo_kpi_results
-  FOR SELECT USING (true);
-
-CREATE POLICY "jimu_jigyo_kpi_targets_read_public" ON jimu_jigyo_kpi_targets
-  FOR SELECT USING (true);
-
--- 管理用テーブル：RLS 無効化（内部システム用、Server Actions でのみアクセス）
--- TODO: 将来的に admin_users テーブルが存在する際にRLSを有効化
+-- ポリシーは定義しない（デフォルト全拒否）
+-- データアクセスはすべて createAdminClient()（Service Role Key）経由で行う
 
 -- ─────────────────────────────────────────────────────────────
 -- 11. ビュー: 複数年度の推移データ（分析用）
