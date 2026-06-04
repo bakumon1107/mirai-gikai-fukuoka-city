@@ -14,6 +14,7 @@ import type {
 type Props = {
   record: JimuJigyoRecord;
   basePath: string;
+  year?: string;
 };
 
 function DirectionIcon({ direction }: { direction: ChangeDirection }) {
@@ -26,7 +27,7 @@ function DirectionIcon({ direction }: { direction: ChangeDirection }) {
   return <span className="text-mirai-text-muted">─ 不明</span>;
 }
 
-export function JimuJigyoDetailPage({ record, basePath }: Props) {
+export function JimuJigyoDetailPage({ record, basePath, year = "r6" }: Props) {
   const { analysis } = record;
   const allKpis = [
     ...(record.指標?.活動指標 ?? []).map((k) => ({
@@ -39,8 +40,8 @@ export function JimuJigyoDetailPage({ record, basePath }: Props) {
     })),
   ];
 
-  const prevBudgetEntry = getPrevBudget(record, "r6");
-  const currBudgetEntry = getCurrentBudget(record, "r6");
+  const prevBudgetEntry = getPrevBudget(record, year);
+  const currBudgetEntry = getCurrentBudget(record, year);
   const r5Budget = prevBudgetEntry?.歳出;
   const r6Budget = currBudgetEntry?.歳出;
   const prevLabel = prevBudgetEntry
