@@ -289,22 +289,15 @@ SELECT
     PARTITION BY fy.item_id
     ORDER BY fy.fiscal_year
   ) AS prev_year_amount,
-  CASE
-    WHEN LAG(fy.expenditure_amount) OVER (
+  ROUND(
+    ((fy.expenditure_amount - LAG(fy.expenditure_amount) OVER (
       PARTITION BY fy.item_id
       ORDER BY fy.fiscal_year
-    ) IS NOT NULL
-    THEN ROUND(
-      ((fy.expenditure_amount - LAG(fy.expenditure_amount) OVER (
-        PARTITION BY fy.item_id
-        ORDER BY fy.fiscal_year
-      )) / LAG(fy.expenditure_amount) OVER (
-        PARTITION BY fy.item_id
-        ORDER BY fy.fiscal_year
-      ) * 100)::numeric, 1
-    )
-    ELSE NULL
-  END AS change_rate_percent
+    )) / NULLIF(LAG(fy.expenditure_amount) OVER (
+      PARTITION BY fy.item_id
+      ORDER BY fy.fiscal_year
+    ), 0) * 100)::numeric, 1
+  ) AS change_rate_percent
 FROM jimu_jigyo_items jj
 JOIN jimu_jigyo_fiscal_years fy ON jj.id = fy.item_id
 ORDER BY jj.item_name, fy.fiscal_year;
@@ -325,34 +318,45 @@ RETURNS TABLE (
 ) AS $$
 BEGIN
   RETURN QUERY
+  WITH base AS (
+    SELECT
+      jj.id,
+      jj.bureau_code,
+      jj.bureau_name,
+      fy.expenditure_amount,
+      CASE
+        WHEN kr.achievement_rate ~ '^\d+(\.\d+)?%?$'
+        THEN REPLACE(kr.achievement_rate, '%', '')::numeric
+        ELSE NULL
+      END AS achievement_rate_num
+    FROM jimu_jigyo_items jj
+    JOIN jimu_jigyo_fiscal_years fy ON jj.id = fy.item_id
+      AND fy.fiscal_year = target_fiscal_year
+    LEFT JOIN jimu_jigyo_kpi_items ki ON jj.id = ki.item_id
+    LEFT JOIN jimu_jigyo_kpi_results kr ON ki.id = kr.kpi_item_id
+      AND kr.fiscal_year = target_fiscal_year
+  ),
+  bureau_agg AS (
+    SELECT
+      bureau_code,
+      bureau_name,
+      COUNT(DISTINCT id)::BIGINT AS item_count,
+      SUM(DISTINCT expenditure_amount)::BIGINT AS total_budget
+    FROM base
+    GROUP BY bureau_code, bureau_name
+  )
   SELECT
     target_fiscal_year AS fiscal_year,
-    COUNT(DISTINCT jj.id)::BIGINT AS total_items,
-    SUM(fy.expenditure_amount)::BIGINT AS total_budget,
-    ROUND(
-      AVG(
-        CASE
-          WHEN kr.achievement_rate ~ '^\d+(\.\d+)?%?$'
-          THEN REPLACE(kr.achievement_rate, '%', '')::numeric
-          ELSE NULL
-        END
-      ), 1
-    ) AS avg_achievement_rate,
-    JSONB_AGG(
-      JSONB_BUILD_OBJECT(
-        'bureau_code', jj.bureau_code,
-        'bureau_name', jj.bureau_name,
-        'item_count', COUNT(DISTINCT jj.id),
-        'total_budget', SUM(fy.expenditure_amount)
-      )
-    ) AS bureau_breakdown
-  FROM jimu_jigyo_items jj
-  JOIN jimu_jigyo_fiscal_years fy ON jj.id = fy.item_id
-    AND fy.fiscal_year = target_fiscal_year
-  LEFT JOIN jimu_jigyo_kpi_items ki ON jj.id = ki.item_id
-  LEFT JOIN jimu_jigyo_kpi_results kr ON ki.id = kr.kpi_item_id
-    AND kr.fiscal_year = target_fiscal_year
-  GROUP BY target_fiscal_year;
+    COUNT(DISTINCT b.id)::BIGINT AS total_items,
+    SUM(DISTINCT b.expenditure_amount)::BIGINT AS total_budget,
+    ROUND(AVG(b.achievement_rate_num), 1) AS avg_achievement_rate,
+    (SELECT JSONB_AGG(JSONB_BUILD_OBJECT(
+      'bureau_code', ba.bureau_code,
+      'bureau_name', ba.bureau_name,
+      'item_count', ba.item_count,
+      'total_budget', ba.total_budget
+    )) FROM bureau_agg ba) AS bureau_breakdown
+  FROM base b;
 END;
 $$ LANGUAGE plpgsql STABLE;
 
