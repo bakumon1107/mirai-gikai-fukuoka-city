@@ -25,9 +25,11 @@ export async function JimuJigyoListPage({
   const summary = await getDirectionSummary(allRecords, year);
 
   // 局フィルター（絞り込みのみ、ソートなし）
-  const kyokuList = [...new Set(allRecords.map((r) => r.所管局))].sort((a, b) =>
-    a.localeCompare(b, "ja")
-  );
+  const kyokuList = [
+    ...new Set(
+      allRecords.map((r) => r.所管局).filter((v): v is string => v != null)
+    ),
+  ].sort((a, b) => a.localeCompare(b, "ja"));
   const filtered = searchParams.kyoku
     ? allRecords.filter((r) => r.所管局 === searchParams.kyoku)
     : allRecords;
