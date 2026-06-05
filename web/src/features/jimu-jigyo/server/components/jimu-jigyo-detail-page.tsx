@@ -27,6 +27,16 @@ function DirectionIcon({ direction }: { direction: ChangeDirection }) {
   return <span className="text-mirai-text-muted">─ 不明</span>;
 }
 
+function BudgetDirectionIcon({ direction }: { direction: ChangeDirection }) {
+  if (direction === "up")
+    return <span className="text-mirai-text-secondary font-bold">↑ 増加</span>;
+  if (direction === "down")
+    return <span className="text-mirai-text-secondary font-bold">↓ 減少</span>;
+  if (direction === "flat")
+    return <span className="text-mirai-text-muted font-bold">→ 横ばい</span>;
+  return <span className="text-mirai-text-muted">─ 不明</span>;
+}
+
 export function JimuJigyoDetailPage({ record, basePath, year = "r6" }: Props) {
   const { analysis } = record;
   const allKpis = [
@@ -80,16 +90,19 @@ export function JimuJigyoDetailPage({ record, basePath, year = "r6" }: Props) {
               label: "KPI動向",
               dir: analysis.kpi.direction,
               rate: analysis.kpi.changeRate,
+              isBudget: false,
             },
             {
               label: "予算動向",
               dir: analysis.budget.direction,
               rate: analysis.budget.changeRate,
+              isBudget: true,
             },
             {
               label: "予算効率",
               dir: analysis.efficiency.direction,
               rate: analysis.efficiency.changeRate,
+              isBudget: false,
             },
           ].map((item) => (
             <div
@@ -99,7 +112,11 @@ export function JimuJigyoDetailPage({ record, basePath, year = "r6" }: Props) {
               <span className="text-xs text-mirai-text-muted">
                 {item.label}
               </span>
-              <DirectionIcon direction={item.dir} />
+              {item.isBudget ? (
+                <BudgetDirectionIcon direction={item.dir} />
+              ) : (
+                <DirectionIcon direction={item.dir} />
+              )}
               {item.rate !== null && (
                 <span className="text-xs text-mirai-text-secondary">
                   ({item.rate >= 0 ? "+" : ""}

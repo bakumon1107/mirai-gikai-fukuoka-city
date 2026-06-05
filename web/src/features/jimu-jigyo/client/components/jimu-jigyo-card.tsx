@@ -59,7 +59,6 @@ function BudgetBadge({
   nextYearDirection: ChangeDirection;
   nextYearChangeRate: number | null;
 }) {
-  // 予算は +が青・-が赤（良悪の判断なし、変化方向のみ）
   const isUp = direction === "up";
   const isDown = direction === "down";
   const label = isUp
@@ -69,17 +68,20 @@ function BudgetBadge({
       : direction === "flat"
         ? "横ばい"
         : "─";
-  const color = isUp
-    ? "text-grade-b"
-    : isDown
-      ? "text-grade-d"
-      : "text-mirai-text-muted";
   const icon = isUp ? "↑" : isDown ? "↓" : direction === "flat" ? "→" : "─";
   const rateText =
     changeRate !== null
       ? `${changeRate >= 0 ? "+" : ""}${(changeRate * 100).toFixed(1)}%`
       : "";
 
+  const nextYearLabel =
+    nextYearDirection === "up"
+      ? "増加"
+      : nextYearDirection === "down"
+        ? "減少"
+        : nextYearDirection === "flat"
+          ? "横ばい"
+          : null;
   const nextYearIcon =
     nextYearDirection === "up"
       ? "↑"
@@ -88,27 +90,28 @@ function BudgetBadge({
         : nextYearDirection === "flat"
           ? "→"
           : null;
-  const nextYearColor =
-    nextYearDirection === "up"
-      ? "text-grade-b"
-      : nextYearDirection === "down"
-        ? "text-grade-d"
-        : "text-mirai-text-muted";
+  const nextYearRateText =
+    nextYearChangeRate !== null
+      ? `(${nextYearChangeRate >= 0 ? "+" : ""}${(nextYearChangeRate * 100).toFixed(1)}%)`
+      : "";
 
   return (
     <div className="flex items-center gap-1 text-xs flex-wrap">
       <span className="text-mirai-text-muted w-8 shrink-0">予算</span>
-      <span className={`font-bold ${color}`}>{icon}</span>
-      <span className={color}>{label}</span>
+      <span className="text-mirai-text-secondary font-bold">{icon}</span>
+      <span className="text-mirai-text-secondary">{label}</span>
       {rateText && <span className="text-mirai-text-muted">({rateText})</span>}
-      {nextYearIcon && (
+      {nextYearLabel && (
         <span className="text-mirai-text-muted">
           · 次年度
-          <span className={`font-bold ${nextYearColor}`}>{nextYearIcon}</span>
-          {nextYearChangeRate !== null && (
-            <span className={nextYearColor}>
-              {nextYearChangeRate >= 0 ? "+" : ""}
-              {(nextYearChangeRate * 100).toFixed(1)}%
+          <span className="text-mirai-text-secondary font-bold">
+            {" "}
+            {nextYearIcon}
+            {nextYearLabel}
+          </span>
+          {nextYearRateText && (
+            <span className="text-mirai-text-secondary">
+              {nextYearRateText}
             </span>
           )}
         </span>
