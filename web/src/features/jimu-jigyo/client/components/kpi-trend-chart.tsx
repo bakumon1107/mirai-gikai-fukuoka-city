@@ -22,33 +22,45 @@ function toNum(val: unknown): number | null {
 }
 
 export function KpiTrendChart({ kpi }: Props) {
-  // 実績がある年度を動的に収集（R3〜R7 等、順番通りにソート）
   const actualYears = Object.keys(kpi.実績 ?? {})
     .filter((k): k is ReiwaYear => /^R\d+$/.test(k))
     .sort();
 
-  const data = [
-    ...actualYears.map((yr) => ({
+  // 実績データ（solid line 用）
+  const actualData = actualYears
+    .map((yr) => ({
       year: `${yr}実績`,
-      value: toNum(kpi.実績?.[yr]),
-    })),
-  ].filter((d) => d.value !== null);
+      actual: toNum(kpi.実績?.[yr]),
+      target: null as number | null,
+    }))
+    .filter((d) => d.actual !== null);
 
-  // 次年度目標があれば末尾に追加
+  // 次年度目標があれば点線用のデータを追加
   const lastYear = actualYears.at(-1);
-  if (lastYear) {
+  let hasNextTarget = false;
+  if (lastYear && actualData.length > 0) {
     const nextYearKey = `R${Number(lastYear.slice(1)) + 1}` as ReiwaYear;
     const nextTarget = toNum(kpi.目標?.[nextYearKey]);
     if (nextTarget !== null) {
-      data.push({ year: `${nextYearKey}目標`, value: nextTarget });
+      hasNextTarget = true;
+      // 最後の実績点に target を同値でセット（点線の起点）
+      actualData.at(-1)!.target = actualData.at(-1)!.actual;
+      // 次年度目標点を追加（actual は null）
+      actualData.push({
+        year: `${nextYearKey}目標`,
+        actual: null,
+        target: nextTarget,
+      });
     }
   }
 
   const finalTarget = toNum(kpi.目標?.最終年度目標値);
 
-  if (data.length < 2) return null;
+  if (actualData.filter((d) => d.actual !== null).length < 2) return null;
 
-  const allValues = data.map((d) => d.value as number);
+  const allValues = actualData
+    .flatMap((d) => [d.actual, d.target])
+    .filter((v): v is number => v !== null);
   if (finalTarget !== null) allValues.push(finalTarget);
   const minVal = Math.min(...allValues);
   const maxVal = Math.max(...allValues);
@@ -60,7 +72,7 @@ export function KpiTrendChart({ kpi }: Props) {
     <LineChart
       width={380}
       height={160}
-      data={data}
+      data={actualData}
       margin={{ top: 5, right: 60, left: 0, bottom: 5 }}
     >
       <CartesianGrid strokeDasharray="3 3" stroke="var(--color-mirai-border)" />
@@ -73,15 +85,32 @@ export function KpiTrendChart({ kpi }: Props) {
         tickFormatter={(v) => Math.round(v).toLocaleString()}
       />
       <Tooltip
-        formatter={(v) => [Math.round(Number(v)).toLocaleString(), "値"]}
+        formatter={(v, name) => [
+          Math.round(Number(v)).toLocaleString(),
+          name === "target" ? "次年度目標" : "実績",
+        ]}
       />
+      {/* 実績ライン（solid） */}
       <Line
-        dataKey="value"
+        dataKey="actual"
         stroke="var(--color-mirai-text-secondary)"
         strokeWidth={1.5}
         dot={{ r: 4, fill: "var(--color-grade-b)" }}
-        name="実績/目標"
+        name="actual"
+        connectNulls={false}
       />
+      {/* 次年度目標への点線 */}
+      {hasNextTarget && (
+        <Line
+          dataKey="target"
+          stroke="var(--color-mirai-text-muted)"
+          strokeWidth={1.5}
+          strokeDasharray="5 3"
+          dot={{ r: 4, fill: "var(--color-mirai-text-muted)" }}
+          name="target"
+          connectNulls={false}
+        />
+      )}
       {finalTarget !== null && (
         <ReferenceLine
           y={finalTarget}
