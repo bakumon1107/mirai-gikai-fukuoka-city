@@ -9,7 +9,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import type { KpiItem } from "../../shared/types/jimu-jigyo";
+import type { KpiItem, ReiwaYear } from "../../shared/types/jimu-jigyo";
 
 type Props = {
   kpi: KpiItem;
@@ -22,20 +22,32 @@ function toNum(val: unknown): number | null {
 }
 
 export function KpiTrendChart({ kpi }: Props) {
-  const r5actual = toNum(kpi.実績?.R5);
-  const r6actual = toNum(kpi.実績?.R6);
-  const r7target = toNum(kpi.目標?.R7);
-  const finalTarget = toNum(kpi.目標?.最終年度目標値);
+  // 実績がある年度を動的に収集（R3〜R7 等、順番通りにソート）
+  const actualYears = Object.keys(kpi.実績 ?? {})
+    .filter((k): k is ReiwaYear => /^R\d+$/.test(k))
+    .sort();
 
   const data = [
-    { year: "R5実績", value: r5actual },
-    { year: "R6実績", value: r6actual },
-    ...(r7target !== null ? [{ year: "R7目標", value: r7target }] : []),
+    ...actualYears.map((yr) => ({
+      year: `${yr}実績`,
+      value: toNum(kpi.実績?.[yr]),
+    })),
   ].filter((d) => d.value !== null);
+
+  // 次年度目標があれば末尾に追加
+  const lastYear = actualYears.at(-1);
+  if (lastYear) {
+    const nextYearKey = `R${Number(lastYear.slice(1)) + 1}` as ReiwaYear;
+    const nextTarget = toNum(kpi.目標?.[nextYearKey]);
+    if (nextTarget !== null) {
+      data.push({ year: `${nextYearKey}目標`, value: nextTarget });
+    }
+  }
+
+  const finalTarget = toNum(kpi.目標?.最終年度目標値);
 
   if (data.length < 2) return null;
 
-  // 目標値・参照線を含めたドメイン計算
   const allValues = data.map((d) => d.value as number);
   if (finalTarget !== null) allValues.push(finalTarget);
   const minVal = Math.min(...allValues);
