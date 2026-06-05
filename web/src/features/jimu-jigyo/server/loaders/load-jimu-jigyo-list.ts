@@ -1,23 +1,12 @@
 import "server-only";
+import { createAdminClient } from "@mirai-gikai/supabase";
 import type {
+  JimuJigyoAnalysis,
   JimuJigyoData,
   JimuJigyoRecord,
 } from "../../shared/types/jimu-jigyo";
 import { analyzeJimuJigyo } from "../../shared/utils/analysis";
-import { slugify } from "../../shared/utils/score";
-import r6Analysis from "../data/jimu-jigyo-r6-analysis.json";
 import { getCurrentBudget } from "../../shared/utils/budget-accessor";
-import r6Fukushi from "../data/jimu-jigyo-r6-fukushi.json";
-import r6Hoken from "../data/jimu-jigyo-r6-hoken.json";
-import r6Juto from "../data/jimu-jigyo-r6-juto.json";
-import r6Kankyo from "../data/jimu-jigyo-r6-kankyo.json";
-import r6Keizai from "../data/jimu-jigyo-r6-keizai.json";
-import r6Kodomo from "../data/jimu-jigyo-r6-kodomo.json";
-import r6Kouwan from "../data/jimu-jigyo-r6-kouwan.json";
-import r6Kyouiku from "../data/jimu-jigyo-r6-kyouiku.json";
-import r6Nousui from "../data/jimu-jigyo-r6-nousui.json";
-import r6Shimin from "../data/jimu-jigyo-r6-shimin.json";
-import r6Somu from "../data/jimu-jigyo-r6-somu.json";
 
 // 年度メタデータ: 新年度追加時はここだけ変更する
 export const YEAR_METADATA = [
@@ -25,6 +14,7 @@ export const YEAR_METADATA = [
     slug: "r6",
     label: "令和6年度（2024年度）",
     description: "74事業の執行状況を分析",
+    fiscalYear: 2024,
   },
 ] as const;
 
@@ -44,42 +34,8 @@ export function getYearLabel(year: JimuJigyoYear): string {
   );
 }
 
-// JSON データを静的 import でバンドル（Vercel ランタイムで fs は使えないため）
-const STATIC_DATA: Record<JimuJigyoYear, unknown[]> = {
-  r6: [
-    ...r6Fukushi,
-    ...r6Hoken,
-    ...r6Juto,
-    ...r6Kankyo,
-    ...r6Keizai,
-    ...r6Kodomo,
-    ...r6Kouwan,
-    ...r6Kyouiku,
-    ...r6Nousui,
-    ...r6Shimin,
-    ...r6Somu,
-  ],
-};
-
-function sanitizeRecord(raw: unknown): JimuJigyoData | null {
-  if (!raw || typeof raw !== "object") return null;
-  const r = raw as Record<string, unknown>;
-  if (typeof r.事業名 !== "string" || !r.事業名) return null;
-  if (typeof r.所管局 !== "string" || !r.所管局) return null;
-  if (typeof r.所管課 !== "string" || !r.所管課) return null;
-  return r as unknown as JimuJigyoData;
-}
-
-/** 事前生成された AI 分析テキスト。なければルールベースにフォールバック */
-const ANALYSIS_DATA = r6Analysis as Record<string, unknown>;
-
-function toRecord(data: JimuJigyoData, year: JimuJigyoYear): JimuJigyoRecord {
-  const id = slugify(data.事業名);
-  const pregenerated = ANALYSIS_DATA[id];
-  const analysis = pregenerated
-    ? (pregenerated as JimuJigyoRecord["analysis"])
-    : analyzeJimuJigyo(data, year);
-  return { ...data, id, analysis };
+function getFiscalYear(year: JimuJigyoYear): number {
+  return YEAR_METADATA.find((m) => m.slug === year)?.fiscalYear ?? 2024;
 }
 
 const cache = new Map<JimuJigyoYear, JimuJigyoRecord[]>();
@@ -88,11 +44,40 @@ export async function loadJimuJigyoList(
   year: JimuJigyoYear
 ): Promise<JimuJigyoRecord[]> {
   if (cache.has(year)) return cache.get(year)!;
-  const raw = STATIC_DATA[year] ?? [];
-  const records = raw
-    .map(sanitizeRecord)
-    .filter((r): r is JimuJigyoData => r !== null)
-    .map((d) => toRecord(d, year));
+
+  const supabase = createAdminClient();
+  const fiscalYear = getFiscalYear(year);
+
+  // items と当年度の analysis_json を一括取得
+  const { data: items, error } = await supabase
+    .from("jimu_jigyo_items")
+    .select("id, slug, raw_data")
+    .not("raw_data", "is", null);
+
+  if (error || !items) {
+    console.error("Failed to load jimu_jigyo_items:", error?.message);
+    return [];
+  }
+
+  const { data: fyData } = await supabase
+    .from("jimu_jigyo_fiscal_years")
+    .select("item_id, analysis_json")
+    .eq("fiscal_year", fiscalYear)
+    .not("analysis_json", "is", null);
+
+  const analysisMap = new Map<string, JimuJigyoAnalysis>(
+    (fyData ?? []).map((f) => [f.item_id, f.analysis_json as JimuJigyoAnalysis])
+  );
+
+  const records: JimuJigyoRecord[] = items
+    .map((item) => {
+      const jimuData = item.raw_data as unknown as JimuJigyoData;
+      const analysis =
+        analysisMap.get(item.id) ?? analyzeJimuJigyo(jimuData, year);
+      return { ...jimuData, id: item.slug ?? item.id, analysis };
+    })
+    .filter((r) => r.事業名);
+
   cache.set(year, records);
   return records;
 }

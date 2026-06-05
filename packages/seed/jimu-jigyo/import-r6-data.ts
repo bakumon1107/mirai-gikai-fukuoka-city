@@ -1,3 +1,5 @@
+import * as path from "path";
+import { fileURLToPath } from "url";
 import { createAdminClient } from "@mirai-gikai/supabase";
 import type {
   JimuJigyoData,
@@ -5,7 +7,7 @@ import type {
   ReiwaYear,
 } from "@/features/jimu-jigyo/shared/types/jimu-jigyo";
 import * as fs from "fs";
-import * as path from "path";
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /**
  * 事務事業点検データのDB化スクリプト
@@ -407,23 +409,33 @@ async function importBureauFile(
  * メイン処理
  */
 async function main() {
+  // コマンドライン引数または環境変数で年度を指定（デフォルト: 2024=R6）
+  const fiscalYearArg = process.argv[2] || process.env.FISCAL_YEAR;
+  const FISCAL_YEAR = fiscalYearArg ? Number(fiscalYearArg) : 2024;
+  const reiwaYear = FISCAL_YEAR - 2018;
+
+  if (Number.isNaN(FISCAL_YEAR) || FISCAL_YEAR < 2019) {
+    console.error("Invalid fiscal year. Use e.g. 2024 (R6), 2023 (R5), 2022 (R4), 2021 (R3)");
+    process.exit(1);
+  }
+
   const supabase = createAdminClient();
 
   const dataDir = path.resolve(
     __dirname,
-    "../../web/src/features/jimu-jigyo/server/data"
+    "../../../web/src/features/jimu-jigyo/server/data"
   );
 
   console.log(`📂 Data directory: ${dataDir}`);
   console.log(
-    "🚀 Starting import of 令和6年度 事務事業評価 data...\n"
+    `🚀 Starting import of 令和${reiwaYear}年度（${FISCAL_YEAR}年）事務事業評価 data...\n`
   );
 
   // インポートログを開始
   const { data: logData, error: logError } = await supabase
     .from("jimu_jigyo_import_logs")
     .insert({
-      fiscal_year: 2024,
+      fiscal_year: FISCAL_YEAR,
       source_type: "json",
       status: "pending",
       imported_by: "import-r6-data",
@@ -446,13 +458,12 @@ async function main() {
     const filePath = path.join(dataDir, `${fileName}.json`);
     console.log(`📥 Importing ${bureauInfo.name}...`);
 
-    // R6 データの取込
     const result = await importBureauFile(
       supabase,
       filePath,
       bureauInfo.code,
       bureauInfo.name,
-      2024
+      FISCAL_YEAR
     );
 
     results.push(result);
