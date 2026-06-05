@@ -7,30 +7,10 @@ export type Json =
   | Json[]
 
 export type Database = {
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          extensions?: Json
-          operationName?: string
-          query?: string
-          variables?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.4"
   }
   public: {
     Tables: {
@@ -649,51 +629,51 @@ export type Database = {
       general_questions: {
         Row: {
           council_session_id: string
-          created_at: string | null
+          created_at: string
           id: string
           publish_status: string
           question_order: number
           questioner_name: string
           questioner_number: number | null
           questioner_party: string | null
-          raw_text: string | null
+          raw_text: string
           session_day: number
           source_url: string | null
-          summary: string | null
+          summary: string
           topics: Json
-          updated_at: string | null
+          updated_at: string
         }
         Insert: {
           council_session_id: string
-          created_at?: string | null
+          created_at?: string
           id?: string
           publish_status?: string
-          question_order?: number
+          question_order: number
           questioner_name: string
           questioner_number?: number | null
           questioner_party?: string | null
-          raw_text?: string | null
-          session_day?: number
+          raw_text: string
+          session_day: number
           source_url?: string | null
-          summary?: string | null
+          summary: string
           topics?: Json
-          updated_at?: string | null
+          updated_at?: string
         }
         Update: {
           council_session_id?: string
-          created_at?: string | null
+          created_at?: string
           id?: string
           publish_status?: string
           question_order?: number
           questioner_name?: string
           questioner_number?: number | null
           questioner_party?: string | null
-          raw_text?: string | null
+          raw_text?: string
           session_day?: number
           source_url?: string | null
-          summary?: string | null
+          summary?: string
           topics?: Json
-          updated_at?: string | null
+          updated_at?: string
         }
         Relationships: [
           {
@@ -704,115 +684,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      press_conference_items: {
-        Row: {
-          created_at: string
-          id: string
-          item_type: string
-          order_index: number
-          press_conference_id: string
-          summary: string | null
-          title: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          item_type: string
-          order_index: number
-          press_conference_id: string
-          summary?: string | null
-          title: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          item_type?: string
-          order_index?: number
-          press_conference_id?: string
-          summary?: string | null
-          title?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "press_conference_items_press_conference_id_fkey"
-            columns: ["press_conference_id"]
-            isOneToOne: false
-            referencedRelation: "press_conferences"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      press_conference_turns: {
-        Row: {
-          content: string
-          created_at: string
-          id: string
-          order_index: number
-          press_conference_item_id: string
-          speaker: string
-          speaker_name: string | null
-        }
-        Insert: {
-          content: string
-          created_at?: string
-          id?: string
-          order_index: number
-          press_conference_item_id: string
-          speaker: string
-          speaker_name?: string | null
-        }
-        Update: {
-          content?: string
-          created_at?: string
-          id?: string
-          order_index?: number
-          press_conference_item_id?: string
-          speaker?: string
-          speaker_name?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "press_conference_turns_press_conference_item_id_fkey"
-            columns: ["press_conference_item_id"]
-            isOneToOne: false
-            referencedRelation: "press_conference_items"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      press_conferences: {
-        Row: {
-          created_at: string
-          held_at: string
-          id: string
-          slug: string
-          status: string
-          title: string
-          updated_at: string
-          youtube_url: string | null
-        }
-        Insert: {
-          created_at?: string
-          held_at: string
-          id?: string
-          slug: string
-          status?: string
-          title: string
-          updated_at?: string
-          youtube_url?: string | null
-        }
-        Update: {
-          created_at?: string
-          held_at?: string
-          id?: string
-          slug?: string
-          status?: string
-          title?: string
-          updated_at?: string
-          youtube_url?: string | null
-        }
-        Relationships: []
       }
       interview_configs: {
         Row: {
@@ -1071,6 +942,7 @@ export type Database = {
       jimu_jigyo_fiscal_years: {
         Row: {
           administrative_plan_data: Json | null
+          analysis_json: Json | null
           basic_plan_data: Json | null
           created_at: string | null
           data_source: string | null
@@ -1088,6 +960,7 @@ export type Database = {
         }
         Insert: {
           administrative_plan_data?: Json | null
+          analysis_json?: Json | null
           basic_plan_data?: Json | null
           created_at?: string | null
           data_source?: string | null
@@ -1105,6 +978,7 @@ export type Database = {
         }
         Update: {
           administrative_plan_data?: Json | null
+          analysis_json?: Json | null
           basic_plan_data?: Json | null
           created_at?: string | null
           data_source?: string | null
@@ -1197,8 +1071,10 @@ export type Database = {
           is_active: boolean | null
           item_code: string
           item_name: string
+          raw_data: Json | null
           result_output: string | null
           root_law: string | null
+          slug: string | null
           start_fiscal_year: string | null
           target_description: string | null
           target_goal_state: string | null
@@ -1221,8 +1097,10 @@ export type Database = {
           is_active?: boolean | null
           item_code: string
           item_name: string
+          raw_data?: Json | null
           result_output?: string | null
           root_law?: string | null
+          slug?: string | null
           start_fiscal_year?: string | null
           target_description?: string | null
           target_goal_state?: string | null
@@ -1245,8 +1123,10 @@ export type Database = {
           is_active?: boolean | null
           item_code?: string
           item_name?: string
+          raw_data?: Json | null
           result_output?: string | null
           root_law?: string | null
+          slug?: string | null
           start_fiscal_year?: string | null
           target_description?: string | null
           target_goal_state?: string | null
@@ -1467,6 +1347,115 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      press_conference_items: {
+        Row: {
+          created_at: string | null
+          id: string
+          item_type: string
+          order_index: number
+          press_conference_id: string
+          summary: string | null
+          title: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          item_type: string
+          order_index: number
+          press_conference_id: string
+          summary?: string | null
+          title: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          item_type?: string
+          order_index?: number
+          press_conference_id?: string
+          summary?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "press_conference_items_press_conference_id_fkey"
+            columns: ["press_conference_id"]
+            isOneToOne: false
+            referencedRelation: "press_conferences"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      press_conference_turns: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          order_index: number
+          press_conference_item_id: string
+          speaker: string
+          speaker_name: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          order_index: number
+          press_conference_item_id: string
+          speaker: string
+          speaker_name?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          order_index?: number
+          press_conference_item_id?: string
+          speaker?: string
+          speaker_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "press_conference_turns_press_conference_item_id_fkey"
+            columns: ["press_conference_item_id"]
+            isOneToOne: false
+            referencedRelation: "press_conference_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      press_conferences: {
+        Row: {
+          created_at: string | null
+          held_at: string
+          id: string
+          slug: string
+          status: string
+          title: string
+          updated_at: string | null
+          youtube_url: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          held_at: string
+          id?: string
+          slug: string
+          status?: string
+          title: string
+          updated_at?: string | null
+          youtube_url?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          held_at?: string
+          id?: string
+          slug?: string
+          status?: string
+          title?: string
+          updated_at?: string | null
+          youtube_url?: string | null
+        }
+        Relationships: []
       }
       preview_tokens: {
         Row: {
@@ -1936,9 +1925,6 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
-  graphql_public: {
-    Enums: {},
-  },
   public: {
     Enums: {
       bill_publish_status: ["draft", "published", "coming_soon"],
@@ -1976,4 +1962,3 @@ export const Constants = {
     },
   },
 } as const
-
