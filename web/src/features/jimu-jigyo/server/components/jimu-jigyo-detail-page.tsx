@@ -79,7 +79,7 @@ export function JimuJigyoDetailPage({ record, basePath, year = "r6" }: Props) {
       <div className="space-y-2">
         <h1 className="text-xl font-bold text-mirai-text">{record.事業名}</h1>
         <p className="text-sm text-mirai-text-secondary">
-          {record.所管局} › {record.所管課}
+          {[record.所管局, record.所管課].filter(Boolean).join(" › ")}
           {record.開始年度 && ` | ${record.開始年度}開始`}
         </p>
 
