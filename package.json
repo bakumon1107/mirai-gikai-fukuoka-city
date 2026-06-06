@@ -11,7 +11,6 @@
     "seed": "dotenv -e .env -- pnpm --filter @mirai-gikai/seed seed",
     "seed:csv": "dotenv -e .env -- pnpm --filter @mirai-gikai/seed seed:csv",
     "seed:jimu-jigyo:import-r6": "dotenv -e .env -- npx tsx packages/seed/jimu-jigyo/import-r6-data.ts",
-    "seed:jimu-jigyo:import-r5": "dotenv -e .env -- npx tsx packages/seed/jimu-jigyo/import-r5-data.ts",
     "test": "pnpm -r --parallel run test",
     "test:coverage": "pnpm -r --parallel run test:coverage",
     "test:integration": "dotenv -e .env -- vitest run --config tests/supabase/vitest.config.mts && pnpm -r run test:integration",

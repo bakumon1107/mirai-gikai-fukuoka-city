@@ -48,7 +48,16 @@ function pct(rate: number): string {
 
 // ─── KPI分析 ─────────────────────────────────────────────────
 
-export function analyzeKpi(data: JimuJigyoData): KpiAnalysisResult {
+export function analyzeKpi(
+  data: JimuJigyoData,
+  year: string = "r6"
+): KpiAnalysisResult {
+  const yearNum = Number(year.replace(/^r/i, ""));
+  const currKey = `R${yearNum}` as ReiwaYear;
+  const prevKey = `R${yearNum - 1}` as ReiwaYear;
+  const currYearLabel = `令和${yearNum}年度`;
+  const prevYearLabel = `令和${yearNum - 1}年度`;
+
   const kpis = data.指標?.成果指標 ?? [];
   if (kpis.length === 0) {
     return {
@@ -61,22 +70,22 @@ export function analyzeKpi(data: JimuJigyoData): KpiAnalysisResult {
 
   const primary = kpis[0];
   const label = primary.内容;
-  const r5 = toNum(primary.実績?.R5);
-  const r6 = toNum(primary.実績?.R6);
-  const r6target = toNum(primary.目標?.R6);
-  const rateRaw = primary.達成率?.R6;
+  const prevVal = toNum(primary.実績?.[prevKey]);
+  const currVal = toNum(primary.実績?.[currKey]);
+  const currTarget = toNum(primary.目標?.[currKey]);
+  const rateRaw = primary.達成率?.[currKey];
   const rateText = rateRaw != null ? String(rateRaw).trim() : undefined;
 
   // 実績が調査未実施
   if (
-    typeof primary.実績?.R6 === "string" &&
-    primary.実績.R6.trim() === SCHEDULED_ABSENT
+    typeof primary.実績?.[currKey] === "string" &&
+    (primary.実績[currKey] as string).trim() === SCHEDULED_ABSENT
   ) {
     return {
       direction: "unknown",
       changeRate: null,
       achievementRate: null,
-      text: `「${label}」は令和6年度の調査が実施されていません（定期調査年外）。令和5年度実績は${r5 !== null ? r5 : "不明"}です。`,
+      text: `「${label}」は${currYearLabel}の調査が実施されていません（定期調査年外）。${prevYearLabel}実績は${prevVal !== null ? prevVal : "不明"}です。`,
     };
   }
 
@@ -84,35 +93,37 @@ export function analyzeKpi(data: JimuJigyoData): KpiAnalysisResult {
   if (rateText === "達成" || rateText === "未達成") {
     const achieved = rateText === "達成";
     let changeText = "";
-    if (r5 !== null && r6 !== null && r5 !== 0) {
-      const cr = (r6 - r5) / r5;
+    if (prevVal !== null && currVal !== null && prevVal !== 0) {
+      const cr = (currVal - prevVal) / prevVal;
       changeText = `前年度比${pct(cr)}。`;
     }
     return {
       direction: achieved ? "up" : "down",
       changeRate:
-        r5 !== null && r6 !== null && r5 !== 0 ? (r6 - r5) / r5 : null,
+        prevVal !== null && currVal !== null && prevVal !== 0
+          ? (currVal - prevVal) / prevVal
+          : null,
       achievementRate: achieved ? 100 : 60,
-      text: `「${label}」の令和6年度評価は「${rateText}」です。${changeText}目標値が定性的なため定量比較は困難ですが、行政の評価は${rateText}とされています。`,
+      text: `「${label}」の${currYearLabel}評価は「${rateText}」です。${changeText}目標値が定性的なため定量比較は困難ですが、行政の評価は${rateText}とされています。`,
     };
   }
 
   // 数値実績の場合
-  if (r6 === null) {
+  if (currVal === null) {
     return {
       direction: "unknown",
       changeRate: null,
       achievementRate: null,
-      text: `「${label}」の令和6年度実績データがありません（集計中または未設定）。`,
+      text: `「${label}」の${currYearLabel}実績データがありません（集計中または未設定）。`,
     };
   }
 
   const achievementRate =
-    r6target !== null && r6target > 0
-      ? (r6 / r6target) * 100
-      : parseRate(primary.達成率?.R6);
+    currTarget !== null && currTarget > 0
+      ? (currVal / currTarget) * 100
+      : parseRate(primary.達成率?.[currKey]);
 
-  if (r5 === null || r5 === 0) {
+  if (prevVal === null || prevVal === 0) {
     const achText =
       achievementRate !== null
         ? `達成率は${achievementRate.toFixed(1)}%です。`
@@ -121,11 +132,11 @@ export function analyzeKpi(data: JimuJigyoData): KpiAnalysisResult {
       direction: "unknown",
       changeRate: null,
       achievementRate,
-      text: `「${label}」の令和6年度実績は${r6}です。${achText}`,
+      text: `「${label}」の${currYearLabel}実績は${currVal}です。${achText}`,
     };
   }
 
-  const changeRate = (r6 - r5) / r5;
+  const changeRate = (currVal - prevVal) / prevVal;
   const dir = direction(changeRate);
   const achText =
     achievementRate !== null
@@ -148,7 +159,7 @@ export function analyzeKpi(data: JimuJigyoData): KpiAnalysisResult {
     direction: dir,
     changeRate,
     achievementRate,
-    text: `「${label}」は令和5年度の${r5}から令和6年度の${r6}へ${trendDesc}${achText}`,
+    text: `「${label}」は${prevYearLabel}の${prevVal}から${currYearLabel}の${currVal}へ${trendDesc}${achText}`,
   };
 }
 
@@ -309,7 +320,7 @@ export function analyzeJimuJigyo(
   year: string = "r6"
 ): JimuJigyoAnalysis {
   return {
-    kpi: analyzeKpi(data),
+    kpi: analyzeKpi(data, year),
     budget: analyzeBudget(data, year),
     efficiency: analyzeEfficiency(data, year),
   };
