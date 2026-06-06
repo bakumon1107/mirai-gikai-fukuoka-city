@@ -48,26 +48,31 @@ export async function loadJimuJigyoList(
   const supabase = createAdminClient();
   const fiscalYear = getFiscalYear(year);
 
-  // items と当年度の analysis_json を一括取得
+  // 当年度データを持つ items に絞り込む（年度フィルター）
+  const { data: fyRows } = await supabase
+    .from("jimu_jigyo_fiscal_years")
+    .select("item_id, analysis_json")
+    .eq("fiscal_year", fiscalYear);
+
+  if (!fyRows || fyRows.length === 0) return [];
+
+  const validItemIds = fyRows.map((f) => f.item_id);
+  const analysisMap = new Map<string, JimuJigyoAnalysis>(
+    fyRows
+      .filter((f) => f.analysis_json != null)
+      .map((f) => [f.item_id, f.analysis_json as JimuJigyoAnalysis])
+  );
+
   const { data: items, error } = await supabase
     .from("jimu_jigyo_items")
     .select("id, slug, raw_data")
+    .in("id", validItemIds)
     .not("raw_data", "is", null);
 
   if (error || !items) {
     console.error("Failed to load jimu_jigyo_items:", error?.message);
     return [];
   }
-
-  const { data: fyData } = await supabase
-    .from("jimu_jigyo_fiscal_years")
-    .select("item_id, analysis_json")
-    .eq("fiscal_year", fiscalYear)
-    .not("analysis_json", "is", null);
-
-  const analysisMap = new Map<string, JimuJigyoAnalysis>(
-    (fyData ?? []).map((f) => [f.item_id, f.analysis_json as JimuJigyoAnalysis])
-  );
 
   const records: JimuJigyoRecord[] = items
     .map((item) => {
