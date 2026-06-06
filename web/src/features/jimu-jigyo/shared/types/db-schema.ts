@@ -69,7 +69,7 @@ export interface KpiTimeline {
   }[];
 }
 
-export interface JimuJigyoTimlineAnalysis {
+export interface JimuJigyoTimelineAnalysis {
   item: JimuJigyoItem;
   budget_timeline: BudgetTimeline[];
   kpi_timelines: KpiTimeline[];
