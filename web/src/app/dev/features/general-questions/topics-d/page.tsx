@@ -9,6 +9,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { mockGeneralQuestions } from "@/app/dev/_lib/mock-data";
+import { Button } from "@/components/ui/button";
 import { buildTopicGroups } from "../_lib/build-topic-groups";
 import type { TopicGroup, TopicEntry } from "../_lib/build-topic-groups";
 
@@ -91,13 +92,15 @@ function CitizenCard({
         <p className="text-xs text-mirai-text-secondary line-clamp-1 flex-1 mr-2">
           {entry.questioner.name}議員の質問より
         </p>
-        <button
+        <Button
           type="button"
-          className={`inline-flex items-center gap-1 text-xs font-medium ${style.text} hover:underline shrink-0`}
+          variant="ghost"
+          size="sm"
+          className={`h-auto !p-0 inline-flex items-center gap-1 text-xs font-medium ${style.text} hover:underline hover:bg-transparent shrink-0`}
         >
           質疑の詳細
-          <ArrowRight className="h-3 w-3" />
-        </button>
+          <ArrowRight className="size-3" />
+        </Button>
       </div>
     </div>
   );

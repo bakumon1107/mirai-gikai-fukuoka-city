@@ -80,6 +80,7 @@
   --color-mirai-border-muted: #bebcbc;
 
   /* Stance semantic colors */
+  --color-stance-for: #0f8472;
   --color-stance-for-bg: #ecfcf1;
   --color-stance-against: #c9272a;
   --color-stance-against-light: #d23c3f;

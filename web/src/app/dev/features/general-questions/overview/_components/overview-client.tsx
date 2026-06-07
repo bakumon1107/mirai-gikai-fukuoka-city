@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import type { GeneralQuestion } from "@/features/general-questions/shared/types";
 
@@ -17,13 +18,14 @@ function TopicTag({
   onClick: () => void;
 }) {
   return (
-    <button
+    <Button
       type="button"
+      variant="outline"
       onClick={onClick}
-      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-colors border ${
+      className={`h-auto inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium border ${
         selected
-          ? "bg-primary text-primary-foreground border-primary"
-          : "bg-card text-mirai-text border-border hover:border-primary hover:text-primary"
+          ? "bg-primary text-primary-foreground border-primary hover:bg-primary"
+          : "bg-card text-mirai-text border-border hover:border-primary hover:text-primary hover:bg-card"
       }`}
     >
       {label}
@@ -36,7 +38,7 @@ function TopicTag({
       >
         {count}
       </span>
-    </button>
+    </Button>
   );
 }
 
@@ -161,13 +163,14 @@ export function OverviewClient({
           ))}
         </div>
         {selectedTopics.size > 0 && (
-          <button
+          <Button
             type="button"
+            variant="link"
             onClick={() => setSelectedTopics(new Set())}
-            className="mt-3 text-xs text-mirai-text-secondary underline hover:text-mirai-text"
+            className="mt-3 text-xs font-normal text-mirai-text-secondary underline hover:text-mirai-text"
           >
             絞り込みをクリア
-          </button>
+          </Button>
         )}
       </div>
 

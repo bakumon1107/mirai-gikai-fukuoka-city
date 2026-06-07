@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAnonymousSupabaseUser } from "@/features/chat/client/hooks/use-anonymous-supabase-user";
 import { ReactionButtonsInline } from "@/features/report-reaction/client/components/reaction-buttons-inline";
@@ -27,19 +28,20 @@ function _FilterChip({
   onClick: () => void;
 }) {
   return (
-    <button
+    <Button
       type="button"
+      variant="ghost"
       onClick={onClick}
       className={cn(
-        "inline-flex items-center gap-1 px-3 py-1.5 rounded-[50px] h-[29px] text-sm font-bold transition-colors",
+        "inline-flex items-center gap-1 h-[29px] px-3 py-1.5 rounded-[50px] text-sm font-bold transition-colors",
         isActive
-          ? "bg-mirai-gradient text-mirai-text"
-          : "bg-white text-gray-300"
+          ? "bg-mirai-gradient text-mirai-text hover:bg-mirai-gradient hover:text-mirai-text"
+          : "bg-white text-gray-300 hover:bg-white hover:text-gray-300"
       )}
     >
       <span>{label}</span>
       <span className="text-xs font-bold">{count}</span>
-    </button>
+    </Button>
   );
 }
 
