@@ -20,13 +20,9 @@ export function TurnBubble({ turn }: Props) {
           }`}
         >
           {isMayor ? (
-            <>
-              <span className="text-base leading-none">🏛️</span>
-            </>
+            <span className="text-base leading-none">🏛️</span>
           ) : (
-            <>
-              <span className="text-base leading-none">🎤</span>
-            </>
+            <span className="text-base leading-none">🎤</span>
           )}
         </div>
       </div>

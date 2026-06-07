@@ -13,13 +13,12 @@ export function groupBillsByTag(bills: BillWithContent[]): BillsByTag[] {
 
   for (const bill of bills) {
     for (const tag of bill.tags ?? []) {
-      if (!tagMap.has(tag.id)) {
-        tagMap.set(tag.id, {
-          tag: { ...tag, priority: 0 },
-          bills: [],
-        });
+      let entry = tagMap.get(tag.id);
+      if (!entry) {
+        entry = { tag: { ...tag, priority: 0 }, bills: [] };
+        tagMap.set(tag.id, entry);
       }
-      tagMap.get(tag.id)!.bills.push(bill);
+      entry.bills.push(bill);
     }
   }
 
