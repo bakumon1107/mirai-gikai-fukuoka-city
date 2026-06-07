@@ -2,6 +2,7 @@
 
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import type { PressConferenceItem } from "../../shared/types";
 import { TurnBubble } from "./turn-bubble";
 
@@ -21,11 +22,14 @@ export function QaItem({ item, defaultOpen = false }: Props) {
           : "border border-mirai-border bg-white hover:border-primary/40 hover:shadow-sm"
       }`}
     >
-      <button
+      <Button
         type="button"
+        variant="ghost"
         onClick={() => setIsOpen((v) => !v)}
-        className={`w-full flex items-center gap-3 px-4 py-3.5 text-left transition-colors ${
-          isOpen ? "bg-mirai-gradient-end" : "bg-white hover:bg-mirai-surface"
+        className={`w-full h-auto justify-start rounded-none font-normal whitespace-normal flex items-center gap-3 !px-4 py-3.5 text-left ${
+          isOpen
+            ? "bg-mirai-gradient-end hover:bg-mirai-gradient-end"
+            : "bg-white hover:bg-mirai-surface"
         }`}
       >
         <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 text-primary-accent text-xs font-bold flex items-center justify-center">
@@ -39,7 +43,7 @@ export function QaItem({ item, defaultOpen = false }: Props) {
             isOpen ? "rotate-180" : ""
           }`}
         />
-      </button>
+      </Button>
       {isOpen && (
         <div className="px-4 pb-5 bg-white border-t border-primary/20">
           <div className="pt-4 flex flex-col gap-4">

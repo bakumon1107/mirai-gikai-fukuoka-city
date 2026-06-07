@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 const SUGGESTED_KEYWORDS = ["子育て", "防災", "道路", "環境", "福祉", "予算"];
@@ -36,14 +37,15 @@ export function SearchForm() {
       {!query && (
         <div className="flex flex-wrap gap-2 mt-3">
           {SUGGESTED_KEYWORDS.map((kw) => (
-            <button
+            <Button
               key={kw}
               type="button"
+              variant="outline"
               onClick={() => router.push(`/search?q=${encodeURIComponent(kw)}`)}
-              className="px-3 py-1 text-xs border border-mirai-border rounded-full text-mirai-text-secondary hover:bg-mirai-surface transition-colors"
+              className="h-auto px-3 py-1 text-xs font-normal border-mirai-border rounded-full bg-transparent shadow-none text-mirai-text-secondary hover:bg-mirai-surface"
             >
               {kw}
-            </button>
+            </Button>
           ))}
         </div>
       )}

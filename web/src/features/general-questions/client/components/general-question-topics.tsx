@@ -2,6 +2,7 @@
 
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import type { GeneralQuestionTopic } from "../../shared/types";
 
 interface GeneralQuestionTopicsProps {
@@ -33,10 +34,11 @@ export function GeneralQuestionTopics({ topics }: GeneralQuestionTopicsProps) {
             key={key}
             className="border border-border rounded-lg overflow-hidden"
           >
-            <button
+            <Button
               type="button"
+              variant="ghost"
               onClick={() => toggle(index)}
-              className="w-full flex items-center justify-between gap-3 px-4 py-3 text-left bg-card hover:bg-muted transition-colors"
+              className="w-full h-auto justify-between rounded-none font-normal whitespace-normal flex items-center gap-3 !px-4 py-3 text-left bg-card hover:bg-muted"
             >
               <span className="font-medium text-mirai-text">{topic.title}</span>
               {isOpen ? (
@@ -44,7 +46,7 @@ export function GeneralQuestionTopics({ topics }: GeneralQuestionTopicsProps) {
               ) : (
                 <ChevronRight className="w-4 h-4 text-mirai-text-muted shrink-0" />
               )}
-            </button>
+            </Button>
             {isOpen && (
               <div className="px-4 py-4 border-t border-border bg-card space-y-4">
                 <div>
