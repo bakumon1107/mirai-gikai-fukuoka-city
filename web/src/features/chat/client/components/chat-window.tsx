@@ -19,6 +19,7 @@ import {
   type PromptInputMessage,
   PromptInputTextarea,
 } from "@/components/ai-elements/prompt-input";
+import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/config/site.config";
 import type { BillWithContent } from "@/features/bills/shared/types";
 import type { BudgetChatContext } from "@/features/chat/server/services/handle-chat-request";
@@ -107,11 +108,13 @@ function ChatMessages({
               ]
           ).map((question) => {
             return (
-              <button
+              <Button
                 key={question}
                 type="button"
+                variant="outline"
+                size="sm"
                 disabled={isResponding}
-                className="px-3 py-1 text-xs leading-[2] text-primary-accent border border-primary rounded-2xl hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="h-auto px-3 py-1 text-xs font-normal leading-[2] text-primary-accent border-primary rounded-2xl bg-transparent shadow-none hover:bg-gray-50 disabled:cursor-not-allowed"
                 onClick={() => {
                   sendMessage({
                     text: question,
@@ -126,7 +129,7 @@ function ChatMessages({
                 }}
               >
                 {question}
-              </button>
+              </Button>
             );
           })}
         </div>
@@ -223,9 +226,10 @@ export function ChatWindow({
     <>
       {/* オーバーレイ（1400px未満でのみ表示） */}
       {isOpen && (
-        <button
+        <Button
           type="button"
-          className="fixed inset-0 z-40 bg-black/50 transition-opacity cursor-default pc:hidden"
+          variant="ghost"
+          className="fixed inset-0 z-40 h-auto w-auto rounded-none bg-black/50 p-0 font-normal transition-opacity hover:bg-black/50 cursor-default pc:hidden"
           onClick={onClose}
           aria-label="モーダルを閉じる"
         />
@@ -247,14 +251,16 @@ export function ChatWindow({
             : undefined
         }
       >
-        <button
+        <Button
           type="button"
-          className="pc:hidden self-end p-2 m-2 hover:bg-gray-100 rounded-full"
+          variant="ghost"
+          size="icon"
+          className="pc:hidden self-end h-auto w-auto p-2 m-2 hover:bg-gray-100 rounded-full"
           onClick={onClose}
           aria-label="モーダルを閉じる"
         >
-          <X className="h-5 w-5" />
-        </button>
+          <X className="size-5" />
+        </Button>
         {/* メッセージエリア（スクロール可能） */}
         <Conversation className="flex-1 min-h-0">
           <ConversationContent className="p-0 flex flex-col gap-3 pc:pt-6 pb-2 px-6">
@@ -290,10 +296,11 @@ export function ChatWindow({
                 className={`!min-h-0 min-w-0 wrap-anywhere text-sm font-medium leading-[1.5em] tracking-[0.01em] placeholder:text-mirai-text-placeholder placeholder:font-medium placeholder:leading-[1.5em] placeholder:tracking-[0.01em] placeholder:no-underline border-none focus:ring-0 bg-transparent shadow-none !py-2 !px-0`}
               />
             </PromptInputBody>
-            <button
+            <Button
               type="submit"
+              variant="ghost"
               disabled={!input || isResponding}
-              className="flex-shrink-0 w-10 h-10 disabled:opacity-50"
+              className="flex-shrink-0 w-10 h-10 p-0 hover:bg-transparent disabled:opacity-50"
             >
               <Image
                 src="/icons/send-button-icon.svg"
@@ -302,7 +309,7 @@ export function ChatWindow({
                 height={40}
                 className="w-full h-full"
               />
-            </button>
+            </Button>
           </PromptInput>
           <PromptInputError status={status} error={error} />
           {messages.length > 0 && <PromptInputHint />}

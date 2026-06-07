@@ -2,6 +2,7 @@
 
 import type { MouseEvent, KeyboardEvent } from "react";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
 import {
   shareNative,
   shareOnFacebook,
@@ -109,11 +110,12 @@ export function BillShareModal({
           {/* SNSアイコン */}
           <div className="flex flex-wrap items-center justify-center gap-4">
             {shareButtons.map((button) => (
-              <button
+              <Button
                 key={button.name}
                 type="button"
+                variant="ghost"
                 onClick={button.onClick}
-                className={`w-12 h-12 flex items-center justify-center ${
+                className={`w-12 h-12 p-0 hover:bg-transparent ${
                   button.className || ""
                 }`}
               >
@@ -124,19 +126,19 @@ export function BillShareModal({
                   height={48}
                   className="w-12 h-12"
                 />
-              </button>
+              </Button>
             ))}
           </div>
         </div>
 
         {/* 閉じるボタン */}
-        <button
+        <Button
           type="button"
           onClick={onClose}
-          className="w-[287px] max-w-full rounded-full px-6 py-3 font-bold text-base bg-mirai-gradient text-gray-800 border border-gray-800"
+          className="w-[287px] max-w-full h-auto rounded-full px-6 py-3 font-bold text-base bg-mirai-gradient text-gray-800 border border-gray-800"
         >
           このまま閉じる
-        </button>
+        </Button>
       </div>
     </div>
   );
