@@ -255,7 +255,7 @@ function StageBadge({
         className={`h-auto ${baseClass} cursor-pointer hover:opacity-80`}
         onClick={onClick}
       >
-        {completed && <Check className="size-3 mr-1" />}
+        {completed && <Check className="size-3" />}
         {label}
       </Button>
     );
