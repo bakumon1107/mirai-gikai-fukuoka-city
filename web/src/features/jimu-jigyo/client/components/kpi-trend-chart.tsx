@@ -44,7 +44,8 @@ export function KpiTrendChart({ kpi }: Props) {
     if (nextTarget !== null) {
       hasNextTarget = true;
       // 最後の実績点に target を同値でセット（点線の起点）
-      actualData.at(-1)!.target = actualData.at(-1)!.actual;
+      const lastPoint = actualData.at(-1);
+      if (lastPoint) lastPoint.target = lastPoint.actual;
       // 次年度目標点を追加（actual は null）
       actualData.push({
         year: `${nextYearKey}目標`,
