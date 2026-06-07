@@ -43,7 +43,8 @@ const cache = new Map<JimuJigyoYear, JimuJigyoRecord[]>();
 export async function loadJimuJigyoList(
   year: JimuJigyoYear
 ): Promise<JimuJigyoRecord[]> {
-  if (cache.has(year)) return cache.get(year)!;
+  const cached = cache.get(year);
+  if (cached) return cached;
 
   const supabase = createAdminClient();
   const fiscalYear = getFiscalYear(year);
