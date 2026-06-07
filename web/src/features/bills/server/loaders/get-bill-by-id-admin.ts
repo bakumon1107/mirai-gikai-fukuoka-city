@@ -1,5 +1,6 @@
 import { getDifficultyLevel } from "@/features/bill-difficulty/server/loaders/get-difficulty-level";
-import type { BillWithContent, FactionStance } from "../../shared/types";
+import type { BillWithContent } from "../../shared/types";
+import { mapFactionStances } from "../../shared/utils/map-faction-stances";
 import {
   findBillById,
   findFactionStancesByBillId,
@@ -32,26 +33,7 @@ export async function getBillByIdAdmin(
 
   const billTags = tagsResult;
 
-  const factionStances: FactionStance[] = factionStancesRaw
-    .filter(
-      (
-        fs
-      ): fs is typeof fs & {
-        factions: NonNullable<(typeof fs)["factions"]>;
-      } => fs.factions !== null
-    )
-    .map((fs) => ({
-      id: fs.id,
-      stance: fs.type,
-      comment: fs.comment,
-      faction: {
-        id: fs.factions.id,
-        name: fs.factions.name,
-        display_name: fs.factions.display_name,
-        sort_order: fs.factions.sort_order,
-      },
-    }))
-    .sort((a, b) => a.faction.sort_order - b.faction.sort_order);
+  const factionStances = mapFactionStances(factionStancesRaw);
 
   // タグデータを整形
   const tags =
