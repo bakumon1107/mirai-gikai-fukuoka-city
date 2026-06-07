@@ -1,5 +1,6 @@
 import "server-only";
 import { createAdminClient } from "@mirai-gikai/supabase";
+import { sanitizeSearchQuery } from "../../shared/utils/sanitize-search-query";
 import type {
   BillSearchResult,
   QuestionSearchResult,
@@ -8,6 +9,7 @@ import type {
 
 export async function searchBills(query: string): Promise<BillSearchResult[]> {
   const supabase = createAdminClient();
+  const safeQuery = sanitizeSearchQuery(query);
   const { data, error } = await supabase
     .from("bill_contents")
     .select(
@@ -27,7 +29,7 @@ export async function searchBills(query: string): Promise<BillSearchResult[]> {
     `
     )
     .eq("difficulty_level", "normal")
-    .or(`title.ilike.%${query}%,summary.ilike.%${query}%`)
+    .or(`title.ilike.%${safeQuery}%,summary.ilike.%${safeQuery}%`)
     .limit(50);
 
   if (error) throw new Error(`Failed to search bills: ${error.message}`);
@@ -61,6 +63,7 @@ export async function searchGeneralQuestions(
   query: string
 ): Promise<QuestionSearchResult[]> {
   const supabase = createAdminClient();
+  const safeQuery = sanitizeSearchQuery(query);
   const { data, error } = await supabase
     .from("general_questions")
     .select(
@@ -73,7 +76,7 @@ export async function searchGeneralQuestions(
     `
     )
     .eq("publish_status", "published")
-    .or(`summary.ilike.%${query}%,questioner_name.ilike.%${query}%`)
+    .or(`summary.ilike.%${safeQuery}%,questioner_name.ilike.%${safeQuery}%`)
     .limit(50);
 
   if (error) throw new Error(`Failed to search questions: ${error.message}`);
@@ -98,6 +101,7 @@ export async function searchBudgets(
   query: string
 ): Promise<BudgetSearchResult[]> {
   const supabase = createAdminClient();
+  const safeQuery = sanitizeSearchQuery(query);
   const { data, error } = await supabase
     .from("budget_overviews")
     .select(
@@ -110,7 +114,7 @@ export async function searchBudgets(
     `
     )
     .eq("publish_status", "published")
-    .or(`department_name.ilike.%${query}%,direction.ilike.%${query}%`)
+    .or(`department_name.ilike.%${safeQuery}%,direction.ilike.%${safeQuery}%`)
     .limit(50);
 
   if (error) throw new Error(`Failed to search budgets: ${error.message}`);

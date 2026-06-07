@@ -2,7 +2,7 @@ import { getDifficultyLevel } from "@/features/bill-difficulty/server/loaders/ge
 import type { BillWithContent, FactionStance } from "../../shared/types";
 import {
   findBillById,
-  findMiraiStanceByBillId,
+  findFactionStancesByBillId,
   findTagsByBillId,
 } from "../repositories/bill-repository";
 import { getBillContentWithDifficulty } from "./helpers/get-bill-content";
@@ -19,13 +19,12 @@ export async function getBillByIdAdmin(
 
   // 基本的なbill情報、会派見解、コンテンツ、タグを並列取得
   // ステータスに関係なく取得（管理者用）
-  const [bill, factionStancesResult, billContent, tagsResult] =
-    await Promise.all([
-      findBillById(id),
-      findMiraiStanceByBillId(id),
-      getBillContentWithDifficulty(id, difficultyLevel),
-      findTagsByBillId(id),
-    ]);
+  const [bill, factionStancesRaw, billContent, tagsResult] = await Promise.all([
+    findBillById(id),
+    findFactionStancesByBillId(id),
+    getBillContentWithDifficulty(id, difficultyLevel),
+    findTagsByBillId(id),
+  ]);
   if (!bill) {
     console.error("Failed to fetch bill");
     return null;
@@ -33,8 +32,26 @@ export async function getBillByIdAdmin(
 
   const billTags = tagsResult;
 
-  // 川崎版は会派見解なし（mirai_stancesは議会全体のスタンス）
-  const factionStances: FactionStance[] = [];
+  const factionStances: FactionStance[] = factionStancesRaw
+    .filter(
+      (
+        fs
+      ): fs is typeof fs & {
+        factions: NonNullable<(typeof fs)["factions"]>;
+      } => fs.factions !== null
+    )
+    .map((fs) => ({
+      id: fs.id,
+      stance: fs.type,
+      comment: fs.comment,
+      faction: {
+        id: fs.factions.id,
+        name: fs.factions.name,
+        display_name: fs.factions.display_name,
+        sort_order: fs.factions.sort_order,
+      },
+    }))
+    .sort((a, b) => a.faction.sort_order - b.faction.sort_order);
 
   // タグデータを整形
   const tags =
