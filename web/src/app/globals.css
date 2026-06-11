@@ -80,6 +80,7 @@
   --color-mirai-border-muted: #bebcbc;
 
   /* Stance semantic colors */
+  --color-stance-for: #0f8472;
   --color-stance-for-bg: #ecfcf1;
   --color-stance-against: #c9272a;
   --color-stance-against-light: #d23c3f;
@@ -103,6 +104,16 @@
   /* Gradient endpoints */
   --color-mirai-gradient-start: #dbd3f9;
   --color-mirai-gradient-end: #ede9fd;
+
+  /* 事務事業評価グレード */
+  --color-grade-a: #22c55e;
+  --color-grade-a-bg: #f0fdf4;
+  --color-grade-b: #3b82f6;
+  --color-grade-b-bg: #eff6ff;
+  --color-grade-c: #f59e0b;
+  --color-grade-c-bg: #fffbeb;
+  --color-grade-d: #ef4444;
+  --color-grade-d-bg: #fef2f2;
 }
 
 :root {
@@ -321,4 +332,20 @@
 
 button {
   cursor: pointer;
+}
+
+/* 文字サイズ拡大モード: <main> 内の本文テキストのみ対象（ヘッダー・ナビ等は除外） */
+html.large-text main .text-xs {
+  font-size: calc(0.75rem * 1.1875); /* 12px → ~14px */
+}
+html.large-text main .text-sm {
+  font-size: calc(0.875rem * 1.1875); /* 14px → ~17px */
+}
+html.large-text main .text-base {
+  font-size: calc(1rem * 1.1875); /* 16px → ~19px */
+}
+
+/* 動的幅を CSS 変数で受け取るプログレスバー */
+.progress-fill {
+  width: var(--progress-width, 0%);
 }

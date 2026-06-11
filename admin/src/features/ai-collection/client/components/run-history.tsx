@@ -2,6 +2,7 @@
 
 import { CheckCircle, Loader2, PauseCircle, XCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import type { CollectionRun } from "../../shared/types";
 
 type RunHistoryProps = {
@@ -22,12 +23,15 @@ export function RunHistory({
   return (
     <div className="space-y-2">
       {runs.map((run) => (
-        <button
+        <Button
           key={run.id}
           type="button"
+          variant="ghost"
           onClick={() => onSelectRun(run)}
-          className={`w-full rounded-lg border p-4 text-left transition-colors hover:bg-gray-50 ${
-            activeRunId === run.id ? "border-blue-500 bg-blue-50" : ""
+          className={`h-auto w-full flex-col items-stretch justify-start rounded-lg border p-4 text-left font-normal whitespace-normal hover:bg-gray-50 ${
+            activeRunId === run.id
+              ? "border-blue-500 bg-blue-50 hover:bg-blue-50"
+              : ""
           }`}
         >
           <div className="flex items-center justify-between gap-2">
@@ -56,7 +60,7 @@ export function RunHistory({
           {run.error && (
             <p className="mt-1 text-xs text-red-500">{run.error}</p>
           )}
-        </button>
+        </Button>
       ))}
     </div>
   );

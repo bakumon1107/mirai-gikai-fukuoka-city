@@ -10,6 +10,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import { Button } from "@/components/ui/button";
 import type { BillWithContent } from "@/features/bills/shared/types";
 import type { BudgetChatContext } from "@/features/chat/server/services/handle-chat-request";
 import { ChatWindow } from "./chat-window";
@@ -120,10 +121,11 @@ export const ChatButton = forwardRef<ChatButtonRef, ChatButtonProps>(
               transitionDuration: `${ANIMATION_DURATION.SIZE_TRANSITION}ms`,
             }}
           >
-            <button
+            <Button
               type="button"
+              variant="ghost"
               onClick={() => setIsOpen(true)}
-              className={`relative bg-white rounded-[50px] hover:opacity-90 flex items-center w-full py-2 transition-all ease-in-out ${
+              className={`relative h-auto bg-white hover:bg-white rounded-[50px] hover:opacity-90 flex items-center w-full py-2 transition-all ease-in-out ${
                 isCompact
                   ? "h-[35px] px-4 justify-center gap-2.5"
                   : "h-14 justify-end pr-4 pl-6 gap-2.5"
@@ -162,7 +164,7 @@ export const ChatButton = forwardRef<ChatButtonRef, ChatButtonProps>(
                   />
                 </div>
               )}
-            </button>
+            </Button>
           </div>
         </div>
 

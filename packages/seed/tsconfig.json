@@ -11,13 +11,15 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@mirai-gikai/supabase": ["../supabase/src/index.ts"],
+      "@/features/jimu-jigyo/shared/types/jimu-jigyo": [
+        "../../web/src/features/jimu-jigyo/shared/types/jimu-jigyo.ts"
+      ]
+    }
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
 }
