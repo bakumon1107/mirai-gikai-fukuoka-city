@@ -241,28 +241,29 @@ function StageBadge({
 }) {
   const baseClass = `text-xs px-2 py-1 rounded-full inline-flex items-center ${
     completed
-      ? "bg-green-100 text-green-800"
+      ? "bg-green-100 text-green-800 hover:text-green-800"
       : active
-        ? "bg-blue-100 text-blue-800"
-        : "bg-gray-100 text-gray-500"
+        ? "bg-blue-100 text-blue-800 hover:text-blue-800"
+        : "bg-gray-100 text-gray-500 hover:text-gray-500"
   }`;
 
   if (onClick) {
     return (
-      <button
+      <Button
         type="button"
-        className={`${baseClass} cursor-pointer hover:opacity-80`}
+        variant="ghost"
+        className={`h-auto ${baseClass} cursor-pointer hover:opacity-80`}
         onClick={onClick}
       >
-        {completed && <Check className="h-3 w-3 mr-1" />}
+        {completed && <Check className="size-3" />}
         {label}
-      </button>
+      </Button>
     );
   }
 
   return (
     <span className={baseClass}>
-      {completed && <Check className="h-3 w-3 mr-1" />}
+      {completed && <Check className="size-3 mr-1" />}
       {label}
     </span>
   );
