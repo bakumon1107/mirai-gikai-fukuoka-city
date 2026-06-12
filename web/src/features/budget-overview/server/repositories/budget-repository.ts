@@ -86,6 +86,38 @@ export async function hasPublishedOverviewsBySession(
 }
 
 /**
+ * 公開済み予算概要が存在する最新の会期を取得
+ */
+export async function findLatestSessionWithBudget(): Promise<{
+  id: string;
+  slug: string | null;
+} | null> {
+  const supabase = createAdminClient();
+
+  const { data: overviews, error: e1 } = await supabase
+    .from("budget_overviews")
+    .select("council_session_id")
+    .eq("publish_status", "published");
+
+  if (e1) throw new Error(`Failed to fetch budget sessions: ${e1.message}`);
+  if (!overviews?.length) return null;
+
+  const sessionIds = [...new Set(overviews.map((o) => o.council_session_id))];
+
+  const { data: session, error: e2 } = await supabase
+    .from("council_sessions")
+    .select("id, slug")
+    .in("id", sessionIds)
+    .order("start_date", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (e2)
+    throw new Error(`Failed to fetch latest budget session: ${e2.message}`);
+  return session ?? null;
+}
+
+/**
  * 会期ID + department_slug で公開済み予算概要を1件取得（テーマ・施策含む）
  */
 export async function findPublishedOverviewBySlug(

@@ -15,6 +15,7 @@ import { FeaturedBillSection } from "@/features/bills/server/components/featured
 import { loadHomeData } from "@/features/bills/server/loaders/load-home-data";
 import type { BillWithContent } from "@/features/bills/shared/types";
 import { getSessionsWithBudget } from "@/features/budget-overview/server/loaders/get-sessions-with-budget";
+import { getLatestBudgetSession } from "@/features/budget-overview/server/loaders/get-latest-budget-session";
 import { HomeChatClient } from "@/features/chat/client/components/home-chat-client";
 import { CurrentCouncilSession } from "@/features/council-sessions/client/components/current-council-session";
 import { getActiveCouncilSession } from "@/features/council-sessions/server/loaders/get-active-council-session";
@@ -40,6 +41,7 @@ export default async function Home() {
     latestQuestionsSlug,
     latestPressConference,
     pressConferences,
+    latestBudgetSession,
   ] = await Promise.all([
     getCurrentCouncilSession(getJapanTime()),
     getActiveCouncilSession(),
@@ -49,6 +51,7 @@ export default async function Home() {
     getLatestSessionWithQuestions(),
     getLatestPressConference(),
     getPressConferences(),
+    getLatestBudgetSession(),
   ]);
 
   const toBillChatContext = (bill: BillWithContent) => {
@@ -77,9 +80,9 @@ export default async function Home() {
       )}
 
       {/* 予算概要バナー */}
-      {activeSession?.slug && (
+      {latestBudgetSession?.slug && (
         <Container className="pt-6">
-          <BudgetOverviewBanner sessionSlug={activeSession.slug} />
+          <BudgetOverviewBanner sessionSlug={latestBudgetSession.slug} />
         </Container>
       )}
 
