@@ -16,12 +16,24 @@ import type {
   DraftBill,
   DraftFactionStance,
 } from "@/features/ai-collection/shared/types";
+import { isValidRunId } from "@/features/ai-collection/shared/utils/validate-run-id";
+import { requireAdmin } from "@/features/auth/server/lib/auth-server";
 
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ runId: string }> }
 ) {
+  try {
+    await requireAdmin();
+  } catch {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const { runId } = await params;
+
+  if (!isValidRunId(runId)) {
+    return NextResponse.json({ error: "不正なrunIdです" }, { status: 400 });
+  }
 
   try {
     const run = await loadRun(runId);
@@ -47,7 +59,17 @@ export async function POST(
   _request: Request,
   { params }: { params: Promise<{ runId: string }> }
 ) {
+  try {
+    await requireAdmin();
+  } catch {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const { runId } = await params;
+
+  if (!isValidRunId(runId)) {
+    return NextResponse.json({ error: "不正なrunIdです" }, { status: 400 });
+  }
 
   try {
     const run = await loadRun(runId);

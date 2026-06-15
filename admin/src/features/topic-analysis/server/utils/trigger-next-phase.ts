@@ -1,5 +1,7 @@
 import "server-only";
 
+import { timingSafeStringEqual } from "@/lib/security/timing-safe-equal";
+
 /**
  * 次フェーズのAPI routeを内部fetchで起動する
  *
@@ -51,7 +53,7 @@ export function verifyInternalAuth(request: Request): void {
   }
 
   const authHeader = request.headers.get("Authorization");
-  if (!authHeader || authHeader !== `Bearer ${secret}`) {
+  if (!authHeader || !timingSafeStringEqual(authHeader, `Bearer ${secret}`)) {
     throw new Error("Unauthorized: Invalid bearer token");
   }
 }
