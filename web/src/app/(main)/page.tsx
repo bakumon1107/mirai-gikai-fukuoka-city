@@ -18,7 +18,6 @@ import { getSessionsWithBudget } from "@/features/budget-overview/server/loaders
 import { getLatestBudgetSession } from "@/features/budget-overview/server/loaders/get-latest-budget-session";
 import { HomeChatClient } from "@/features/chat/client/components/home-chat-client";
 import { CurrentCouncilSession } from "@/features/council-sessions/client/components/current-council-session";
-import { getActiveCouncilSession } from "@/features/council-sessions/server/loaders/get-active-council-session";
 import { getAllPastSessions } from "@/features/council-sessions/server/loaders/get-all-past-sessions";
 import { getCurrentCouncilSession } from "@/features/council-sessions/server/loaders/get-current-council-session";
 import { getLatestSessionWithQuestions } from "@/features/general-questions/server/loaders/get-latest-session-with-questions";
@@ -34,7 +33,6 @@ export default async function Home() {
   // ゆくゆくタグ機能がマージされたらBFFに統合する
   const [
     currentSession,
-    activeSession,
     currentDifficulty,
     pastSessions,
     budgetSessions,
@@ -44,7 +42,6 @@ export default async function Home() {
     latestBudgetSession,
   ] = await Promise.all([
     getCurrentCouncilSession(getJapanTime()),
-    getActiveCouncilSession(),
     getDifficultyLevel(),
     getAllPastSessions(),
     getSessionsWithBudget(),
