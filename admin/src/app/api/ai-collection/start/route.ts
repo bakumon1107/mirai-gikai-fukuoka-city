@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { buildPrompt } from "@/features/ai-collection/server/utils/build-prompt";
 import { getExistingBillNumbers } from "@/features/ai-collection/server/loaders/get-existing-bill-names";
+import { buildPrompt } from "@/features/ai-collection/server/utils/build-prompt";
 import {
   ClaudeUsageLimitError,
   cleanupTempFile,
@@ -17,8 +17,15 @@ import type {
   DraftBill,
   DraftFactionStance,
 } from "@/features/ai-collection/shared/types";
+import { requireAdmin } from "@/features/auth/server/lib/auth-server";
 
 export async function POST(request: Request) {
+  try {
+    await requireAdmin();
+  } catch {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const body = (await request.json()) as {
       startDate?: string;

@@ -17,8 +17,15 @@ import type {
   DraftBill,
   DraftFactionStance,
 } from "@/features/ai-collection/shared/types";
+import { requireAdmin } from "@/features/auth/server/lib/auth-server";
 
 export async function POST(request: Request) {
+  try {
+    await requireAdmin();
+  } catch {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const body = (await request.json()) as {
       startDate?: string;

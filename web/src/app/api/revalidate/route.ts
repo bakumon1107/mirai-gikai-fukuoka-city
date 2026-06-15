@@ -2,6 +2,7 @@ import { revalidateTag } from "next/cache";
 import { type NextRequest, NextResponse } from "next/server";
 import { ALL_CACHE_TAGS, type CacheTag } from "@/lib/cache-tags";
 import { env } from "@/lib/env";
+import { timingSafeStringEqual } from "@/lib/security/timing-safe-equal";
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,7 +16,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (authHeader !== `Bearer ${env.revalidateSecret}`) {
+    if (
+      !authHeader ||
+      !timingSafeStringEqual(authHeader, `Bearer ${env.revalidateSecret}`)
+    ) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
