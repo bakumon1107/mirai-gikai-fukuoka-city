@@ -143,11 +143,7 @@ export function CityFinanceSections({ view }: { view: CityFinanceView }) {
             <p className="mb-2 text-sm font-medium text-mirai-text">
               自主財源・依存財源の推移（億円）
             </p>
-            <TrendLineChart
-              series={view.revenueTrend}
-              unitLabel="億円"
-              formatValue={(v) => Math.round(v).toLocaleString("ja-JP")}
-            />
+            <TrendLineChart series={view.revenueTrend} unitLabel="億円" />
           </div>
         )}
       </Section>
@@ -163,11 +159,7 @@ export function CityFinanceSections({ view }: { view: CityFinanceView }) {
             <p className="mb-2 text-sm font-medium text-mirai-text">
               目的別歳出の推移（億円）
             </p>
-            <TrendLineChart
-              series={view.expenditureTrend}
-              unitLabel="億円"
-              formatValue={(v) => Math.round(v).toLocaleString("ja-JP")}
-            />
+            <TrendLineChart series={view.expenditureTrend} unitLabel="億円" />
           </div>
         )}
       </Section>
@@ -186,7 +178,7 @@ export function CityFinanceSections({ view }: { view: CityFinanceView }) {
               },
             ]}
             unitLabel="万人"
-            formatValue={(v) => (v / 10_000).toFixed(1)}
+            valueKind="manpeople"
           />
           {view.perCapitaExpenditureYen !== null && (
             <p className="text-sm text-mirai-text-secondary">

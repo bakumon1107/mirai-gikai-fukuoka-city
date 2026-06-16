@@ -12,13 +12,25 @@ import {
 } from "recharts";
 import type { TrendSeries } from "../../shared/utils/finance-view";
 
+/**
+ * 値の整形種別（Server→Client へ関数を渡せないため文字列で指定）。
+ * - "oku": 整数＋桁区切り（億円など）
+ * - "manpeople": 1万で割り小数1桁（万人）
+ */
+type ValueKind = "oku" | "manpeople";
+
 type TrendLineChartProps = {
   series: TrendSeries[];
-  /** 値の単位ラベル（例: 億円, 万人, 円） */
+  /** 値の単位ラベル（例: 億円, 万人） */
   unitLabel: string;
-  /** 値の整形（ツールチップ・軸） */
-  formatValue?: (value: number) => string;
+  /** 値の整形種別（既定: oku） */
+  valueKind?: ValueKind;
 };
+
+function formatByKind(value: number, kind: ValueKind): string {
+  if (kind === "manpeople") return (value / 10_000).toFixed(1);
+  return Math.round(value).toLocaleString("ja-JP");
+}
 
 const PALETTE = [
   "var(--color-chart-1)",
@@ -38,7 +50,7 @@ const PALETTE = [
 export function TrendLineChart({
   series,
   unitLabel,
-  formatValue,
+  valueKind = "oku",
 }: TrendLineChartProps) {
   const years = Array.from(
     new Set(series.flatMap((s) => s.values.map((v) => v.year)))
@@ -53,7 +65,7 @@ export function TrendLineChart({
     return row;
   });
 
-  const fmt = formatValue ?? ((v: number) => v.toLocaleString("ja-JP"));
+  const fmt = (v: number) => formatByKind(v, valueKind);
 
   return (
     <div
