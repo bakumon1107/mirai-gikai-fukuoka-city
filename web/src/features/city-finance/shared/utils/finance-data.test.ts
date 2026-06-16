@@ -52,4 +52,17 @@ describe("同梱データ fukuoka-finance.json", () => {
   test("人口が政令市規模（100万人超）", () => {
     expect(view.population ?? 0).toBeGreaterThan(1_000_000);
   });
+
+  test("積み上げ系列は上位＋その他で構成され末尾がその他", () => {
+    // 歳入: 上位5＋その他 = 最大6系列
+    expect(view.revenueSourceTrend.length).toBeLessThanOrEqual(6);
+    expect(view.revenueSourceTrend.at(-1)?.name).toBe("その他");
+    // 歳出: 上位6＋その他 = 最大7系列
+    expect(view.expenditureStackedTrend.length).toBeLessThanOrEqual(7);
+    expect(view.expenditureStackedTrend.at(-1)?.name).toBe("その他");
+    // 各系列が全年度分の値を持つ
+    for (const s of view.expenditureStackedTrend) {
+      expect(s.values.length).toBe(view.years.length);
+    }
+  });
 });

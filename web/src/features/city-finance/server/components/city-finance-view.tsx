@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { StackedAreaChart } from "../../client/components/stacked-area-chart";
 import { TrendLineChart } from "../../client/components/trend-line-chart";
 import {
   formatJapaneseYen,
@@ -138,12 +139,18 @@ export function CityFinanceSections({ view }: { view: CityFinanceView }) {
             colorClass: REVENUE_KIND_COLOR[c.kind],
           }))}
         />
-        {view.revenueTrend.length > 0 && (
+        {view.revenueSourceTrend.length > 0 && (
           <div className="mt-2">
-            <p className="mb-2 text-sm font-medium text-mirai-text">
-              自主財源・依存財源の推移（億円）
+            <p className="mb-1 text-sm font-medium text-mirai-text">
+              主要財源の推移（億円・積み上げ）
             </p>
-            <TrendLineChart series={view.revenueTrend} unitLabel="億円" />
+            <p className="mb-2 text-xs text-mirai-text-muted">
+              何が増え、何が減ったかを面の厚みで表します。
+            </p>
+            <StackedAreaChart
+              series={view.revenueSourceTrend}
+              unitLabel="億円"
+            />
           </div>
         )}
       </Section>
@@ -154,12 +161,18 @@ export function CityFinanceSections({ view }: { view: CityFinanceView }) {
         description="福祉（民生費）・教育・道路などの目的別の使いみちと、その推移です。"
       >
         <CompositionBars items={view.expenditureComposition} />
-        {view.expenditureTrend.length > 0 && (
+        {view.expenditureStackedTrend.length > 0 && (
           <div className="mt-2">
-            <p className="mb-2 text-sm font-medium text-mirai-text">
-              目的別歳出の推移（億円）
+            <p className="mb-1 text-sm font-medium text-mirai-text">
+              目的別歳出の推移（億円・積み上げ）
             </p>
-            <TrendLineChart series={view.expenditureTrend} unitLabel="億円" />
+            <p className="mb-2 text-xs text-mirai-text-muted">
+              上位項目とその他を積み上げて、規模と内訳の変化を示します。
+            </p>
+            <StackedAreaChart
+              series={view.expenditureStackedTrend}
+              unitLabel="億円"
+            />
           </div>
         )}
       </Section>

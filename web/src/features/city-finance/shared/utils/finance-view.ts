@@ -2,6 +2,7 @@
 import type {
   CompositionItem,
   FinanceData,
+  FinanceSeries,
   RevenueKind,
   YearValue,
 } from "../types";
@@ -9,6 +10,7 @@ import {
   alignSeries,
   classifyRevenue,
   findSeries,
+  isTotalRow,
   latestYear,
   perCapitaYen,
   toLatestComposition,
@@ -45,8 +47,12 @@ export type CityFinanceView = {
   expenditureComposition: CompositionItem[];
   /** 収入構造の推移（自主財源/依存財源・億円） */
   revenueTrend: TrendSeries[];
-  /** 歳出目的別の推移（億円） */
+  /** 主要財源の推移（上位5＋その他・億円, 積み上げ用） */
+  revenueSourceTrend: TrendSeries[];
+  /** 歳出目的別の推移（億円・全項目） */
   expenditureTrend: TrendSeries[];
+  /** 歳出目的別の推移（上位6＋その他・億円, 積み上げ用） */
+  expenditureStackedTrend: TrendSeries[];
   /** 人口推移（人） */
   populationTrend: YearValue[] | null;
   /** 1人あたり歳出の推移（円） */
@@ -61,6 +67,43 @@ function toOkuValues(values: YearValue[]): YearValue[] {
     year: v.year,
     value: thousandYenToYen(v.value) / 100_000_000,
   }));
+}
+
+/**
+ * 系列リストを「最新年度の大きい順 上位topN ＋ その他」の積み上げ用系列（億円）に変換。
+ * 合計行は除外。色かぶり回避と「何が増減したか」の把握に使う。
+ */
+function buildStackedTrend(
+  list: FinanceSeries[],
+  years: number[],
+  topN: number,
+  latest: number
+): TrendSeries[] {
+  const ranked = list
+    .filter((s) => !isTotalRow(s.item))
+    .map((s) => ({ series: s, latestVal: valueForYear(s, latest) ?? 0 }))
+    .sort((a, b) => b.latestVal - a.latestVal);
+  const top = ranked.slice(0, topN);
+  const rest = ranked.slice(topN);
+  const result: TrendSeries[] = top.map((t) => ({
+    name: t.series.item,
+    values: toOkuValues(alignSeries(t.series, years)),
+  }));
+  if (rest.length > 0) {
+    result.push({
+      name: "その他",
+      values: years.map((year) => ({
+        year,
+        value: rest.reduce(
+          (s, r) =>
+            s +
+            thousandYenToYen(valueForYear(r.series, year) ?? 0) / 100_000_000,
+          0
+        ),
+      })),
+    });
+  }
+  return result;
 }
 
 /** 千円系列の指定年度合計（合計行除外）を円で返す */
@@ -87,7 +130,9 @@ export function buildFinanceView(data: FinanceData): CityFinanceView {
     dependentPct: null,
     expenditureComposition: [],
     revenueTrend: [],
+    revenueSourceTrend: [],
     expenditureTrend: [],
+    expenditureStackedTrend: [],
     populationTrend: null,
     perCapitaTrend: null,
   };
@@ -150,9 +195,16 @@ export function buildFinanceView(data: FinanceData): CityFinanceView {
 
   // --- 推移（億円） ---
   const revenueTrend = buildRevenueTrend(data, years);
+  const revenueSourceTrend = buildStackedTrend(data.revenue, years, 5, ly);
   const expenditureTrend = data.expenditure
     .filter((s) => !/(合計|総額)/.test(s.item))
     .map((s) => ({ name: s.item, values: toOkuValues(alignSeries(s, years)) }));
+  const expenditureStackedTrend = buildStackedTrend(
+    data.expenditure,
+    years,
+    6,
+    ly
+  );
 
   // --- 人口・1人あたりの推移 ---
   const populationTrend = data.population
@@ -177,6 +229,8 @@ export function buildFinanceView(data: FinanceData): CityFinanceView {
     dependentPct,
     expenditureComposition,
     revenueTrend,
+    revenueSourceTrend,
+    expenditureStackedTrend,
     expenditureTrend,
     populationTrend,
     perCapitaTrend,

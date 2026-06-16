@@ -28,6 +28,8 @@ export type FinanceData = {
   expenditure: FinanceSeries[];
   /** 各年度の総人口（人）。未取得なら null */
   population: YearValue[] | null;
+  /** 財政指標（%・指数）の推移。経常収支比率・財政力指数・実質公債費比率・将来負担比率 等 */
+  indicators?: FinanceSeries[];
 };
 
 /** 単年の構成比表示用 */
