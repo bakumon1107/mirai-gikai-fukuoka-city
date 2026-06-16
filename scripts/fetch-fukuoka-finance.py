@@ -157,7 +157,10 @@ def main() -> None:
             if k in rf:
                 rev[k].append({"year": fy, "value": rf[k]})
         other.append({"year": fy, "value": residual})
-        pop.append({"year": fy, "value": latest_juki_population(sk)})
+        pop_val = latest_juki_population(sk)
+        if pop_val is None:
+            raise SystemExit(f"R{n}: 総括表から住基人口を取得できません")
+        pop.append({"year": fy, "value": pop_val})
         for key in INDICATORS:
             indicators[key].append({"year": fy, "value": find_label_value(sk, key)})
         print(f"R{n}/{fy}: 検証OK 歳入{revenue_total:,} 歳出{expense_total:,}")
