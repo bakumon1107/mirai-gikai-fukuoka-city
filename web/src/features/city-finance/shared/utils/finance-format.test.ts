@@ -3,9 +3,22 @@ import {
   formatJapaneseYen,
   formatPerCapita,
   formatPct,
+  formatReiwaFiscalYear,
   thousandYenToYen,
   yenToOku,
 } from "./finance-format";
+
+describe("formatReiwaFiscalYear", () => {
+  test("令和元年度（2019）は「元」表記", () => {
+    expect(formatReiwaFiscalYear(2019)).toBe("令和元年度");
+  });
+  test("令和6年度（2024）", () => {
+    expect(formatReiwaFiscalYear(2024)).toBe("令和6年度");
+  });
+  test("2018以前は西暦のまま", () => {
+    expect(formatReiwaFiscalYear(2018)).toBe("2018年度");
+  });
+});
 
 describe("thousandYenToYen / yenToOku", () => {
   test("千円→円", () => {

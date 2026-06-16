@@ -43,6 +43,16 @@ export function formatPct(pct: number, digits = 1): string {
   return `${pct.toFixed(digits)}%`;
 }
 
+/**
+ * 西暦年度を和暦年度表記にする。令和元年度（2019）に対応。
+ * 2019年度以降は令和、それ以前は西暦のまま返す。
+ */
+export function formatReiwaFiscalYear(year: number): string {
+  if (year < 2019) return `${year}年度`;
+  const n = year - 2018;
+  return n === 1 ? "令和元年度" : `令和${n}年度`;
+}
+
 /** 1人あたり金額（円）を整形。例 690000 → "約69.0万円" */
 export function formatPerCapita(yenPerPerson: number): string {
   if (!Number.isFinite(yenPerPerson)) return "—";

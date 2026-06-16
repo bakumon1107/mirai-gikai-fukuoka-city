@@ -4,6 +4,7 @@ import {
   formatJapaneseYen,
   formatPerCapita,
   formatPct,
+  formatReiwaFiscalYear,
 } from "../../shared/utils/finance-format";
 import type {
   CityFinanceView,
@@ -81,7 +82,7 @@ export function CityFinanceSections({ view }: { view: CityFinanceView }) {
     <div className="flex flex-col gap-12">
       {/* サマリ */}
       <Section
-        title={`福岡市のお金の流れ（令和${view.latestYear - 2018}年度・${view.latestYear}年度）`}
+        title={`福岡市のお金の流れ（${formatReiwaFiscalYear(view.latestYear)}・${view.latestYear}年度）`}
         description="市の1年間の収入（歳入）と支出（歳出）の全体像です。"
       >
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">

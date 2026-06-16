@@ -135,6 +135,18 @@ def main() -> None:
             )
 
         rf = first_occurrence_map(ws, set(REVENUE))
+        # 抽出ドリフト検知: 主要費目/財源が欠けたら中断（黙って各種交付金等に吸収させない）
+        missing_p = [k for k in PURPOSE if k not in ef]
+        missing_r = [k for k in REVENUE if k not in rf]
+        if missing_p or missing_r:
+            raise SystemExit(
+                f"R{n}: 抽出できないラベル 目的別={missing_p} 歳入={missing_r}"
+            )
+        residual = revenue_total - sum(rf.values())
+        if not 0 <= residual <= revenue_total * 0.15:
+            raise SystemExit(
+                f"R{n}: 各種交付金等の残差({residual:,})が想定範囲外（歳入総額の0〜15%）"
+            )
 
         gen["歳入総額"].append({"year": fy, "value": revenue_total})
         gen["歳出総額"].append({"year": fy, "value": expense_total})
@@ -144,7 +156,7 @@ def main() -> None:
         for k in REVENUE:
             if k in rf:
                 rev[k].append({"year": fy, "value": rf[k]})
-        other.append({"year": fy, "value": revenue_total - sum(rf.values())})
+        other.append({"year": fy, "value": residual})
         pop.append({"year": fy, "value": latest_juki_population(sk)})
         for key in INDICATORS:
             indicators[key].append({"year": fy, "value": find_label_value(sk, key)})
