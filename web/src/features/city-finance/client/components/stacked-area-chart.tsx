@@ -42,7 +42,8 @@ export function StackedAreaChart({ series, unitLabel }: StackedAreaChartProps) {
     const row: Record<string, number | string> = { year: `${year}` };
     for (const s of series) {
       const found = s.values.find((v) => v.year === year);
-      row[s.name] = found ? Math.round(found.value) : 0;
+      // 値は精度を保持し、表示時のみ丸める（小さな項目が潰れないように）
+      row[s.name] = found ? found.value : 0;
     }
     return row;
   });
@@ -66,11 +67,11 @@ export function StackedAreaChart({ series, unitLabel }: StackedAreaChartProps) {
           <YAxis
             width={56}
             tick={{ fontSize: 12, fill: "var(--color-mirai-text-secondary)" }}
-            tickFormatter={(v) => Number(v).toLocaleString("ja-JP")}
+            tickFormatter={(v) => Math.round(Number(v)).toLocaleString("ja-JP")}
           />
           <Tooltip
             formatter={(value) =>
-              `${Number(value).toLocaleString("ja-JP")} ${unitLabel}`
+              `${Math.round(Number(value)).toLocaleString("ja-JP")} ${unitLabel}`
             }
             labelFormatter={(label) => `${String(label)}年度`}
           />

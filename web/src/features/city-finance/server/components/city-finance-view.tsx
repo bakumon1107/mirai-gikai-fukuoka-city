@@ -1,3 +1,5 @@
+import "server-only";
+
 import type { ReactNode } from "react";
 import { StackedAreaChart } from "../../client/components/stacked-area-chart";
 import { TrendLineChart } from "../../client/components/trend-line-chart";
