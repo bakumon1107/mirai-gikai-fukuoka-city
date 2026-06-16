@@ -65,4 +65,21 @@ describe("同梱データ fukuoka-finance.json", () => {
       expect(s.values.length).toBe(view.years.length);
     }
   });
+
+  test("各セクションの分析コメントが生成される", () => {
+    expect(view.revenueCommentary.length).toBeGreaterThan(0);
+    expect(view.expenditureCommentary.length).toBeGreaterThan(0);
+    expect(view.populationCommentary.length).toBeGreaterThan(0);
+    // 歳出コメントに民生費への言及
+    expect(view.expenditureCommentary.join("")).toContain("民生費");
+  });
+
+  test("高齢化率と1人あたり民生費の推移が存在する", () => {
+    expect(view.agingTrend?.length ?? 0).toBeGreaterThan(0);
+    expect(view.perCapitaWelfareTrend?.length ?? 0).toBeGreaterThan(0);
+    // 高齢化率は20〜30%程度の妥当な範囲
+    const latestAging = view.agingTrend?.at(-1)?.value ?? 0;
+    expect(latestAging).toBeGreaterThan(15);
+    expect(latestAging).toBeLessThan(35);
+  });
 });

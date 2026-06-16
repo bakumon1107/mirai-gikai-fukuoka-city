@@ -19,15 +19,20 @@
 from __future__ import annotations
 
 import datetime
+import io
 import json
 import os
 import re
+import unicodedata
 import urllib.request
 
 import openpyxl
 
 UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/120 Safari/537.36"
 DOC_BASE = "https://www.city.fukuoka.lg.jp/zaisei/zaisei/shisei/documents"
+# 高齢化率: 福岡市オープンデータ(BODIK) 住民基本台帳・年齢別人口（合算・年次一括）
+BODIK_API = "https://data.bodik.jp/api/3/action"
+AGING_DATASET = "401307_fukuokacityjukijinkou"
 OUT_PATH = os.path.join(
     os.path.dirname(__file__),
     "..",
@@ -102,6 +107,52 @@ def latest_juki_population(sk) -> float | None:
                     if val and int(m.group(1)) > best_year:
                         best_year, best_val = int(m.group(1)), val
     return best_val
+
+
+def fetch_aging_rate() -> list[dict]:
+    """福岡市オープンデータ(BODIK)の年齢別人口（合算）から各年の65歳以上比率(%)を算出。
+    各年ファイルの最初の月末シート・福岡市総数(C列)を用いる。合算ファイルがある年のみ。
+    """
+    pkg = json.loads(
+        get_bytes(f"{BODIK_API}/package_show?id={AGING_DATASET}").decode()
+    )
+    five = re.compile(r"^(65|70|75|80|85|90|95)~")
+
+    def norm(s: object) -> str:
+        return unicodedata.normalize("NFKC", str(s)).replace(" ", "")
+
+    out: list[dict] = []
+    for year in sorted(YEARS.values()):
+        url = next(
+            (
+                r["url"]
+                for r in pkg["result"]["resources"]
+                if f"{year}nenreibetu-sousuu" in r["url"]
+            ),
+            None,
+        )
+        if url is None:
+            continue  # 合算ファイル未公開の年はスキップ
+        wb = openpyxl.load_workbook(io.BytesIO(get_bytes(url)), data_only=True)
+        ws = wb[wb.sheetnames[0]]
+        total: float | None = None
+        senior = 0.0
+        for r in range(1, ws.max_row + 1):
+            a = ws.cell(r, 1).value
+            if not isinstance(a, str):
+                continue
+            label = norm(a)
+            value = ws.cell(r, 3).value  # C列=福岡市総数
+            if not isinstance(value, (int, float)):
+                continue
+            if "総数" in label and total is None:
+                total = value
+            if five.match(label) or (label.startswith("100") and "以上" in label):
+                senior += value
+        if total:
+            out.append({"year": year, "value": round(senior / total * 100, 1)})
+            print(f"  高齢化率 {year}: {out[-1]['value']}%")
+    return out
 
 
 def main() -> None:
@@ -196,6 +247,8 @@ def main() -> None:
             }
             for k, v in indicators.items()
         ],
+        # 高齢化率（65歳以上比率・%）。福岡市オープンデータ 年齢別人口より。
+        "agingRate": fetch_aging_rate(),
     }
     with open(OUT_PATH, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
