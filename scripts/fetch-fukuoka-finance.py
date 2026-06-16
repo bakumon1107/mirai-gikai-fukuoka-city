@@ -185,6 +185,17 @@ def main() -> None:
         + [{"item": "各種交付金等", "values": sorted(other, key=lambda x: x["year"])}],
         "expenditure": sort_series(exp),
         "population": sorted(pop, key=lambda x: x["year"]),
+        # 財政指標（%・指数）。総括表より。
+        "indicators": [
+            {
+                "item": k,
+                "values": sorted(
+                    [e for e in v if e["value"] is not None],
+                    key=lambda x: x["year"],
+                ),
+            }
+            for k, v in indicators.items()
+        ],
     }
     with open(OUT_PATH, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)

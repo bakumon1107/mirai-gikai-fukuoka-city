@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function FinancePage() {
   const view = getFinanceView();
   return (
-    <Container className="py-8">
+    <Container className="pt-12 pb-8 md:pt-14">
       <h1 className="mb-2 text-2xl font-bold text-mirai-text">
         福岡市のお金の使い道
       </h1>
