@@ -1,4 +1,6 @@
+import { ChevronLeft } from "lucide-react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Container } from "@/components/layouts/container";
 import { CityFinanceSections } from "@/features/city-finance/server/components/city-finance-view";
 import { getFinanceView } from "@/features/city-finance/server/loaders/get-finance-view";
@@ -12,7 +14,16 @@ export const metadata: Metadata = {
 export default function FinancePage() {
   const view = getFinanceView();
   return (
-    <Container className="pt-12 pb-8 md:pt-14">
+    <Container className="py-8">
+      <div className="mb-4">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-1 text-sm text-mirai-text-secondary hover:text-mirai-text"
+        >
+          <ChevronLeft className="h-4 w-4" />
+          トップに戻る
+        </Link>
+      </div>
       <h1 className="mb-2 text-2xl font-bold text-mirai-text">
         福岡市のお金の使い道
       </h1>

@@ -1,4 +1,5 @@
 import "server-only";
+import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { YEAR_METADATA } from "../loaders/load-jimu-jigyo-list";
 
@@ -6,6 +7,13 @@ export function JimuJigyoArchivePage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 space-y-6">
       <div>
+        <Link
+          href="/"
+          className="mb-4 inline-flex items-center gap-1 text-sm text-mirai-text-secondary hover:text-mirai-text"
+        >
+          <ChevronLeft className="h-4 w-4" />
+          トップに戻る
+        </Link>
         <h1 className="text-2xl font-bold text-mirai-text">事務事業評価</h1>
         <p className="text-sm text-mirai-text-secondary mt-1">
           福岡市が公開する事務事業マネジメントシートをもとに、市民の視点で評価・可視化しています。
