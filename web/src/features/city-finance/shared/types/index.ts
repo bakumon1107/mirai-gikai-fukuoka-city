@@ -30,6 +30,8 @@ export type FinanceData = {
   population: YearValue[] | null;
   /** 財政指標（%・指数）の推移。経常収支比率・財政力指数・実質公債費比率・将来負担比率 等 */
   indicators?: FinanceSeries[];
+  /** 高齢化率（65歳以上比率・%）の推移。福岡市 年齢別人口より（公開年のみ） */
+  agingRate?: YearValue[];
 };
 
 /** 単年の構成比表示用 */

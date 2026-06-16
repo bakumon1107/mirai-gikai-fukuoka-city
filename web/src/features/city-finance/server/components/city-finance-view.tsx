@@ -1,8 +1,9 @@
 import "server-only";
 
+import { Lightbulb } from "lucide-react";
 import type { ReactNode } from "react";
+import { PopulationFinanceChart } from "../../client/components/population-finance-chart";
 import { StackedAreaChart } from "../../client/components/stacked-area-chart";
-import { TrendLineChart } from "../../client/components/trend-line-chart";
 import {
   formatJapaneseYen,
   formatPerCapita,
@@ -63,6 +64,24 @@ function Stat({
         {value}
       </p>
       {sub && <p className="mt-0.5 text-xs text-mirai-text-secondary">{sub}</p>}
+    </div>
+  );
+}
+
+/** セクションごとの分析コメント（データドリブン） */
+function Analysis({ points }: { points: string[] }) {
+  if (points.length === 0) return null;
+  return (
+    <div className="rounded-lg border border-primary-accent bg-mirai-surface-warm px-4 py-3">
+      <p className="flex items-center gap-1.5 text-sm font-bold text-mirai-text">
+        <Lightbulb className="h-4 w-4 text-primary" />
+        分析
+      </p>
+      <ul className="mt-1.5 flex list-disc flex-col gap-1.5 pl-5 text-sm text-mirai-text-secondary">
+        {points.map((p) => (
+          <li key={p}>{p}</li>
+        ))}
+      </ul>
     </div>
   );
 }
@@ -155,6 +174,7 @@ export function CityFinanceSections({ view }: { view: CityFinanceView }) {
             />
           </div>
         )}
+        <Analysis points={view.revenueCommentary} />
       </Section>
 
       {/* 歳出 */}
@@ -177,33 +197,30 @@ export function CityFinanceSections({ view }: { view: CityFinanceView }) {
             />
           </div>
         )}
+        <Analysis points={view.expenditureCommentary} />
       </Section>
 
       {/* 人口と財政 */}
       {view.populationTrend && view.populationTrend.length > 0 && (
         <Section
-          title="人口と財政"
-          description="人口の移り変わりと、市民1人あたりの行政サービスの規模です。"
+          title="人口と財政（高齢化と福祉コスト）"
+          description="人口が増える中で高齢化も進み、市民1人あたりの福祉（民生費）の負担が年々重くなっています。"
         >
-          <TrendLineChart
-            series={[
-              {
-                name: "人口",
-                values: view.populationTrend,
-              },
-            ]}
-            unitLabel="万人"
-            valueKind="manpeople"
-          />
-          {view.perCapitaExpenditureYen !== null && (
-            <p className="text-sm text-mirai-text-secondary">
-              直近の市民1人あたり歳出は約{" "}
-              <span className="font-bold text-mirai-text">
-                {formatPerCapita(view.perCapitaExpenditureYen)}
-              </span>{" "}
-              です。
-            </p>
-          )}
+          {view.agingTrend &&
+          view.agingTrend.length > 0 &&
+          view.perCapitaWelfareTrend &&
+          view.perCapitaWelfareTrend.length > 0 ? (
+            <div>
+              <p className="mb-2 text-xs text-mirai-text-muted">
+                棒＝高齢化率（%・左軸）／折れ線＝1人あたり民生費（万円・右軸）
+              </p>
+              <PopulationFinanceChart
+                aging={view.agingTrend}
+                welfarePerCapita={view.perCapitaWelfareTrend}
+              />
+            </div>
+          ) : null}
+          <Analysis points={view.populationCommentary} />
         </Section>
       )}
 

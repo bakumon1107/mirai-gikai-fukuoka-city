@@ -18,7 +18,41 @@ import {
   withShares,
   yoyPct,
 } from "./finance-analysis";
+import {
+  buildExpenditureCommentary,
+  buildPopulationCommentary,
+  buildRevenueCommentary,
+} from "./finance-commentary";
 import { thousandYenToYen } from "./finance-format";
+
+/** 指標系列リストから指定指標の最新値を取得 */
+function latestIndicator(
+  indicators: FinanceSeries[] | undefined,
+  name: string
+): number | null {
+  const s = indicators?.find((i) => i.item === name);
+  if (!s || s.values.length === 0) return null;
+  return [...s.values].sort((a, b) => b.year - a.year)[0].value;
+}
+
+/** 民生費の1人あたり（円）推移を作る */
+function buildPerCapitaWelfare(
+  data: FinanceData,
+  years: number[]
+): YearValue[] | null {
+  const minsei = data.expenditure.find((s) => s.item === "民生費");
+  if (!minsei || !data.population) return null;
+  const popMap = new Map(data.population.map((p) => [p.year, p.value]));
+  const out: YearValue[] = [];
+  for (const year of years) {
+    const v = valueForYear(minsei, year);
+    const pop = popMap.get(year);
+    if (v !== null && pop) {
+      out.push({ year, value: thousandYenToYen(v) / pop });
+    }
+  }
+  return out.length ? out : null;
+}
 
 export type RevenueCompositionItem = CompositionItem & { kind: RevenueKind };
 
@@ -57,6 +91,16 @@ export type CityFinanceView = {
   populationTrend: YearValue[] | null;
   /** 1人あたり歳出の推移（円） */
   perCapitaTrend: YearValue[] | null;
+  /** 1人あたり民生費（福祉）の推移（円） */
+  perCapitaWelfareTrend: YearValue[] | null;
+  /** 高齢化率（65歳以上比率・%）の推移 */
+  agingTrend: YearValue[] | null;
+  /** 歳入（収入構造）の分析コメント */
+  revenueCommentary: string[];
+  /** 歳出（使いみち）の分析コメント */
+  expenditureCommentary: string[];
+  /** 人口と財政の分析コメント */
+  populationCommentary: string[];
 };
 
 const REVENUE_TOTAL = /歳入(総額|合計)/;
@@ -135,6 +179,11 @@ export function buildFinanceView(data: FinanceData): CityFinanceView {
     expenditureStackedTrend: [],
     populationTrend: null,
     perCapitaTrend: null,
+    perCapitaWelfareTrend: null,
+    agingTrend: null,
+    revenueCommentary: [],
+    expenditureCommentary: [],
+    populationCommentary: [],
   };
   if (ly === null) return empty;
 
@@ -213,6 +262,33 @@ export function buildFinanceView(data: FinanceData): CityFinanceView {
   const perCapitaTrend = expTotalSeries
     ? buildPerCapitaTrend(expTotalSeries.values, data.population, years)
     : null;
+  const perCapitaWelfareTrend = buildPerCapitaWelfare(data, years);
+  const agingTrend = data.agingRate?.length
+    ? [...data.agingRate].sort((a, b) => a.year - b.year)
+    : null;
+
+  // --- 分析コメント ---
+  const zaiseiRyoku = latestIndicator(data.indicators, "財政力指数");
+  const shoraiFutan = latestIndicator(data.indicators, "将来負担比率");
+  const firstYear = years[0];
+  const pcFirst = (t: YearValue[] | null) =>
+    t?.find((v) => v.year === firstYear)?.value ?? null;
+  const pcLast = (t: YearValue[] | null) =>
+    t?.find((v) => v.year === ly)?.value ?? null;
+  const revenueCommentary = buildRevenueCommentary(data, selfPct, zaiseiRyoku);
+  const expenditureCommentary = buildExpenditureCommentary(
+    data,
+    expenditureTotalYenResolved,
+    shoraiFutan
+  );
+  const populationCommentary = buildPopulationCommentary(
+    data,
+    { first: pcFirst(perCapitaTrend), last: pcLast(perCapitaTrend) },
+    {
+      first: pcFirst(perCapitaWelfareTrend),
+      last: pcLast(perCapitaWelfareTrend),
+    }
+  );
 
   return {
     hasData: true,
@@ -234,6 +310,11 @@ export function buildFinanceView(data: FinanceData): CityFinanceView {
     expenditureTrend,
     populationTrend,
     perCapitaTrend,
+    perCapitaWelfareTrend,
+    agingTrend,
+    revenueCommentary,
+    expenditureCommentary,
+    populationCommentary,
   };
 }
 
