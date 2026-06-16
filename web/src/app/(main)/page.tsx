@@ -1,6 +1,7 @@
 import { Container } from "@/components/layouts/container";
 import { About } from "@/components/top/about";
 import { BudgetOverviewBanner } from "@/components/top/budget-overview-banner";
+import { CityFinanceBanner } from "@/components/top/city-finance-banner";
 import { GeneralQuestionsBanner } from "@/components/top/general-questions-banner";
 import { JimuJigyoArchiveSection } from "@/components/top/jimu-jigyo-archive-section";
 import { JimuJigyoBanner } from "@/components/top/jimu-jigyo-banner";
@@ -93,6 +94,11 @@ export default async function Home() {
       {/* 事務事業評価バナー */}
       <Container className="pt-3">
         <JimuJigyoBanner />
+      </Container>
+
+      {/* 福岡市財政バナー */}
+      <Container className="pt-3">
+        <CityFinanceBanner />
       </Container>
 
       {/* 議案一覧セクション */}
