@@ -24,7 +24,7 @@ export function FinanceSource({
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1 text-primary underline hover:opacity-80"
         >
-          {source.name}（福岡市財政状況の推移）
+          {source.name}
           <ExternalLink className="h-3.5 w-3.5" />
         </a>{" "}
         の公開データを加工して作成しています（最新: {latestYear}年度
