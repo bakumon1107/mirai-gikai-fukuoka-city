@@ -1,0 +1,14 @@
+{
+  "source": {
+    "name": "福岡市オープンデータ",
+    "url": "https://ckan.open-governmentdata.org/dataset/zaiseijoukyou-no-suii",
+    "datasetId": "zaiseijoukyou-no-suii",
+    "fetchedAt": ""
+  },
+  "unit": "thousand_yen",
+  "years": [],
+  "generalAccount": [],
+  "revenue": [],
+  "expenditure": [],
+  "population": null
+}
