@@ -1,5 +1,6 @@
 import { Container } from "@/components/layouts/container";
 import { About } from "@/components/top/about";
+import { BannerAccordion } from "@/components/top/banner-accordion";
 import { BudgetOverviewBanner } from "@/components/top/budget-overview-banner";
 import { CityFinanceBanner } from "@/components/top/city-finance-banner";
 import { GeneralQuestionsBanner } from "@/components/top/general-questions-banner";
@@ -77,28 +78,25 @@ export default async function Home() {
         </Container>
       )}
 
-      {/* 予算概要バナー */}
-      {latestBudgetSession?.slug && (
-        <Container className="pt-6">
-          <BudgetOverviewBanner sessionSlug={latestBudgetSession.slug} />
-        </Container>
-      )}
-
       {/* 一般質問バナー */}
       {latestQuestionsSlug && (
-        <Container className="pt-3">
+        <Container className="pt-6">
           <GeneralQuestionsBanner sessionSlug={latestQuestionsSlug} />
         </Container>
       )}
 
-      {/* 事務事業評価バナー */}
+      {/* 予算・事務事業評価・お金の使い道（まとめてアコーディオン） */}
       <Container className="pt-3">
-        <JimuJigyoBanner />
-      </Container>
-
-      {/* 福岡市財政バナー */}
-      <Container className="pt-3">
-        <CityFinanceBanner />
+        <BannerAccordion
+          title="福岡市の予算・評価・お金の使い道"
+          description="各局の重点施策、事務事業評価、財政の状況をまとめて見る"
+        >
+          {latestBudgetSession?.slug && (
+            <BudgetOverviewBanner sessionSlug={latestBudgetSession.slug} />
+          )}
+          <JimuJigyoBanner />
+          <CityFinanceBanner />
+        </BannerAccordion>
       </Container>
 
       {/* 議案一覧セクション */}
