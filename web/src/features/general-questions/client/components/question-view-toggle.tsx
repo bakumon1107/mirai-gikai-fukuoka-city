@@ -2,8 +2,8 @@
 
 import { Fragment, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { QuestionChatView } from "./question-chat-view";
 import type { GeneralQuestionTopic } from "../../shared/types";
+import { QuestionChatView } from "./question-chat-view";
 
 type SpeakerTurn = { speaker: string; text: string };
 
