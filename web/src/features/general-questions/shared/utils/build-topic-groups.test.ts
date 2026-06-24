@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { assignCategory, buildTopicGroups } from "./build-topic-groups";
 import type { GeneralQuestion } from "../types";
+import { assignCategory, buildTopicGroups } from "./build-topic-groups";
 
 describe("assignCategory", () => {
   it("保育所 → 子育て・教育", () => {
@@ -11,8 +11,67 @@ describe("assignCategory", () => {
       "防災・安全"
     );
   });
+  it("予算編成・財政運営 → 行財政・経済", () => {
+    expect(assignCategory("予算編成・財政運営と基金の積極活用").label).toBe(
+      "行財政・経済"
+    );
+  });
+  it("中小企業・取適法 → 行財政・経済", () => {
+    expect(
+      assignCategory("取適法施行を踏まえた価格転嫁・中小企業支援の取組").label
+    ).toBe("行財政・経済");
+  });
+  it("市債マネジメント → 行財政・経済", () => {
+    expect(
+      assignCategory("将来世代を守るための市債マネジメントのルール化").label
+    ).toBe("行財政・経済");
+  });
+  it("いじめ → 子育て・教育", () => {
+    expect(
+      assignCategory("いじめ防止対策（プロジェクトチーム新設）").label
+    ).toBe("子育て・教育");
+  });
+  it("がん検査 → 健康・医療", () => {
+    expect(assignCategory("膵臓がんの早期発見に向けた検査").label).toBe(
+      "健康・医療"
+    );
+  });
+  it("補聴器助成 → 健康・医療", () => {
+    expect(assignCategory("18歳以上の軽中等度難聴者への補聴器助成").label).toBe(
+      "健康・医療"
+    );
+  });
+  it("危機管理 → 防災・安全", () => {
+    expect(
+      assignCategory("危機管理基本方針と事件等緊急事態対処計画").label
+    ).toBe("防災・安全");
+  });
+  it("成年後見 → 高齢者・福祉", () => {
+    expect(
+      assignCategory("成年後見制度における市民後見人の育成と報酬助成").label
+    ).toBe("高齢者・福祉");
+  });
+  it("回遊性 → 交通・まちづくり", () => {
+    expect(assignCategory("天神北エリアの回遊性向上").label).toBe(
+      "交通・まちづくり"
+    );
+  });
+  it("動植物園 → スポーツ・文化", () => {
+    expect(assignCategory("動植物園のリニューアル").label).toBe(
+      "スポーツ・文化"
+    );
+  });
   it("マッチしない → その他", () => {
     expect(assignCategory("特になし").label).toBe("その他");
+  });
+
+  it("行財政・経済は末尾にあり、既存カテゴリの判定を奪わない", () => {
+    // 「中小企業のDXによる生産性向上」は経済キーワードを含むが、
+    // 同時に交通・まちづくり等の語を含まない限り行財政・経済へ。
+    // 一方、教育キーワードを含むものは先に子育て・教育へ分類される。
+    expect(assignCategory("学校でのDX活用と教育データ連携").label).toBe(
+      "子育て・教育"
+    );
   });
 });
 

@@ -1,22 +1,23 @@
 import {
-  Baby,
-  Shield,
-  Heart,
-  Leaf,
-  Circle,
   ArrowRight,
-  Stethoscope,
+  Baby,
   Building2,
-  Trophy,
+  Circle,
   Globe,
+  Heart,
+  Landmark,
+  Leaf,
+  Shield,
+  Stethoscope,
+  Trophy,
 } from "lucide-react";
 import Link from "next/link";
 import type { GeneralQuestion } from "../../shared/types";
-import { buildTopicGroups } from "../../shared/utils/build-topic-groups";
 import type {
   TopicEntry,
   TopicGroup,
 } from "../../shared/utils/build-topic-groups";
+import { buildTopicGroups } from "../../shared/utils/build-topic-groups";
 
 const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   Baby,
@@ -27,6 +28,7 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   Leaf,
   Trophy,
   Globe,
+  Landmark,
   Circle,
 };
 
@@ -81,6 +83,12 @@ const CATEGORY_STYLE: Record<
     header: "bg-white/60 border-amber-200",
     text: "text-amber-700",
     iconBg: "bg-amber-100",
+  },
+  "行財政・経済": {
+    card: "bg-slate-50 border-slate-200",
+    header: "bg-white/60 border-slate-200",
+    text: "text-slate-700",
+    iconBg: "bg-slate-100",
   },
 };
 
