@@ -29,6 +29,7 @@ const groups: TopicGroup[] = [
         answererRole: "こども未来局長",
         answererName: "野中晶",
         topicCount: 1,
+        topicIndex: 0,
         questioner: { id: "q1", name: "山田花子", party: "テスト会派" },
       },
     ],
@@ -44,6 +45,7 @@ const groups: TopicGroup[] = [
         answererRole: "市長",
         answererName: "高島宗一郎",
         topicCount: 2,
+        topicIndex: 3,
         questioner: { id: "q2", name: "佐藤太郎", party: null },
       },
     ],
@@ -96,5 +98,16 @@ describe("SessionQuestionsOverview", () => {
     await user.click(screen.getByRole("button", { name: "すべて開く" }));
     expect(screen.getByText("令和9年度中に解消予定。")).toBeInTheDocument();
     expect(screen.getByText("5分野に注力する。")).toBeInTheDocument();
+  });
+
+  it("「質疑の詳細」リンクが topicIndex のアンカー付きURLになる", async () => {
+    const user = userEvent.setup();
+    render(<SessionQuestionsOverview groups={groups} overview={null} />);
+    await user.click(screen.getByRole("button", { name: "すべて開く" }));
+    const links = screen.getAllByRole("link", { name: /質疑の詳細/ });
+    const hrefs = links.map((a) => a.getAttribute("href"));
+    // 子育て・教育: q1 topicIndex=0 / 行財政・経済: q2 topicIndex=3
+    expect(hrefs).toContain("/questions/q1#topic-0");
+    expect(hrefs).toContain("/questions/q2#topic-3");
   });
 });

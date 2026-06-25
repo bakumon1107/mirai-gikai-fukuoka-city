@@ -136,7 +136,7 @@ function TopicCard({
           {entry.questioner.name}議員の質問より
         </p>
         <Link
-          href={`/questions/${entry.questioner.id}`}
+          href={`/questions/${entry.questioner.id}#topic-${entry.topicIndex}`}
           className={`inline-flex items-center gap-1 text-xs font-medium ${style.text} hover:underline shrink-0`}
         >
           質疑の詳細
