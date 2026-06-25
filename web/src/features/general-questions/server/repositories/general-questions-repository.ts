@@ -24,6 +24,31 @@ export async function findPublishedGeneralQuestionsBySession(
   })) as GeneralQuestion[];
 }
 
+/**
+ * セッション単位の「3行サマリー」を取得する。
+ * 未生成（行なし）の場合は null を返す。
+ */
+export async function findGeneralQuestionOverviewBySession(
+  sessionId: string
+): Promise<string[] | null> {
+  const supabase = createAdminClient();
+  const { data, error } = await supabase
+    .from("general_question_overviews")
+    .select("lines")
+    .eq("council_session_id", sessionId)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(
+      `Failed to fetch general question overview: ${error.message}`
+    );
+  }
+
+  const lines = data?.lines;
+  if (!Array.isArray(lines) || lines.length === 0) return null;
+  return lines;
+}
+
 export async function findLatestSessionSlugWithPublishedQuestions(): Promise<
   string | null
 > {
