@@ -235,8 +235,12 @@ export function SessionQuestionsOverview({
   groups,
   overview,
 }: SessionQuestionsOverviewProps) {
-  const sessionLines = overview.lines;
-  const themeLines = overview.themeLines;
+  // デプロイ直後はキャッシュが旧シェイプ（string[]/null）を返すことがあるため防御的に扱う
+  const sessionLines = Array.isArray(overview?.lines) ? overview.lines : null;
+  const themeLines: Record<string, string[]> =
+    overview?.themeLines && typeof overview.themeLines === "object"
+      ? overview.themeLines
+      : {};
   const [openLabels, setOpenLabels] = useState<Set<string>>(new Set());
 
   const allOpen = openLabels.size === groups.length && groups.length > 0;

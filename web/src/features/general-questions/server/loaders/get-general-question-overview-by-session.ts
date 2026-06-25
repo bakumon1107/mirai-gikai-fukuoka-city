@@ -17,7 +17,9 @@ const _getCached = unstable_cache(
   async (sessionId: string): Promise<SessionQuestionOverview> => {
     return findGeneralQuestionOverviewBySession(sessionId);
   },
-  ["general-question-overview-by-session"],
+  // 戻り値の形を string[] → { lines, themeLines } に変更したため、
+  // デプロイをまたいだ旧シェイプのキャッシュを使わないよう v2 にバンプ。
+  ["general-question-overview-by-session-v2"],
   {
     revalidate: 600,
     tags: [CACHE_TAGS.GENERAL_QUESTIONS],
