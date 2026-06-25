@@ -1,11 +1,14 @@
 import { SessionQuestionsOverview } from "../../client/components/session-questions-overview";
-import type { GeneralQuestion } from "../../shared/types";
+import type {
+  GeneralQuestion,
+  SessionQuestionOverview,
+} from "../../shared/types";
 import { buildTopicGroups } from "../../shared/utils/build-topic-groups";
 
 interface SessionTopicsViewProps {
   questions: GeneralQuestion[];
-  /** セッション単位の「3行サマリー」。未生成なら null。 */
-  overview: string[] | null;
+  /** セッション単位のオーバービュー（全体3行＋テーマ別3行）。 */
+  overview: SessionQuestionOverview;
 }
 
 export function SessionTopicsView({

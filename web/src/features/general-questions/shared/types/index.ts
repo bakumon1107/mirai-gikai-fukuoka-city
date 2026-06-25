@@ -7,6 +7,16 @@ export type GeneralQuestionTopic = {
   block_summary?: string | null;
 };
 
+/**
+ * セッション単位のオーバービュー。
+ * - lines: セッション全体の「どんな話があった？」3行（未生成なら null）
+ * - themeLines: カテゴリラベル → そのテーマの3行（未生成テーマはキーなし）
+ */
+export type SessionQuestionOverview = {
+  lines: string[] | null;
+  themeLines: Record<string, string[]>;
+};
+
 export type GeneralQuestion = {
   id: string;
   council_session_id: string;

@@ -1,6 +1,22 @@
 import "server-only";
 import { createAdminClient } from "@mirai-gikai/supabase";
-import type { GeneralQuestion } from "../../shared/types";
+import type {
+  GeneralQuestion,
+  SessionQuestionOverview,
+} from "../../shared/types";
+
+/** theme_lines(JSON) を Record<string, string[]> に正規化する */
+function parseThemeLines(raw: unknown): Record<string, string[]> {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return {};
+  const out: Record<string, string[]> = {};
+  for (const [key, value] of Object.entries(raw as Record<string, unknown>)) {
+    if (Array.isArray(value)) {
+      const lines = value.filter((v): v is string => typeof v === "string");
+      if (lines.length > 0) out[key] = lines;
+    }
+  }
+  return out;
+}
 
 export async function findPublishedGeneralQuestionsBySession(
   sessionId: string
@@ -25,16 +41,16 @@ export async function findPublishedGeneralQuestionsBySession(
 }
 
 /**
- * セッション単位の「3行サマリー」を取得する。
- * 未生成（行なし）の場合は null を返す。
+ * セッション単位のオーバービュー（全体3行＋テーマ別3行）を取得する。
+ * 行が未生成の場合は lines=null / themeLines={} を返す。
  */
 export async function findGeneralQuestionOverviewBySession(
   sessionId: string
-): Promise<string[] | null> {
+): Promise<SessionQuestionOverview> {
   const supabase = createAdminClient();
   const { data, error } = await supabase
     .from("general_question_overviews")
-    .select("lines")
+    .select("lines, theme_lines")
     .eq("council_session_id", sessionId)
     .maybeSingle();
 
@@ -44,9 +60,10 @@ export async function findGeneralQuestionOverviewBySession(
     );
   }
 
-  const lines = data?.lines;
-  if (!Array.isArray(lines) || lines.length === 0) return null;
-  return lines;
+  const rawLines = data?.lines;
+  const lines =
+    Array.isArray(rawLines) && rawLines.length > 0 ? rawLines : null;
+  return { lines, themeLines: parseThemeLines(data?.theme_lines) };
 }
 
 export async function findLatestSessionSlugWithPublishedQuestions(): Promise<

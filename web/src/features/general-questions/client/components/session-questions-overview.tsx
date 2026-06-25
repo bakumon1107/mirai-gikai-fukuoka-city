@@ -18,6 +18,7 @@ import {
 import Link from "next/link";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import type { SessionQuestionOverview } from "../../shared/types";
 import type {
   TopicEntry,
   TopicGroup,
@@ -149,10 +150,12 @@ function TopicCard({
 
 function ThemeAccordionItem({
   group,
+  themeLines,
   isOpen,
   onToggle,
 }: {
   group: TopicGroup;
+  themeLines: string[];
   isOpen: boolean;
   onToggle: () => void;
 }) {
@@ -160,6 +163,8 @@ function ThemeAccordionItem({
   const style = CATEGORY_STYLE[group.categoryLabel] ?? DEFAULT_STYLE;
   const count = group.entries.reduce((n, e) => n + e.topicCount, 0);
   const panelId = `theme-panel-${group.categoryLabel}`;
+  // 折りたたみ時はテーマの3行プレビューを表示（押すと展開）
+  const showPreview = !isOpen && themeLines.length > 0;
 
   return (
     <div className={`rounded-xl border ${style.card} overflow-hidden`}>
@@ -169,26 +174,40 @@ function ThemeAccordionItem({
         onClick={onToggle}
         aria-expanded={isOpen}
         aria-controls={panelId}
-        className={`w-full h-auto justify-start gap-3 px-4 py-3 rounded-none hover:bg-white/40 ${style.text}`}
+        className={`w-full h-auto flex-col items-stretch gap-2 px-4 py-3 rounded-none hover:bg-white/40 ${style.text}`}
       >
-        <span
-          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${style.iconBg}`}
-        >
-          <Icon className={`h-4 w-4 ${style.text}`} />
+        <span className="flex w-full items-center gap-3">
+          <span
+            className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${style.iconBg}`}
+          >
+            <Icon className={`h-4 w-4 ${style.text}`} />
+          </span>
+          <span className="flex-1 text-left font-bold">
+            {group.categoryLabel}
+          </span>
+          <span
+            className={`shrink-0 text-xs font-medium px-2 py-0.5 rounded-full ${style.iconBg} ${style.text}`}
+          >
+            {count}件
+          </span>
+          <ChevronDown
+            className={`h-4 w-4 shrink-0 transition-transform ${
+              isOpen ? "rotate-180" : ""
+            }`}
+          />
         </span>
-        <span className="flex-1 text-left font-bold">
-          {group.categoryLabel}
-        </span>
-        <span
-          className={`shrink-0 text-xs font-medium px-2 py-0.5 rounded-full ${style.iconBg} ${style.text}`}
-        >
-          {count}件
-        </span>
-        <ChevronDown
-          className={`h-4 w-4 shrink-0 transition-transform ${
-            isOpen ? "rotate-180" : ""
-          }`}
-        />
+        {showPreview && (
+          <span className="flex flex-col gap-1 pl-11 text-left">
+            {themeLines.slice(0, 3).map((line) => (
+              <span
+                key={line}
+                className="text-xs leading-relaxed text-mirai-text-secondary font-normal whitespace-normal"
+              >
+                {line}
+              </span>
+            ))}
+          </span>
+        )}
       </Button>
       {isOpen && (
         <div id={panelId} className="px-4 pb-4 pt-1">
@@ -209,13 +228,15 @@ function ThemeAccordionItem({
 
 interface SessionQuestionsOverviewProps {
   groups: TopicGroup[];
-  overview: string[] | null;
+  overview: SessionQuestionOverview;
 }
 
 export function SessionQuestionsOverview({
   groups,
   overview,
 }: SessionQuestionsOverviewProps) {
+  const sessionLines = overview.lines;
+  const themeLines = overview.themeLines;
   const [openLabels, setOpenLabels] = useState<Set<string>>(new Set());
 
   const allOpen = openLabels.size === groups.length && groups.length > 0;
@@ -240,7 +261,7 @@ export function SessionQuestionsOverview({
 
   return (
     <div className="flex flex-col gap-6">
-      {overview && overview.length > 0 && (
+      {sessionLines && sessionLines.length > 0 && (
         <section className="rounded-xl border border-primary-accent bg-mirai-surface-warm px-5 py-4">
           <div className="flex items-center gap-2 mb-3">
             <Sparkles className="h-4 w-4 text-primary" />
@@ -249,7 +270,7 @@ export function SessionQuestionsOverview({
             </h2>
           </div>
           <ol className="flex flex-col gap-2">
-            {overview.slice(0, 3).map((line, i) => (
+            {sessionLines.slice(0, 3).map((line, i) => (
               <li key={line} className="flex gap-2 text-sm text-mirai-text">
                 <span className="shrink-0 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-bold">
                   {i + 1}
@@ -280,6 +301,7 @@ export function SessionQuestionsOverview({
           <ThemeAccordionItem
             key={group.categoryLabel}
             group={group}
+            themeLines={themeLines[group.categoryLabel] ?? []}
             isOpen={openLabels.has(group.categoryLabel)}
             onToggle={() => toggle(group.categoryLabel)}
           />

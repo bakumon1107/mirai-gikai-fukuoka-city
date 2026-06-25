@@ -52,12 +52,17 @@ const groups: TopicGroup[] = [
   },
 ];
 
+const EMPTY_OVERVIEW = { lines: null, themeLines: {} };
+
 describe("SessionQuestionsOverview", () => {
   it("3行サマリーを表示する", () => {
     render(
       <SessionQuestionsOverview
         groups={groups}
-        overview={["1行目の話題", "2行目の話題", "3行目の話題"]}
+        overview={{
+          lines: ["1行目の話題", "2行目の話題", "3行目の話題"],
+          themeLines: {},
+        }}
       />
     );
     expect(screen.getByText("1行目の話題")).toBeInTheDocument();
@@ -65,15 +70,38 @@ describe("SessionQuestionsOverview", () => {
     expect(screen.getByText("3行目の話題")).toBeInTheDocument();
   });
 
+  it("テーマ行に折りたたみ時のテーマ3行プレビューを表示し、展開すると消える", async () => {
+    const user = userEvent.setup();
+    render(
+      <SessionQuestionsOverview
+        groups={groups}
+        overview={{
+          lines: null,
+          themeLines: { "子育て・教育": ["保育の話", "教育の話", "給食の話"] },
+        }}
+      />
+    );
+    // 折りたたみ時はプレビュー表示
+    expect(screen.getByText("保育の話")).toBeInTheDocument();
+    // 展開するとプレビューは消える（カードに切り替わる）
+    await user.click(screen.getByRole("button", { name: /子育て・教育/ }));
+    expect(screen.queryByText("保育の話")).not.toBeInTheDocument();
+    expect(screen.getByText("令和9年度中に解消予定。")).toBeInTheDocument();
+  });
+
   it("overviewがnullなら3行ブロックを表示しない", () => {
-    render(<SessionQuestionsOverview groups={groups} overview={null} />);
+    render(
+      <SessionQuestionsOverview groups={groups} overview={EMPTY_OVERVIEW} />
+    );
     expect(
       screen.queryByText("どんな話があった？（今回の3行まとめ）")
     ).not.toBeInTheDocument();
   });
 
   it("テーマ行を件数つきで表示し、初期状態ではカードを表示しない", () => {
-    render(<SessionQuestionsOverview groups={groups} overview={null} />);
+    render(
+      <SessionQuestionsOverview groups={groups} overview={EMPTY_OVERVIEW} />
+    );
     expect(screen.getByText("子育て・教育")).toBeInTheDocument();
     // 行財政・経済は topicCount=2 → 「2件」
     expect(screen.getByText("2件")).toBeInTheDocument();
@@ -85,7 +113,9 @@ describe("SessionQuestionsOverview", () => {
 
   it("テーマをクリックすると中のカードが展開される", async () => {
     const user = userEvent.setup();
-    render(<SessionQuestionsOverview groups={groups} overview={null} />);
+    render(
+      <SessionQuestionsOverview groups={groups} overview={EMPTY_OVERVIEW} />
+    );
     await user.click(screen.getByRole("button", { name: /子育て・教育/ }));
     expect(screen.getByText("令和9年度中に解消予定。")).toBeInTheDocument();
     // もう一方のテーマはまだ閉じている
@@ -94,7 +124,9 @@ describe("SessionQuestionsOverview", () => {
 
   it("「すべて開く」で全テーマが展開される", async () => {
     const user = userEvent.setup();
-    render(<SessionQuestionsOverview groups={groups} overview={null} />);
+    render(
+      <SessionQuestionsOverview groups={groups} overview={EMPTY_OVERVIEW} />
+    );
     await user.click(screen.getByRole("button", { name: "すべて開く" }));
     expect(screen.getByText("令和9年度中に解消予定。")).toBeInTheDocument();
     expect(screen.getByText("5分野に注力する。")).toBeInTheDocument();
@@ -102,7 +134,9 @@ describe("SessionQuestionsOverview", () => {
 
   it("「質疑の詳細」リンクが topicIndex のアンカー付きURLになる", async () => {
     const user = userEvent.setup();
-    render(<SessionQuestionsOverview groups={groups} overview={null} />);
+    render(
+      <SessionQuestionsOverview groups={groups} overview={EMPTY_OVERVIEW} />
+    );
     await user.click(screen.getByRole("button", { name: "すべて開く" }));
     const links = screen.getAllByRole("link", { name: /質疑の詳細/ });
     const hrefs = links.map((a) => a.getAttribute("href"));

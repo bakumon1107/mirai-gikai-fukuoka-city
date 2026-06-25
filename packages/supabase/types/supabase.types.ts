@@ -631,18 +631,21 @@ export type Database = {
           council_session_id: string
           created_at: string
           lines: string[]
+          theme_lines: Json
           updated_at: string
         }
         Insert: {
           council_session_id: string
           created_at?: string
           lines: string[]
+          theme_lines?: Json
           updated_at?: string
         }
         Update: {
           council_session_id?: string
           created_at?: string
           lines?: string[]
+          theme_lines?: Json
           updated_at?: string
         }
         Relationships: [
