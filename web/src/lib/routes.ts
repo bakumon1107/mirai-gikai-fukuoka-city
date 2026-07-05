@@ -15,7 +15,12 @@ export const routes = {
   // ── 検索 ──────────────────────────────────────────
   search: (
     q?: string,
-    filters?: { session?: string; tag?: string; status?: string }
+    filters?: {
+      session?: string;
+      tag?: string;
+      status?: string;
+      interview?: string;
+    }
   ) => {
     const params = new URLSearchParams();
     if (q) params.set("q", q);
@@ -23,6 +28,7 @@ export const routes = {
       if (filters.session) params.set("session", filters.session);
       if (filters.tag) params.set("tag", filters.tag);
       if (filters.status) params.set("status", filters.status);
+      if (filters.interview) params.set("interview", filters.interview);
     }
     const qs = params.toString();
     return qs ? (`/search?${qs}` as const) : ("/search" as const);

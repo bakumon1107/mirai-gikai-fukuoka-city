@@ -21,6 +21,7 @@ export function SearchBox() {
         session: searchParams.get("session") ?? undefined,
         tag: searchParams.get("tag") ?? undefined,
         status: searchParams.get("status") ?? undefined,
+        interview: searchParams.get("interview") ?? undefined,
       }) as Route
     );
   }
