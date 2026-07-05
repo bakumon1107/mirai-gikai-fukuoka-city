@@ -69,12 +69,14 @@ web/src/features/general-questions/
 
 ## データ管理
 
-### シードデータの場所
+### データの取込・更新手順
+新しい定例会の一般質問を取り込む手順は `update-general-questions` スキルを参照。
+
+### 生データ（会議録テキスト）の場所
 ```
-mirai-gikai-fukuoka-master-data/packages/seed/fukuoka/output/
-  r7-5-questions.json      # r7-5定例会（令和7年第5回）の一般質問データ
-  r7-5-questions-raw.json  # パース前の生データ
+docs/fukuoka/meeting-minutes/<会期名>/   # 会議録全文テキスト（会期・日別）
 ```
+（旧: mirai-gikai-fukuoka-master-data リポジトリの output/ に r7-5 の中間JSONがあったが、現在ローカルに存在しない）
 
 ### publish_status の管理
 現状は **admin UIなし**。DBを直接更新する（2026-04-28 時点の設計書あり）。
@@ -130,5 +132,6 @@ curl -s -X PATCH "$SUPABASE_URL/rest/v1/general_questions?council_session_id=eq.
 ## 今後の課題（設計書参照）
 
 - Admin UIによる publish_status 管理（設計書: `docs/fukuoka/20260428_1100_一般質問管理画面設計書.md`）
-- 新定例会データのインポートフロー整備
 - カテゴリ分類の精度向上（AI分類への移行検討）
+
+※ 新定例会データのインポートフローは `update-general-questions` スキルに整備済み。
