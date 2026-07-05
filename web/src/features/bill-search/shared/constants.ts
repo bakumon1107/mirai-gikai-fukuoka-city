@@ -3,3 +3,6 @@ export const MIN_QUERY_LENGTH = 2;
 
 // 検索結果の最大件数
 export const SEARCH_RESULT_LIMIT = 50;
+
+// 未入力時・0件時に提案するキーワード
+export const SUGGESTED_KEYWORDS = ["医療", "教育", "税金", "防災", "デジタル"];

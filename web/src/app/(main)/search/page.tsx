@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Container } from "@/components/layouts/container";
+import { getDifficultyLevel } from "@/features/bill-difficulty/server/loaders/get-difficulty-level";
 import { SearchBox } from "@/features/bill-search/client/components/search-box";
+import { SearchChatBridge } from "@/features/bill-search/client/components/search-chat-bridge";
 import { SearchFilters } from "@/features/bill-search/client/components/search-filters";
 import { SearchResults } from "@/features/bill-search/server/components/search-results";
 import { getSearchFilterOptions } from "@/features/bill-search/server/loaders/get-search-filter-options";
 import { searchBills } from "@/features/bill-search/server/loaders/search-bills";
+import { MIN_QUERY_LENGTH } from "@/features/bill-search/shared/constants";
+import { routes } from "@/lib/routes";
 
 export const metadata: Metadata = {
   title: "議案を検索",
@@ -35,14 +39,27 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     tag: asString(params.tag) || undefined,
     status: asString(params.status) || undefined,
   };
-  const hasCriteria = Boolean(
-    query || filters.session || filters.tag || filters.status
+  const hasActiveFilters = Boolean(
+    filters.session || filters.tag || filters.status
   );
+  const hasCriteria = Boolean(query || hasActiveFilters);
+  const hasValidQuery = query.length >= MIN_QUERY_LENGTH;
 
-  const [filterOptions, bills] = await Promise.all([
+  const [filterOptions, bills, difficultyLevel] = await Promise.all([
     getSearchFilterOptions(),
     hasCriteria ? searchBills(query, filters) : Promise.resolve(null),
+    getDifficultyLevel(),
   ]);
+
+  // 0件かつフィルタ指定ありの場合、フィルタ解除で何件見つかるかを提示する
+  const noHit = bills !== null && bills.length === 0;
+  let fallback: { count: number; href: string } | undefined;
+  if (noHit && hasActiveFilters && hasValidQuery) {
+    const relaxed = await searchBills(query);
+    if (relaxed.length > 0) {
+      fallback = { count: relaxed.length, href: routes.search(query) };
+    }
+  }
 
   return (
     <Container className="py-10">
@@ -59,11 +76,20 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         <SearchResults
           query={query}
           bills={bills}
-          hasActiveFilters={Boolean(
-            filters.session || filters.tag || filters.status
-          )}
+          hasActiveFilters={hasActiveFilters}
+          fallback={fallback}
         />
       </div>
+      {/* 検索で見つからない曖昧な質問はAIチャットへ橋渡しする */}
+      <SearchChatBridge
+        difficultyLevel={difficultyLevel}
+        noHitQuery={noHit && hasValidQuery && !fallback ? query : undefined}
+        bills={(bills ?? []).map((bill) => ({
+          name: `${bill.bill_content?.title}（${bill.name}）`,
+          summary: bill.bill_content?.summary,
+          tags: bill.tags?.map((tag) => tag.label) || [],
+        }))}
+      />
     </Container>
   );
 }

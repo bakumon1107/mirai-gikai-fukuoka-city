@@ -10,6 +10,7 @@ import type { BillWithContent } from "@/features/bills/shared/types";
 import { sanitizeSearchQuery } from "@/features/bills/shared/utils/sanitize-search-query";
 import { MIN_QUERY_LENGTH, SEARCH_RESULT_LIMIT } from "../../shared/constants";
 import type { SearchFilterParams } from "../../shared/types";
+import { normalizeSearchQuery } from "../../shared/utils/normalize-search-query";
 import { resolveStatusFilter } from "../../shared/utils/status-filter";
 
 /**
@@ -21,8 +22,8 @@ export async function searchBills(
   query: string,
   filterParams: SearchFilterParams = {}
 ): Promise<BillWithContent[]> {
-  // 最小文字数は実際に検索に使われる文字列（サニタイズ後）で判定する
-  const sanitized = sanitizeSearchQuery(query);
+  // 最小文字数は実際に検索に使われる文字列（正規化・サニタイズ後）で判定する
+  const sanitized = sanitizeSearchQuery(normalizeSearchQuery(query));
   const filters: BillSearchFilters = {
     dietSessionId: filterParams.session || undefined,
     tagId: filterParams.tag || undefined,
