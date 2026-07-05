@@ -16,7 +16,14 @@ export function SearchBox() {
 
   function navigate(q: string) {
     const trimmed = q.trim();
-    router.push(routes.search(trimmed || undefined) as Route);
+    // キーワード変更時も選択中の絞り込み条件は維持する
+    router.push(
+      routes.search(trimmed || undefined, {
+        session: searchParams.get("session") ?? undefined,
+        tag: searchParams.get("tag") ?? undefined,
+        status: searchParams.get("status") ?? undefined,
+      }) as Route
+    );
   }
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
