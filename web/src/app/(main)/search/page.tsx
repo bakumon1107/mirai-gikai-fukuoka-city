@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Container } from "@/components/layouts/container";
-import { getDifficultyLevel } from "@/features/bill-difficulty/server/loaders/get-difficulty-level";
 import { SearchBox } from "@/features/bill-search/client/components/search-box";
-import { SearchChatBridge } from "@/features/bill-search/client/components/search-chat-bridge";
 import { SearchFilters } from "@/features/bill-search/client/components/search-filters";
 import { SearchResults } from "@/features/bill-search/server/components/search-results";
 import { getSearchFilterOptions } from "@/features/bill-search/server/loaders/get-search-filter-options";
@@ -45,10 +43,9 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const hasCriteria = Boolean(query || hasActiveFilters);
   const hasValidQuery = query.length >= MIN_QUERY_LENGTH;
 
-  const [filterOptions, bills, difficultyLevel] = await Promise.all([
+  const [filterOptions, bills] = await Promise.all([
     getSearchFilterOptions(),
     hasCriteria ? searchBills(query, filters) : Promise.resolve(null),
-    getDifficultyLevel(),
   ]);
 
   // 0件かつフィルタ指定ありの場合、フィルタ解除で何件見つかるかを提示する
@@ -80,16 +77,6 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
           fallback={fallback}
         />
       </div>
-      {/* 検索で見つからない曖昧な質問はAIチャットへ橋渡しする */}
-      <SearchChatBridge
-        difficultyLevel={difficultyLevel}
-        noHitQuery={noHit && hasValidQuery && !fallback ? query : undefined}
-        bills={(bills ?? []).map((bill) => ({
-          name: `${bill.bill_content?.title}（${bill.name}）`,
-          summary: bill.bill_content?.summary,
-          tags: bill.tags?.map((tag) => tag.label) || [],
-        }))}
-      />
     </Container>
   );
 }
