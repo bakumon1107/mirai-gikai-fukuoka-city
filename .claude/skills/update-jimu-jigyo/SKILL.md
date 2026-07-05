@@ -19,7 +19,7 @@ DB接続は `db-access` スキルの規約に従う。
 
 ## データ経路
 
-```
+```text
 局別PDF → 構造化JSON（packages/seed/fukuoka/jimu-jigyo-r{N}-*.json）
         → importスクリプト（packages/seed/jimu-jigyo/import-r6-data.ts を年度用に流用）
         → jimu_jigyo_* テーブル
@@ -29,7 +29,7 @@ DB接続は `db-access` スキルの規約に従う。
 
 既存の `jimu-jigyo-r6-*.json`（11ファイル・74事業）が形式の正。1ファイル = 1局の事業配列で、キーは日本語:
 
-```
+```text
 事業名 / 所管局 / 所管課 / 根拠法令 / 開始年度 / 行政計画 / 事業きっかけ
 事業概要 { 対象, 対象の目指す状態, 実施内容, 成果見直し判断基準 }
 ロジックモデル { 活動アウトプット, 結果, 成果 }

@@ -73,7 +73,7 @@ web/src/features/general-questions/
 新しい定例会の一般質問を取り込む手順は `update-general-questions` スキルを参照。
 
 ### 生データ（会議録テキスト）の場所
-```
+```text
 docs/fukuoka/meeting-minutes/<会期名>/   # 会議録全文テキスト（会期・日別）
 ```
 （旧: mirai-gikai-fukuoka-master-data リポジトリの output/ に r7-5 の中間JSONがあったが、現在ローカルに存在しない）
