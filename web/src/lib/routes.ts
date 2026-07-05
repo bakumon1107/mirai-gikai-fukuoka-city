@@ -12,6 +12,10 @@ export const routes = {
   terms: () => "/terms" as const,
   privacy: () => "/privacy" as const,
 
+  // ── 検索 ──────────────────────────────────────────
+  search: (q?: string) =>
+    q ? (`/search?q=${encodeURIComponent(q)}` as const) : ("/search" as const),
+
   // ── 議案 ──────────────────────────────────────────
   billDetail: (billId: string) => `/bills/${billId}` as const,
   billOpinions: (billId: string) => `/bills/${billId}/opinions` as const,
