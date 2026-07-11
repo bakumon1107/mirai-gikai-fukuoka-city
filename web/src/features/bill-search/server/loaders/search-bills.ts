@@ -28,9 +28,13 @@ export async function searchBills(
     dietSessionId: filterParams.session || undefined,
     tagId: filterParams.tag || undefined,
     statuses: resolveStatusFilter(filterParams.status) ?? undefined,
+    hasPublicInterview: filterParams.interview === "1" || undefined,
   };
   const hasFilters = Boolean(
-    filters.dietSessionId || filters.tagId || filters.statuses
+    filters.dietSessionId ||
+      filters.tagId ||
+      filters.statuses ||
+      filters.hasPublicInterview
   );
 
   const effectiveQuery = sanitized.length >= MIN_QUERY_LENGTH ? sanitized : "";

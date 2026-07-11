@@ -52,6 +52,8 @@ export type BillSearchFilters = {
   dietSessionId?: string;
   tagId?: string;
   statuses?: BillStatusEnum[];
+  // true のとき公開中のAIインタビューがある議案に絞る
+  hasPublicInterview?: boolean;
 };
 
 /**
@@ -75,7 +77,10 @@ export async function findPublishedBillsBySearch(
     .map((variant) => escapeIlikePattern(sanitizeSearchQuery(variant)))
     .filter((variant) => variant !== "");
   const hasFilters = Boolean(
-    filters.dietSessionId || filters.tagId || filters.statuses?.length
+    filters.dietSessionId ||
+      filters.tagId ||
+      filters.statuses?.length ||
+      filters.hasPublicInterview
   );
   if (safeVariants.length === 0 && !hasFilters) {
     return [];
@@ -101,6 +106,27 @@ export async function findPublishedBillsBySearch(
     }
     matchedBillIds = [...new Set((matchedRows ?? []).map((r) => r.bill_id))];
     if (matchedBillIds.length === 0) {
+      return [];
+    }
+  }
+
+  // AIインタビュー絞り込みも対象bill_idを先に解決する
+  let interviewBillIds: string[] | null = null;
+  if (filters.hasPublicInterview) {
+    const { data: interviewRows, error: interviewError } = await supabase
+      .from("interview_configs")
+      .select("bill_id")
+      .eq("status", "public");
+
+    if (interviewError) {
+      throw new Error(
+        `Failed to resolve interview filter: ${interviewError.message}`
+      );
+    }
+    interviewBillIds = [
+      ...new Set((interviewRows ?? []).map((row) => row.bill_id)),
+    ];
+    if (interviewBillIds.length === 0) {
       return [];
     }
   }
@@ -148,6 +174,9 @@ export async function findPublishedBillsBySearch(
   }
   if (tagBillIds) {
     builder = builder.in("id", tagBillIds);
+  }
+  if (interviewBillIds) {
+    builder = builder.in("id", interviewBillIds);
   }
   if (filters.dietSessionId) {
     builder = builder.eq("diet_session_id", filters.dietSessionId);

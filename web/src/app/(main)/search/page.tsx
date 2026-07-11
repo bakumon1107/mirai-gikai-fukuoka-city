@@ -26,6 +26,7 @@ interface SearchPageProps {
     session?: SearchParamValue;
     tag?: SearchParamValue;
     status?: SearchParamValue;
+    interview?: SearchParamValue;
   }>;
 }
 
@@ -36,9 +37,10 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     session: asString(params.session) || undefined,
     tag: asString(params.tag) || undefined,
     status: asString(params.status) || undefined,
+    interview: asString(params.interview) || undefined,
   };
   const hasActiveFilters = Boolean(
-    filters.session || filters.tag || filters.status
+    filters.session || filters.tag || filters.status || filters.interview
   );
   const hasCriteria = Boolean(query || hasActiveFilters);
   const hasValidQuery = query.length >= MIN_QUERY_LENGTH;

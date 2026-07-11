@@ -30,17 +30,25 @@ export function SearchFilters({ options }: SearchFiltersProps) {
     session: searchParams.get("session") ?? ALL,
     tag: searchParams.get("tag") ?? ALL,
     status: searchParams.get("status") ?? ALL,
+    interview: searchParams.get("interview") === "1",
   };
   const hasActiveFilter =
-    current.session !== ALL || current.tag !== ALL || current.status !== ALL;
+    current.session !== ALL ||
+    current.tag !== ALL ||
+    current.status !== ALL ||
+    current.interview;
 
-  function applyFilter(key: "session" | "tag" | "status", value: string) {
+  function applyFilter(
+    key: "session" | "tag" | "status" | "interview",
+    value: string | boolean
+  ) {
     const next = { ...current, [key]: value };
     router.push(
       routes.search(next.q || undefined, {
         session: next.session === ALL ? undefined : next.session,
         tag: next.tag === ALL ? undefined : next.tag,
         status: next.status === ALL ? undefined : next.status,
+        interview: next.interview ? "1" : undefined,
       }) as Route
     );
   }
@@ -103,6 +111,20 @@ export function SearchFilters({ options }: SearchFiltersProps) {
           ))}
         </SelectContent>
       </Select>
+
+      <Button
+        type="button"
+        variant="outline"
+        aria-pressed={current.interview}
+        onClick={() => applyFilter("interview", !current.interview)}
+        className={
+          current.interview
+            ? "h-9 px-3 text-xs rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
+            : "h-9 px-3 text-xs rounded-full text-mirai-text-secondary"
+        }
+      >
+        AIインタビュー受付中
+      </Button>
 
       {hasActiveFilter && (
         <Button

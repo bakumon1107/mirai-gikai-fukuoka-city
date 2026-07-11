@@ -6,6 +6,8 @@ export type SearchFilterParams = {
   tag?: string;
   // ステータスフィルタ値（status-filter.ts の STATUS_FILTER_OPTIONS のキー）
   status?: string;
+  // "1" のとき公開中のAIインタビューがある議案に絞る
+  interview?: string;
 };
 
 // フィルタ選択肢の表示用データ
