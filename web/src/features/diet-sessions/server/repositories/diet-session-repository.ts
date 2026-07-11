@@ -23,6 +23,25 @@ export async function findActiveDietSession(): Promise<DietSession | null> {
 }
 
 /**
+ * 全ての国会会期を新しい順に取得
+ */
+export async function findAllDietSessions(): Promise<DietSession[]> {
+  const supabase = createAdminClient();
+
+  const { data, error } = await supabase
+    .from("diet_sessions")
+    .select("*")
+    .order("start_date", { ascending: false });
+
+  if (error) {
+    console.error("Failed to fetch diet sessions:", error);
+    return [];
+  }
+
+  return data ?? [];
+}
+
+/**
  * 指定日時点で開催中の国会会期を取得
  */
 export async function findCurrentDietSession(
