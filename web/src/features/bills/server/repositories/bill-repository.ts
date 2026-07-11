@@ -76,15 +76,7 @@ export async function findPublishedBillsBySearch(
   const safeVariants = buildSearchQueryVariants(query)
     .map((variant) => escapeIlikePattern(sanitizeSearchQuery(variant)))
     .filter((variant) => variant !== "");
-  const hasFilters = Boolean(
-    filters.dietSessionId ||
-      filters.tagId ||
-      filters.statuses?.length ||
-      filters.hasPublicInterview
-  );
-  if (safeVariants.length === 0 && !hasFilters) {
-    return [];
-  }
+  // クエリもフィルタも無い場合は全公開議案の一覧として機能する
 
   const supabase = createAdminClient();
 
