@@ -38,7 +38,10 @@ export async function searchBills(
   );
 
   const effectiveQuery = sanitized.length >= MIN_QUERY_LENGTH ? sanitized : "";
-  if (effectiveQuery === "" && !hasFilters) {
+  // 空入力は「全議案の一覧」として扱う。入力があるのに短すぎる場合のみ
+  // （フィルタも無ければ）結果を返さない
+  const rawEmpty = query.trim() === "";
+  if (!rawEmpty && effectiveQuery === "" && !hasFilters) {
     return [];
   }
 

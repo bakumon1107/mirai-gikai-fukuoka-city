@@ -42,12 +42,12 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const hasActiveFilters = Boolean(
     filters.session || filters.tag || filters.status || filters.interview
   );
-  const hasCriteria = Boolean(query || hasActiveFilters);
   const hasValidQuery = query.length >= MIN_QUERY_LENGTH;
 
+  // 条件なし（空エンター・初回アクセス）は全公開議案の一覧を表示する
   const [filterOptions, bills] = await Promise.all([
     getSearchFilterOptions(),
-    hasCriteria ? searchBills(query, filters) : Promise.resolve(null),
+    searchBills(query, filters),
   ]);
 
   // 0件かつフィルタ指定ありの場合、フィルタ解除で何件見つかるかを提示する

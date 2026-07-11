@@ -9,7 +9,7 @@ import { MIN_QUERY_LENGTH, SUGGESTED_KEYWORDS } from "../../shared/constants";
 
 interface SearchResultsProps {
   query: string;
-  bills: BillWithContent[] | null;
+  bills: BillWithContent[];
   hasActiveFilters?: boolean;
   // 0件時にフィルタ解除で見つかる件数と遷移先（絞り込み緩和ヒント）
   fallback?: { count: number; href: string };
@@ -21,15 +21,6 @@ export function SearchResults({
   hasActiveFilters = false,
   fallback,
 }: SearchResultsProps) {
-  // 未検索（クエリ・フィルタなし）
-  if (bills === null) {
-    return (
-      <p className="text-mirai-text-secondary text-center py-12">
-        キーワードまたは絞り込み条件を指定して議案を検索できます。
-      </p>
-    );
-  }
-
   // ローダーと同じ基準（サニタイズ後の長さ）で判定する
   const hasValidQuery = sanitizeSearchQuery(query).length >= MIN_QUERY_LENGTH;
   const queryTooShort = query !== "" && !hasValidQuery;
@@ -87,7 +78,9 @@ export function SearchResults({
       <p className="text-sm text-mirai-text-secondary">
         {hasValidQuery
           ? `「${query}」の検索結果: ${bills.length}件`
-          : `絞り込み結果: ${bills.length}件`}
+          : hasActiveFilters
+            ? `絞り込み結果: ${bills.length}件`
+            : `すべての議案: ${bills.length}件`}
       </p>
       <BillList bills={bills} />
     </div>
