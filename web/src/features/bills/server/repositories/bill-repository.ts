@@ -1,6 +1,7 @@
 import "server-only";
 import { createAdminClient } from "@mirai-gikai/supabase";
 import type { DifficultyLevelEnum } from "@/features/bill-difficulty/shared/types";
+import type { BillStatusEnum } from "../../shared/types";
 import {
   escapeIlikePattern,
   sanitizeSearchQuery,
@@ -45,23 +46,53 @@ export async function findPublishedBillsWithContents(
   return data;
 }
 
+/** 検索の絞り込み条件 */
+export type BillSearchFilters = {
+  dietSessionId?: string;
+  tagId?: string;
+  statuses?: BillStatusEnum[];
+};
+
 /**
  * フリーワードで公開済み議案を検索する（現在難易度の title / summary を部分一致）
  * 検索クエリは構造文字の除去（注入対策）とワイルドカードのエスケープを
- * 行ってから埋め込む
+ * 行ってから埋め込む。クエリが空でもフィルタ指定があれば絞り込み一覧として機能する。
  */
 export async function findPublishedBillsBySearch(
   query: string,
   difficultyLevel: DifficultyLevelEnum,
-  limit: number
+  limit: number,
+  filters: BillSearchFilters = {}
 ) {
   const safeQuery = escapeIlikePattern(sanitizeSearchQuery(query));
-  if (safeQuery === "") {
+  const hasFilters = Boolean(
+    filters.dietSessionId || filters.tagId || filters.statuses?.length
+  );
+  if (safeQuery === "" && !hasFilters) {
     return [];
   }
 
   const supabase = createAdminClient();
-  const { data, error } = await supabase
+
+  // タグ絞り込みは対象bill_idを先に解決する
+  // （selectの動的組み立てを避けて型推論を保つため2段階で問い合わせる）
+  let tagBillIds: string[] | null = null;
+  if (filters.tagId) {
+    const { data: tagRows, error: tagError } = await supabase
+      .from("bills_tags")
+      .select("bill_id")
+      .eq("tag_id", filters.tagId);
+
+    if (tagError) {
+      throw new Error(`Failed to resolve tag filter: ${tagError.message}`);
+    }
+    tagBillIds = (tagRows ?? []).map((row) => row.bill_id);
+    if (tagBillIds.length === 0) {
+      return [];
+    }
+  }
+
+  let builder = supabase
     .from("bills")
     .select(
       `
@@ -79,10 +110,25 @@ export async function findPublishedBillsBySearch(
     `
     )
     .eq("publish_status", "published")
-    .eq("bill_contents.difficulty_level", difficultyLevel)
-    .or(`title.ilike.%${safeQuery}%,summary.ilike.%${safeQuery}%`, {
-      referencedTable: "bill_contents",
-    })
+    .eq("bill_contents.difficulty_level", difficultyLevel);
+
+  if (safeQuery !== "") {
+    builder = builder.or(
+      `title.ilike.%${safeQuery}%,summary.ilike.%${safeQuery}%`,
+      { referencedTable: "bill_contents" }
+    );
+  }
+  if (tagBillIds) {
+    builder = builder.in("id", tagBillIds);
+  }
+  if (filters.dietSessionId) {
+    builder = builder.eq("diet_session_id", filters.dietSessionId);
+  }
+  if (filters.statuses && filters.statuses.length > 0) {
+    builder = builder.in("status", filters.statuses);
+  }
+
+  const { data, error } = await builder
     .order("submitted_date", { ascending: false, nullsFirst: false })
     .limit(limit);
 

@@ -13,8 +13,20 @@ export const routes = {
   privacy: () => "/privacy" as const,
 
   // ── 検索 ──────────────────────────────────────────
-  search: (q?: string) =>
-    q ? (`/search?q=${encodeURIComponent(q)}` as const) : ("/search" as const),
+  search: (
+    q?: string,
+    filters?: { session?: string; tag?: string; status?: string }
+  ) => {
+    const params = new URLSearchParams();
+    if (q) params.set("q", q);
+    if (filters && typeof filters === "object") {
+      if (filters.session) params.set("session", filters.session);
+      if (filters.tag) params.set("tag", filters.tag);
+      if (filters.status) params.set("status", filters.status);
+    }
+    const qs = params.toString();
+    return qs ? (`/search?${qs}` as const) : ("/search" as const);
+  },
 
   // ── 議案 ──────────────────────────────────────────
   billDetail: (billId: string) => `/bills/${billId}` as const,
