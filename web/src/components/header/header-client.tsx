@@ -53,17 +53,15 @@ export function HeaderClient({ difficultyLevel }: HeaderClientProps) {
             className="flex items-center space-x-2"
             aria-label="補助ナビゲーション"
           >
+            <Link
+              href={routes.search()}
+              aria-label="議案を検索"
+              className="flex items-center justify-center size-9 rounded-md text-mirai-text hover:bg-mirai-surface-muted transition-colors"
+            >
+              <Search className="size-5" />
+            </Link>
             {showDifficultySelector && (
-              <>
-                <Link
-                  href={routes.search()}
-                  aria-label="議案を検索"
-                  className="flex items-center justify-center size-9 rounded-md text-mirai-text hover:bg-mirai-surface-muted transition-colors"
-                >
-                  <Search className="size-5" />
-                </Link>
-                <DifficultySelector currentLevel={difficultyLevel} />
-              </>
+              <DifficultySelector currentLevel={difficultyLevel} />
             )}
             {showInterviewActions && <InterviewHeaderActions />}
             <HamburgerMenu />

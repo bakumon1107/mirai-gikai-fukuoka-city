@@ -1,5 +1,7 @@
+import "server-only";
 import { BillList } from "@/features/bills/client/components/bill-list/bill-list";
 import type { BillWithContent } from "@/features/bills/shared/types";
+import { sanitizeSearchQuery } from "@/features/bills/shared/utils/sanitize-search-query";
 import { MIN_QUERY_LENGTH } from "../../shared/constants";
 
 interface SearchResultsProps {
@@ -17,8 +19,8 @@ export function SearchResults({ query, bills }: SearchResultsProps) {
     );
   }
 
-  // クエリが短すぎる
-  if (query.trim().length < MIN_QUERY_LENGTH) {
+  // クエリが短すぎる（ローダーと同じ基準＝サニタイズ後の長さで判定する）
+  if (sanitizeSearchQuery(query).length < MIN_QUERY_LENGTH) {
     return (
       <p className="text-mirai-text-secondary text-center py-12">
         {MIN_QUERY_LENGTH}文字以上で検索してください。
