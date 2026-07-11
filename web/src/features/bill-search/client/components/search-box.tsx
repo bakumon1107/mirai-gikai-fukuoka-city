@@ -6,8 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { routes } from "@/lib/routes";
-
-const SUGGESTED_KEYWORDS = ["医療", "教育", "税金", "防災", "デジタル"];
+import { SUGGESTED_KEYWORDS } from "../../shared/constants";
 
 export function SearchBox() {
   const searchParams = useSearchParams();

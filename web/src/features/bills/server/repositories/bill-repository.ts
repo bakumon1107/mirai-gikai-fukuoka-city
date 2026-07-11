@@ -1,6 +1,7 @@
 import "server-only";
 import { createAdminClient } from "@mirai-gikai/supabase";
 import type { DifficultyLevelEnum } from "@/features/bill-difficulty/shared/types";
+import { buildSearchQueryVariants } from "@/features/bill-search/shared/utils/normalize-search-query";
 import type { BillStatusEnum } from "../../shared/types";
 import {
   escapeIlikePattern,
@@ -54,9 +55,15 @@ export type BillSearchFilters = {
 };
 
 /**
- * フリーワードで公開済み議案を検索する（現在難易度の title / summary を部分一致）
- * 検索クエリは構造文字の除去（注入対策）とワイルドカードのエスケープを
- * 行ってから埋め込む。クエリが空でもフィルタ指定があれば絞り込み一覧として機能する。
+ * フリーワードで公開済み議案を検索する。
+ *
+ * - 表記ゆれ吸収: NFKC 正規化 + かな相互変換のバリエーションで検索する
+ * - 難易度またぎ: マッチ判定は全難易度の bill_contents を対象にし、
+ *   表示コンテンツは現在難易度のものを返す（別難易度の文言にしか
+ *   含まれない語でも取りこぼさない）
+ * - 注入対策: 構造文字の除去とワイルドカードのエスケープを行ってから埋め込む
+ *
+ * クエリが空でもフィルタ指定があれば絞り込み一覧として機能する。
  */
 export async function findPublishedBillsBySearch(
   query: string,
@@ -64,17 +71,41 @@ export async function findPublishedBillsBySearch(
   limit: number,
   filters: BillSearchFilters = {}
 ) {
-  const safeQuery = escapeIlikePattern(sanitizeSearchQuery(query));
+  const safeVariants = buildSearchQueryVariants(query)
+    .map((variant) => escapeIlikePattern(sanitizeSearchQuery(variant)))
+    .filter((variant) => variant !== "");
   const hasFilters = Boolean(
     filters.dietSessionId || filters.tagId || filters.statuses?.length
   );
-  if (safeQuery === "" && !hasFilters) {
+  if (safeVariants.length === 0 && !hasFilters) {
     return [];
   }
 
   const supabase = createAdminClient();
 
-  // タグ絞り込みは対象bill_idを先に解決する
+  // キーワードマッチは全難易度の bill_contents から bill_id を先に解決する
+  // （表示難易度と別の難易度にしか含まれない語も拾う。データ量が増えて
+  //   in() が長大になる場合は pg_trgm / RPC への移行を検討）
+  let matchedBillIds: string[] | null = null;
+  if (safeVariants.length > 0) {
+    const orExpr = safeVariants
+      .flatMap((v) => [`title.ilike.%${v}%`, `summary.ilike.%${v}%`])
+      .join(",");
+    const { data: matchedRows, error: matchError } = await supabase
+      .from("bill_contents")
+      .select("bill_id")
+      .or(orExpr);
+
+    if (matchError) {
+      throw new Error(`Failed to match bill contents: ${matchError.message}`);
+    }
+    matchedBillIds = [...new Set((matchedRows ?? []).map((r) => r.bill_id))];
+    if (matchedBillIds.length === 0) {
+      return [];
+    }
+  }
+
+  // タグ絞り込みも対象bill_idを先に解決する
   // （selectの動的組み立てを避けて型推論を保つため2段階で問い合わせる）
   let tagBillIds: string[] | null = null;
   if (filters.tagId) {
@@ -112,11 +143,8 @@ export async function findPublishedBillsBySearch(
     .eq("publish_status", "published")
     .eq("bill_contents.difficulty_level", difficultyLevel);
 
-  if (safeQuery !== "") {
-    builder = builder.or(
-      `title.ilike.%${safeQuery}%,summary.ilike.%${safeQuery}%`,
-      { referencedTable: "bill_contents" }
-    );
+  if (matchedBillIds) {
+    builder = builder.in("id", matchedBillIds);
   }
   if (tagBillIds) {
     builder = builder.in("id", tagBillIds);
