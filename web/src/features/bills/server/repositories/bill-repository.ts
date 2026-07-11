@@ -1,6 +1,10 @@
 import "server-only";
 import { createAdminClient } from "@mirai-gikai/supabase";
 import type { DifficultyLevelEnum } from "@/features/bill-difficulty/shared/types";
+import {
+  escapeIlikePattern,
+  sanitizeSearchQuery,
+} from "../../shared/utils/sanitize-search-query";
 
 // ============================================================
 // Bills
@@ -36,6 +40,54 @@ export async function findPublishedBillsWithContents(
 
   if (error) {
     throw new Error(`Failed to fetch bills: ${error.message}`);
+  }
+
+  return data;
+}
+
+/**
+ * フリーワードで公開済み議案を検索する（現在難易度の title / summary を部分一致）
+ * 検索クエリは構造文字の除去（注入対策）とワイルドカードのエスケープを
+ * 行ってから埋め込む
+ */
+export async function findPublishedBillsBySearch(
+  query: string,
+  difficultyLevel: DifficultyLevelEnum,
+  limit: number
+) {
+  const safeQuery = escapeIlikePattern(sanitizeSearchQuery(query));
+  if (safeQuery === "") {
+    return [];
+  }
+
+  const supabase = createAdminClient();
+  const { data, error } = await supabase
+    .from("bills")
+    .select(
+      `
+      *,
+      bill_contents!inner (
+        id,
+        bill_id,
+        title,
+        summary,
+        content,
+        difficulty_level,
+        created_at,
+        updated_at
+      )
+    `
+    )
+    .eq("publish_status", "published")
+    .eq("bill_contents.difficulty_level", difficultyLevel)
+    .or(`title.ilike.%${safeQuery}%,summary.ilike.%${safeQuery}%`, {
+      referencedTable: "bill_contents",
+    })
+    .order("submitted_date", { ascending: false, nullsFirst: false })
+    .limit(limit);
+
+  if (error) {
+    throw new Error(`Failed to search bills: ${error.message}`);
   }
 
   return data;
