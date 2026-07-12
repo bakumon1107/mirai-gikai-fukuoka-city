@@ -7,11 +7,10 @@ import {
   findTagsByBillIds,
 } from "@/features/bills/server/repositories/bill-repository";
 import type { BillWithContent } from "@/features/bills/shared/types";
-import { sanitizeSearchQuery } from "@/features/bills/shared/utils/sanitize-search-query";
 import { MIN_QUERY_LENGTH, SEARCH_PAGE_SIZE } from "../../shared/constants";
 import type { SearchFilterParams } from "../../shared/types";
-import { normalizeSearchQuery } from "../../shared/utils/normalize-search-query";
 import { calcPageCount, clampPage } from "../../shared/utils/pagination";
+import { toSearchableQuery } from "../../shared/utils/searchable-query";
 import { resolveStatusFilter } from "../../shared/utils/status-filter";
 
 export type BillSearchResult = {
@@ -39,7 +38,7 @@ export async function searchBills(
   requestedPage = 1
 ): Promise<BillSearchResult> {
   // 最小文字数は実際に検索に使われる文字列（正規化・サニタイズ後）で判定する
-  const sanitized = sanitizeSearchQuery(normalizeSearchQuery(query));
+  const sanitized = toSearchableQuery(query);
   const filters: BillSearchFilters = {
     dietSessionId: filterParams.session || undefined,
     tagId: filterParams.tag || undefined,

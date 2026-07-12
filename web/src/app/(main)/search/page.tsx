@@ -8,7 +8,7 @@ import { SearchResults } from "@/features/bill-search/server/components/search-r
 import { getSearchFilterOptions } from "@/features/bill-search/server/loaders/get-search-filter-options";
 import { searchBills } from "@/features/bill-search/server/loaders/search-bills";
 import { MIN_QUERY_LENGTH } from "@/features/bill-search/shared/constants";
-import { sanitizeSearchQuery } from "@/features/bills/shared/utils/sanitize-search-query";
+import { toSearchableQuery } from "@/features/bill-search/shared/utils/searchable-query";
 import { routes } from "@/lib/routes";
 
 export const metadata: Metadata = {
@@ -47,7 +47,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     filters.session || filters.tag || filters.status || filters.interview
   );
   // ローダー・結果表示と同じ基準（サニタイズ後の長さ）で判定する
-  const hasValidQuery = sanitizeSearchQuery(query).length >= MIN_QUERY_LENGTH;
+  const hasValidQuery = toSearchableQuery(query).length >= MIN_QUERY_LENGTH;
 
   // 条件なし（空エンター・初回アクセス）は全公開議案の一覧を表示する
   const [filterOptions, result] = await Promise.all([

@@ -3,9 +3,9 @@ import type { Route } from "next";
 import Link from "next/link";
 import { BillList } from "@/features/bills/client/components/bill-list/bill-list";
 import type { BillWithContent } from "@/features/bills/shared/types";
-import { sanitizeSearchQuery } from "@/features/bills/shared/utils/sanitize-search-query";
 import { routes } from "@/lib/routes";
 import { MIN_QUERY_LENGTH, SUGGESTED_KEYWORDS } from "../../shared/constants";
+import { toSearchableQuery } from "../../shared/utils/searchable-query";
 
 interface SearchResultsProps {
   query: string;
@@ -25,7 +25,7 @@ export function SearchResults({
   fallback,
 }: SearchResultsProps) {
   // ローダーと同じ基準（サニタイズ後の長さ）で判定する
-  const hasValidQuery = sanitizeSearchQuery(query).length >= MIN_QUERY_LENGTH;
+  const hasValidQuery = toSearchableQuery(query).length >= MIN_QUERY_LENGTH;
   const queryTooShort = query !== "" && !hasValidQuery;
 
   // クエリが短すぎてフィルタもない場合は案内のみ表示
