@@ -1,5 +1,6 @@
 "use client";
 
+import { Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -16,7 +17,9 @@ interface HeaderClientProps {
 
 export function HeaderClient({ difficultyLevel }: HeaderClientProps) {
   const pathname = usePathname();
-  const showDifficultySelector = isMainPage(pathname);
+  // 検索結果も難易度Cookieに依存するため、検索ページでも難易度セレクタを表示する
+  const showDifficultySelector =
+    isMainPage(pathname) || pathname === routes.search();
   const showInterviewActions = isInterviewPage(pathname);
 
   return (
@@ -50,6 +53,13 @@ export function HeaderClient({ difficultyLevel }: HeaderClientProps) {
             className="flex items-center space-x-2"
             aria-label="補助ナビゲーション"
           >
+            <Link
+              href={routes.search()}
+              aria-label="議案を検索"
+              className="flex items-center justify-center size-9 rounded-md text-mirai-text hover:bg-mirai-surface-muted transition-colors"
+            >
+              <Search className="size-5" />
+            </Link>
             {showDifficultySelector && (
               <DifficultySelector currentLevel={difficultyLevel} />
             )}

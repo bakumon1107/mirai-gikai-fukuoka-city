@@ -12,6 +12,32 @@ export const routes = {
   terms: () => "/terms" as const,
   privacy: () => "/privacy" as const,
 
+  // ── 検索 ──────────────────────────────────────────
+  search: (
+    q?: string,
+    filters?: {
+      session?: string;
+      tag?: string;
+      status?: string;
+      interview?: string;
+      page?: number;
+    }
+  ) => {
+    const params = new URLSearchParams();
+    if (q) params.set("q", q);
+    if (filters && typeof filters === "object") {
+      if (filters.session) params.set("session", filters.session);
+      if (filters.tag) params.set("tag", filters.tag);
+      if (filters.status) params.set("status", filters.status);
+      if (filters.interview) params.set("interview", filters.interview);
+      if (filters.page && filters.page > 1) {
+        params.set("page", String(filters.page));
+      }
+    }
+    const qs = params.toString();
+    return qs ? (`/search?${qs}` as const) : ("/search" as const);
+  },
+
   // ── 議案 ──────────────────────────────────────────
   billDetail: (billId: string) => `/bills/${billId}` as const,
   billOpinions: (billId: string) => `/bills/${billId}/opinions` as const,
