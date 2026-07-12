@@ -1,6 +1,12 @@
 import "server-only";
 import { createAdminClient } from "@mirai-gikai/supabase";
 import type { DifficultyLevelEnum } from "@/features/bill-difficulty/shared/types";
+import { buildSearchQueryVariants } from "@/features/bill-search/shared/utils/normalize-search-query";
+import type { BillStatusEnum } from "../../shared/types";
+import {
+  escapeIlikePattern,
+  sanitizeSearchQuery,
+} from "../../shared/utils/sanitize-search-query";
 
 // ============================================================
 // Bills
@@ -39,6 +45,153 @@ export async function findPublishedBillsWithContents(
   }
 
   return data;
+}
+
+/** 検索の絞り込み条件 */
+export type BillSearchFilters = {
+  dietSessionId?: string;
+  tagId?: string;
+  statuses?: BillStatusEnum[];
+  // true のとき公開中のAIインタビューがある議案に絞る
+  hasPublicInterview?: boolean;
+};
+
+/**
+ * フリーワードで公開済み議案を検索する。
+ *
+ * - 表記ゆれ吸収: NFKC 正規化 + かな相互変換のバリエーションで検索する
+ * - 難易度またぎ: マッチ判定は全難易度の bill_contents を対象にし、
+ *   表示コンテンツは現在難易度のものを返す（別難易度の文言にしか
+ *   含まれない語でも取りこぼさない）
+ * - 注入対策: 構造文字の除去とワイルドカードのエスケープを行ってから埋め込む
+ *
+ * クエリが空でもフィルタ指定があれば絞り込み一覧として機能する。
+ */
+export async function findPublishedBillsBySearch(
+  query: string,
+  difficultyLevel: DifficultyLevelEnum,
+  pagination: { limit: number; offset: number },
+  filters: BillSearchFilters = {}
+) {
+  const safeVariants = buildSearchQueryVariants(query)
+    .map((variant) => escapeIlikePattern(sanitizeSearchQuery(variant)))
+    .filter((variant) => variant !== "");
+  // クエリもフィルタも無い場合は全公開議案の一覧として機能する
+
+  const supabase = createAdminClient();
+
+  // キーワードマッチは全難易度の bill_contents から bill_id を先に解決する
+  // （表示難易度と別の難易度にしか含まれない語も拾う。データ量が増えて
+  //   in() が長大になる場合は pg_trgm / RPC への移行を検討）
+  let matchedBillIds: string[] | null = null;
+  if (safeVariants.length > 0) {
+    const orExpr = safeVariants
+      .flatMap((v) => [`title.ilike.%${v}%`, `summary.ilike.%${v}%`])
+      .join(",");
+    const { data: matchedRows, error: matchError } = await supabase
+      .from("bill_contents")
+      .select("bill_id")
+      .or(orExpr);
+
+    if (matchError) {
+      throw new Error(`Failed to match bill contents: ${matchError.message}`);
+    }
+    matchedBillIds = [...new Set((matchedRows ?? []).map((r) => r.bill_id))];
+    if (matchedBillIds.length === 0) {
+      return { data: [], count: 0 };
+    }
+  }
+
+  // AIインタビュー絞り込みも対象bill_idを先に解決する
+  let interviewBillIds: string[] | null = null;
+  if (filters.hasPublicInterview) {
+    const { data: interviewRows, error: interviewError } = await supabase
+      .from("interview_configs")
+      .select("bill_id")
+      .eq("status", "public");
+
+    if (interviewError) {
+      throw new Error(
+        `Failed to resolve interview filter: ${interviewError.message}`
+      );
+    }
+    interviewBillIds = [
+      ...new Set((interviewRows ?? []).map((row) => row.bill_id)),
+    ];
+    if (interviewBillIds.length === 0) {
+      return { data: [], count: 0 };
+    }
+  }
+
+  // タグ絞り込みも対象bill_idを先に解決する
+  // （selectの動的組み立てを避けて型推論を保つため2段階で問い合わせる）
+  let tagBillIds: string[] | null = null;
+  if (filters.tagId) {
+    const { data: tagRows, error: tagError } = await supabase
+      .from("bills_tags")
+      .select("bill_id")
+      .eq("tag_id", filters.tagId);
+
+    if (tagError) {
+      throw new Error(`Failed to resolve tag filter: ${tagError.message}`);
+    }
+    tagBillIds = (tagRows ?? []).map((row) => row.bill_id);
+    if (tagBillIds.length === 0) {
+      return { data: [], count: 0 };
+    }
+  }
+
+  let builder = supabase
+    .from("bills")
+    .select(
+      `
+      *,
+      bill_contents!inner (
+        id,
+        bill_id,
+        title,
+        summary,
+        content,
+        difficulty_level,
+        created_at,
+        updated_at
+      )
+    `,
+      { count: "exact" }
+    )
+    .eq("publish_status", "published")
+    .eq("bill_contents.difficulty_level", difficultyLevel);
+
+  if (matchedBillIds) {
+    builder = builder.in("id", matchedBillIds);
+  }
+  if (tagBillIds) {
+    builder = builder.in("id", tagBillIds);
+  }
+  if (interviewBillIds) {
+    builder = builder.in("id", interviewBillIds);
+  }
+  if (filters.dietSessionId) {
+    builder = builder.eq("diet_session_id", filters.dietSessionId);
+  }
+  if (filters.statuses && filters.statuses.length > 0) {
+    builder = builder.in("status", filters.statuses);
+  }
+
+  const { data, error, count } = await builder
+    .order("submitted_date", { ascending: false, nullsFirst: false })
+    .range(pagination.offset, pagination.offset + pagination.limit - 1);
+
+  if (error) {
+    // 範囲外オフセット（URL直打ち等）はPostgRESTが416を返す。
+    // エラーにせず「空＋総数不明」として返し、呼び出し側でページを丸め直す
+    if (error.code === "PGRST103") {
+      return { data: [], count: null };
+    }
+    throw new Error(`Failed to search bills: ${error.message}`);
+  }
+
+  return { data, count: count ?? 0 };
 }
 
 /**
