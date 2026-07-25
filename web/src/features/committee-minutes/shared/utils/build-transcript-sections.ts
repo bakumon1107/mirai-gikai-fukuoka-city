@@ -36,9 +36,17 @@ export function buildTranscriptSections(
       i + 1 < ranged.length
         ? (ranged[i + 1].startVoiceNo as number)
         : Number.POSITIVE_INFINITY;
+    // 議題自身の endVoiceNo（inclusive）を優先し、無ければ次の議題の開始直前まで。
+    // これにより endVoiceNo が次の議題より前にある議題が、無関係な発言を
+    // 取り込むのを防ぐ。
     sections.push({
       topic,
-      speeches: speeches.filter((s) => s.seq >= start && s.seq < nextStart),
+      speeches: speeches.filter((s) => {
+        if (s.seq < start) return false;
+        return topic.endVoiceNo != null
+          ? s.seq <= topic.endVoiceNo
+          : s.seq < nextStart;
+      }),
     });
   });
 
