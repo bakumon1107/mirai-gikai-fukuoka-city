@@ -14,6 +14,7 @@ import { TextSizeToggle } from "@/lib/text-size";
 const NAV_LINKS = [
   { href: "/", label: "トップページ" },
   { href: "/sessions", label: "過去の定例会" },
+  { href: "/committees", label: "委員会" },
   { href: "/budget", label: "過去の予算" },
   { href: "/press-conferences", label: "市長記者会見" },
 ] as const;

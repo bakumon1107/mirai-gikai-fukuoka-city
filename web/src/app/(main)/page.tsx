@@ -3,6 +3,7 @@ import { About } from "@/components/top/about";
 import { BannerAccordion } from "@/components/top/banner-accordion";
 import { BudgetOverviewBanner } from "@/components/top/budget-overview-banner";
 import { CityFinanceBanner } from "@/components/top/city-finance-banner";
+import { CommitteeBanner } from "@/components/top/committee-banner";
 import { GeneralQuestionsBanner } from "@/components/top/general-questions-banner";
 import { JimuJigyoArchiveSection } from "@/components/top/jimu-jigyo-archive-section";
 import { JimuJigyoBanner } from "@/components/top/jimu-jigyo-banner";
@@ -84,6 +85,11 @@ export default async function Home() {
           <GeneralQuestionsBanner sessionSlug={latestQuestionsSlug} />
         </Container>
       )}
+
+      {/* 委員会バナー */}
+      <Container className="pt-3">
+        <CommitteeBanner />
+      </Container>
 
       {/* 予算・事務事業評価・お金の使い道（まとめてアコーディオン） */}
       <Container className="pt-3">

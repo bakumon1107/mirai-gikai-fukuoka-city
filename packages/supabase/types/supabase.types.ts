@@ -7,10 +7,30 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: "14.4"
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
   }
   public: {
     Tables: {
@@ -449,6 +469,104 @@ export type Database = {
           },
         ]
       }
+      committee_meeting_topics: {
+        Row: {
+          created_at: string
+          discussion_summary: string | null
+          end_voice_no: number | null
+          id: string
+          meeting_id: string
+          start_voice_no: number | null
+          summary: string | null
+          title: string
+          topic_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          discussion_summary?: string | null
+          end_voice_no?: number | null
+          id?: string
+          meeting_id: string
+          start_voice_no?: number | null
+          summary?: string | null
+          title: string
+          topic_order: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          discussion_summary?: string | null
+          end_voice_no?: number | null
+          id?: string
+          meeting_id?: string
+          start_voice_no?: number | null
+          summary?: string | null
+          title?: string
+          topic_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "committee_meeting_topics_meeting_id_fkey"
+            columns: ["meeting_id"]
+            isOneToOne: false
+            referencedRelation: "committee_meetings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      committee_meetings: {
+        Row: {
+          committee_name: string
+          committee_slug: string
+          committee_type: string
+          created_at: string
+          id: string
+          meeting_date: string
+          publish_status: string
+          raw_text: string
+          source_document_id: number
+          source_url: string
+          speeches: Json
+          summary: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          committee_name: string
+          committee_slug: string
+          committee_type?: string
+          created_at?: string
+          id?: string
+          meeting_date: string
+          publish_status?: string
+          raw_text: string
+          source_document_id: number
+          source_url: string
+          speeches?: Json
+          summary?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          committee_name?: string
+          committee_slug?: string
+          committee_type?: string
+          created_at?: string
+          id?: string
+          meeting_date?: string
+          publish_status?: string
+          raw_text?: string
+          source_document_id?: number
+          source_url?: string
+          speeches?: Json
+          summary?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       committees: {
         Row: {
           created_at: string
@@ -661,51 +779,51 @@ export type Database = {
       general_questions: {
         Row: {
           council_session_id: string
-          created_at: string
+          created_at: string | null
           id: string
           publish_status: string
           question_order: number
           questioner_name: string
           questioner_number: number | null
           questioner_party: string | null
-          raw_text: string
+          raw_text: string | null
           session_day: number
           source_url: string | null
-          summary: string
+          summary: string | null
           topics: Json
-          updated_at: string
+          updated_at: string | null
         }
         Insert: {
           council_session_id: string
-          created_at?: string
+          created_at?: string | null
           id?: string
           publish_status?: string
-          question_order: number
+          question_order?: number
           questioner_name: string
           questioner_number?: number | null
           questioner_party?: string | null
-          raw_text: string
-          session_day: number
+          raw_text?: string | null
+          session_day?: number
           source_url?: string | null
-          summary: string
+          summary?: string | null
           topics?: Json
-          updated_at?: string
+          updated_at?: string | null
         }
         Update: {
           council_session_id?: string
-          created_at?: string
+          created_at?: string | null
           id?: string
           publish_status?: string
           question_order?: number
           questioner_name?: string
           questioner_number?: number | null
           questioner_party?: string | null
-          raw_text?: string
+          raw_text?: string | null
           session_day?: number
           source_url?: string | null
-          summary?: string
+          summary?: string | null
           topics?: Json
-          updated_at?: string
+          updated_at?: string | null
         }
         Relationships: [
           {
@@ -1957,6 +2075,9 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {
       bill_publish_status: ["draft", "published", "coming_soon"],
@@ -1994,3 +2115,4 @@ export const Constants = {
     },
   },
 } as const
+
