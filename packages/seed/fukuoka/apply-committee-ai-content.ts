@@ -11,12 +11,13 @@
  *
  * 使い方:
  *   cd packages/seed
- *   npx tsx --env-file=../../.env fukuoka/apply-committee-ai-content.ts
+ *   pnpm exec tsx --env-file=../../.env fukuoka/apply-committee-ai-content.ts
  */
 
 import { readdirSync, readFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { mergeSimpleTexts } from "./apply-ai-content-utils";
 import { createAdminClient } from "../shared/helper";
 import type { Segment } from "./parse-committee-minutes";
 
@@ -57,14 +58,14 @@ async function main(): Promise<void> {
       );
     }
 
-    // セグメントにsimpleTextをseqでマージする
-    const simpleBySeq = new Map(
-      patch.speechSimpleTexts.map((s) => [s.seq, s.simpleText])
+    // セグメントにsimpleTextをseqでマージする（重複・未知seq・被覆漏れを検証）
+    const { speeches, warnings } = mergeSimpleTexts(
+      meeting.speeches as Segment[],
+      patch.speechSimpleTexts
     );
-    const speeches = (meeting.speeches as Segment[]).map((s) => {
-      const simpleText = simpleBySeq.get(s.seq);
-      return simpleText ? { ...s, simpleText } : s;
-    });
+    for (const w of warnings) {
+      console.warn(`警告 (DocumentID=${patch.documentId}): ${w}`);
+    }
 
     const { error: updateError } = await supabase
       .from("committee_meetings")

@@ -11,7 +11,7 @@
  *
  * 使い方:
  *   cd packages/seed
- *   npx tsx --env-file=../../.env fukuoka/seed-committee-meetings.ts
+ *   pnpm exec tsx --env-file=../../.env fukuoka/seed-committee-meetings.ts
  */
 
 import { readdirSync, readFileSync } from "node:fs";
@@ -88,7 +88,9 @@ async function main(): Promise<void> {
         source_url: meeting.sourceUrl,
         speeches: meeting.speeches,
         raw_text: meeting.rawText,
-        publish_status: "draft",
+        // 公式会議録の原文を取り込んだ確認済みデータのため公開扱いで投入する。
+        // 未確認の下書きは公開読み取り（publish_status=publishedのみ）で表示されない。
+        publish_status: "published",
       });
     if (meetingError) {
       throw new Error(`会議の投入に失敗 (${file}): ${meetingError.message}`);

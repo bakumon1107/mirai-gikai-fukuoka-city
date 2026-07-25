@@ -6,8 +6,8 @@
  *
  * 実行例:
  *   cd packages/seed
- *   npx tsx fukuoka/scrape-committee-minutes.ts            # 2026年分を取得
- *   npx tsx fukuoka/scrape-committee-minutes.ts --year 2026
+ *   pnpm exec tsx fukuoka/scrape-committee-minutes.ts            # 2026年分を取得
+ *   pnpm exec tsx fukuoka/scrape-committee-minutes.ts --year 2026
  *
  * 特徴:
  * - セッションはトップページ取得時に発行されるcookie＋URLパスのIDで維持する
@@ -210,17 +210,25 @@ async function main(): Promise<void> {
   // 一覧は新しい順のため、対象年より古い開催日が現れたらページ送りを打ち切る
   const cutoff = `${year}-01-01`;
   const allDocs: ListedDoc[] = [];
+  const MAX_PAGES = 30;
   let { docs, hasNext } = parseListPage(firstPage);
   allDocs.push(...docs);
+  let page = 2;
   for (
-    let page = 2;
-    hasNext && !docs.some((d) => d.date < cutoff) && page <= 30;
+    ;
+    hasNext && !docs.some((d) => d.date < cutoff) && page <= MAX_PAGES;
     page++
   ) {
     const html = await client.fetchListPage(page);
     ({ docs, hasNext } = parseListPage(html));
     allDocs.push(...docs);
     console.log(`一覧ページ${page}を取得（累計${allDocs.length}文書）`);
+  }
+  // 上限ページで打ち切った場合、対象年の取りこぼしがあり得るため警告する
+  if (page > MAX_PAGES && hasNext && !docs.some((d) => d.date < cutoff)) {
+    console.warn(
+      `警告: ページ上限(${MAX_PAGES})に達しましたが、まだ${year}年より新しい結果が続いている可能性があります。取りこぼしの恐れがあるため MAX_PAGES を見直してください。`
+    );
   }
   // ページ送りで同じ文書が重複して返ることがあるためDocumentIDで一意化する
   const uniqueDocs = [

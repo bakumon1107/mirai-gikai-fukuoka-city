@@ -201,13 +201,13 @@ export const CURRENT_COMMITTEES: CommitteeMeta[] = [
   {
     dbsrName: "議員定数等調査特別委員会",
     currentName: "議員定数等調査特別委員会",
-    slug: "teisu",
+    slug: "giin-teisu-nado",
     type: "special",
   },
   {
     dbsrName: "議員定数調査特別委員会",
     currentName: "議員定数調査特別委員会",
-    slug: "teisu",
+    slug: "giin-teisu",
     type: "special",
   },
 ];
@@ -234,6 +234,8 @@ export type Segment = {
   voiceNo: number;
   speakerType: SpeakerType;
   text: string;
+  /** わかりやすい表現（AI生成・確認後に apply-committee-ai-content で付与） */
+  simpleText?: string;
 };
 
 /** HTML実体参照を最低限デコードする */

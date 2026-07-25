@@ -61,7 +61,7 @@ CLAUDE.md「AI生成コンテンツのDB更新ルール」に従い、**DB反映
 
 ```bash
 cd packages/seed
-npx tsx --env-file=../../.env fukuoka/apply-committee-ai-content.ts
+pnpm exec tsx --env-file=../../.env fukuoka/apply-committee-ai-content.ts
 ```
 
 - `ai/` ディレクトリの**全ファイル**を毎回処理する（再実行は冪等・上書き）
@@ -69,7 +69,7 @@ npx tsx --env-file=../../.env fukuoka/apply-committee-ai-content.ts
 ## ④ 検証
 
 ```bash
-cd /path/to/worktree && npx dotenv -e .env -- pnpm --filter web dev  # port 3002
+cd /path/to/worktree && pnpm exec dotenv -e .env -- pnpm --filter web dev  # port 3002
 ```
 
 - `/committees/<slug>/<DocumentID>` … 全体要約（ヘッダー内）が出るか
