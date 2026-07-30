@@ -56,22 +56,32 @@ describe("assignCategory", () => {
       "交通・まちづくり"
     );
   });
+  // 追加キーワードは1語ずつ検証する（複数語を含む文言だと、
+  // どれか1つのマッピングを消しても気づけないため）
   it("リサイクル → 環境・脱炭素", () => {
-    expect(
-      assignCategory(
-        "リサイクルを妨げる資源物の持ち去り対策と過料から罰金への厳罰化"
-      ).label
-    ).toBe("環境・脱炭素");
+    expect(assignCategory("資源物の持ち去りとリサイクルへの影響").label).toBe(
+      "環境・脱炭素"
+    );
+  });
+  it("資源循環 → 環境・脱炭素", () => {
+    expect(assignCategory("プラスチックの資源循環の推進").label).toBe(
+      "環境・脱炭素"
+    );
   });
   it("再資源化 → 環境・脱炭素", () => {
-    expect(
-      assignCategory("選挙ポスター掲示板の再利用・再資源化による資源循環").label
-    ).toBe("環境・脱炭素");
+    expect(assignCategory("掲示板の再資源化に向けた検討").label).toBe(
+      "環境・脱炭素"
+    );
   });
-  it("選挙・投票 → 行財政・経済", () => {
-    expect(
-      assignCategory("大学への期日前投票所の設置と若年層の選挙啓発").label
-    ).toBe("行財政・経済");
+  it("選挙 → 行財政・経済", () => {
+    expect(assignCategory("若年層への選挙啓発の強化").label).toBe(
+      "行財政・経済"
+    );
+  });
+  it("投票 → 行財政・経済", () => {
+    expect(assignCategory("大学への期日前投票所の設置").label).toBe(
+      "行財政・経済"
+    );
   });
   it("動植物園 → スポーツ・文化", () => {
     expect(assignCategory("動植物園のリニューアル").label).toBe(
