@@ -56,6 +56,23 @@ describe("assignCategory", () => {
       "交通・まちづくり"
     );
   });
+  it("リサイクル → 環境・脱炭素", () => {
+    expect(
+      assignCategory(
+        "リサイクルを妨げる資源物の持ち去り対策と過料から罰金への厳罰化"
+      ).label
+    ).toBe("環境・脱炭素");
+  });
+  it("再資源化 → 環境・脱炭素", () => {
+    expect(
+      assignCategory("選挙ポスター掲示板の再利用・再資源化による資源循環").label
+    ).toBe("環境・脱炭素");
+  });
+  it("選挙・投票 → 行財政・経済", () => {
+    expect(
+      assignCategory("大学への期日前投票所の設置と若年層の選挙啓発").label
+    ).toBe("行財政・経済");
+  });
   it("動植物園 → スポーツ・文化", () => {
     expect(assignCategory("動植物園のリニューアル").label).toBe(
       "スポーツ・文化"
