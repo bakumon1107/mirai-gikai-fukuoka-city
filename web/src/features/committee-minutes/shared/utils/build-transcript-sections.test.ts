@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 import type { CommitteeMeetingTopic, CommitteeSpeech } from "../types";
 import { buildTranscriptSections } from "./build-transcript-sections";
 
-function speech(seq: number): CommitteeSpeech {
-  return { seq, voiceNo: seq, speakerType: "member", text: `t${seq}` };
+function speech(seq: number, voiceNo = seq): CommitteeSpeech {
+  return { seq, voiceNo, speakerType: "member", text: `t${seq}` };
 }
 
 function topic(
@@ -53,6 +53,23 @@ describe("buildTranscriptSections", () => {
     ]);
     expect(sections[0].speeches.map((s) => s.seq)).toEqual([1, 2]);
     expect(sections[1].speeches.map((s) => s.seq)).toEqual([4, 5]);
+  });
+
+  it("範囲判定は voiceNo ではなく seq で行う", () => {
+    // seq と voiceNo を意図的にずらす。startVoiceNo/endVoiceNo は seq を指す契約
+    // のため、範囲は seq（1〜2, 3〜4）で判定され voiceNo(101〜104)には依存しない。
+    const speeches = [
+      speech(1, 101),
+      speech(2, 102),
+      speech(3, 103),
+      speech(4, 104),
+    ];
+    const sections = buildTranscriptSections(speeches, [
+      topic(1, 1, 2),
+      topic(2, 3, 4),
+    ]);
+    expect(sections[0].speeches.map((s) => s.seq)).toEqual([1, 2]);
+    expect(sections[1].speeches.map((s) => s.seq)).toEqual([3, 4]);
   });
 
   it("endVoiceNoが無い最終議題は残り全部を含む", () => {
