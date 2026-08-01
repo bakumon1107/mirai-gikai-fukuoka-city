@@ -35,8 +35,24 @@ type AiPatch = {
   documentId: number;
   /** 会議全体の要約（2〜3文） */
   meetingSummary: string;
-  /** 発言セグメントごとのわかりやすい表現（seqで対応、noteセグメントは対象外） */
-  speechSimpleTexts: { seq: number; simpleText: string }[];
+  /**
+   * 発言セグメントごとのわかりやすい表現（seqで対応、noteセグメントは対象外）。
+   * トピックのみ生成した文書では省略・空配列でよい。
+   */
+  speechSimpleTexts?: { seq: number; simpleText: string }[];
+  /**
+   * 議題（トピック）分割。市の議事録は議題マーカーが無いため境界もAIで判定する。
+   * startSeq/endSeq は CommitteeSpeech.seq（会議全体の発言連番）を指し、
+   * committee_meeting_topics.start_voice_no/end_voice_no にそのまま格納する。
+   * 省略された文書はトピック未生成として扱い、summary/speeches のみ更新する。
+   */
+  topics?: {
+    topicOrder: number;
+    title: string;
+    summary: string;
+    startSeq: number;
+    endSeq: number;
+  }[];
 };
 
 async function main(): Promise<void> {
@@ -58,18 +74,25 @@ async function main(): Promise<void> {
       );
     }
 
-    // セグメントにsimpleTextをseqでマージする（重複・未知seq・被覆漏れを検証）
-    const { speeches, warnings } = mergeSimpleTexts(
-      meeting.speeches as Segment[],
-      patch.speechSimpleTexts
-    );
-    for (const w of warnings) {
-      console.warn(`警告 (DocumentID=${patch.documentId}): ${w}`);
+    // わかりやすい表現（simpleText）が生成済みの場合のみ、seqでマージする。
+    // トピックのみ生成した文書（simpleText未生成）は speeches を変更しない。
+    const update: { summary: string; speeches?: Segment[] } = {
+      summary: patch.meetingSummary,
+    };
+    if (patch.speechSimpleTexts && patch.speechSimpleTexts.length > 0) {
+      const { speeches, warnings } = mergeSimpleTexts(
+        meeting.speeches as Segment[],
+        patch.speechSimpleTexts
+      );
+      for (const w of warnings) {
+        console.warn(`警告 (DocumentID=${patch.documentId}): ${w}`);
+      }
+      update.speeches = speeches;
     }
 
     const { error: updateError } = await supabase
       .from("committee_meetings")
-      .update({ summary: patch.meetingSummary, speeches })
+      .update(update)
       .eq("id", meeting.id);
     if (updateError) {
       throw new Error(
@@ -77,8 +100,42 @@ async function main(): Promise<void> {
       );
     }
 
+    // トピックは毎回すべて置き換える（冪等）。既存を全削除してから挿入する。
+    if (patch.topics) {
+      const { error: deleteError } = await supabase
+        .from("committee_meeting_topics")
+        .delete()
+        .eq("meeting_id", meeting.id);
+      if (deleteError) {
+        throw new Error(
+          `議題の削除に失敗 (DocumentID=${patch.documentId}): ${deleteError.message}`
+        );
+      }
+      if (patch.topics.length > 0) {
+        const rows = patch.topics.map((t) => ({
+          meeting_id: meeting.id,
+          topic_order: t.topicOrder,
+          title: t.title,
+          summary: t.summary,
+          discussion_summary: null,
+          start_voice_no: t.startSeq,
+          end_voice_no: t.endSeq,
+        }));
+        const { error: insertError } = await supabase
+          .from("committee_meeting_topics")
+          .insert(rows);
+        if (insertError) {
+          throw new Error(
+            `議題の挿入に失敗 (DocumentID=${patch.documentId}): ${insertError.message}`
+          );
+        }
+      }
+    }
+
     console.log(
-      `反映: DocumentID=${patch.documentId}（発言${patch.speechSimpleTexts.length}件）`
+      `反映: DocumentID=${patch.documentId}（発言${patch.speechSimpleTexts?.length ?? 0}件` +
+        (patch.topics ? `・議題${patch.topics.length}件` : "") +
+        `）`
     );
   }
 

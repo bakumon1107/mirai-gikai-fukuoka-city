@@ -10,6 +10,10 @@ import {
   getCommitteeTypeLabel,
 } from "../../shared/utils/committee-type";
 import { formatJapaneseDate } from "../../shared/utils/format-japanese-date";
+import { pickMajorTopics } from "../../shared/utils/pick-major-topics";
+
+/** 「最近の委員会」カードに載せる主要トピックの最大件数 */
+const CARD_TOPIC_LIMIT = 5;
 
 type Props = {
   archives: CommitteeArchive[];
@@ -64,10 +68,33 @@ export function CommitteesView({ archives, meetings }: Props) {
                     <div className="mt-2 font-bold text-mirai-text">
                       {m.committeeName}
                     </div>
-                    <p className="mt-2 text-sm text-mirai-text-secondary leading-relaxed line-clamp-2">
-                      {m.summary ??
-                        "委員から出された質疑・意見と、市の答弁を記録しています。"}
-                    </p>
+                    {(() => {
+                      const majorTopics = pickMajorTopics(
+                        m.topics,
+                        CARD_TOPIC_LIMIT
+                      );
+                      return majorTopics.length > 0 ? (
+                        <ul className="mt-2 flex flex-col gap-1">
+                          {majorTopics.map((t) => (
+                            <li
+                              key={t.id}
+                              className="flex items-start gap-1.5 text-sm text-mirai-text-secondary leading-relaxed"
+                            >
+                              <span
+                                aria-hidden
+                                className="mt-2 h-1 w-1 shrink-0 rounded-full bg-primary"
+                              />
+                              <span className="line-clamp-1">{t.title}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="mt-2 text-sm text-mirai-text-secondary leading-relaxed line-clamp-2">
+                          {m.summary ??
+                            "委員から出された質疑・意見と、市の答弁を記録しています。"}
+                        </p>
+                      );
+                    })()}
                     <span className="mt-auto pt-3 inline-flex items-center gap-1 text-sm font-medium text-primary-accent">
                       くわしく見る
                       <ChevronRight className="w-3.5 h-3.5" />

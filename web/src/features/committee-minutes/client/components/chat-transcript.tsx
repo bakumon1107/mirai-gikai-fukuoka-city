@@ -75,6 +75,9 @@ export function ChatTranscript({ sections }: Props) {
   const hasSimpleText = sections.some((section) =>
     section.speeches.some((s) => s.simpleText)
   );
+  const tocItems = sections
+    .map((section) => section.topic)
+    .filter((topic): topic is NonNullable<typeof topic> => topic !== null);
 
   return (
     <div className="flex flex-col gap-8">
@@ -103,6 +106,28 @@ export function ChatTranscript({ sections }: Props) {
           </p>
         )}
       </div>
+
+      {tocItems.length > 0 && (
+        <nav
+          aria-label="議題の目次"
+          className="rounded-2xl border border-mirai-border bg-white p-4"
+        >
+          <p className="mb-2 text-xs font-bold text-mirai-text-muted">議題</p>
+          <ol className="flex flex-col gap-1.5">
+            {tocItems.map((topic) => (
+              <li key={topic.id}>
+                <a
+                  href={`#topic-${topic.topicOrder}`}
+                  className="inline-flex items-start gap-1.5 text-sm text-primary-accent hover:underline"
+                >
+                  <span className="font-bold">{topic.topicOrder}.</span>
+                  <span>{topic.title}</span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )}
 
       <div className="flex flex-col gap-10">
         {sections.map((section) => (

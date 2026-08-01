@@ -1,8 +1,10 @@
 import "server-only";
-import { ArrowLeft, CalendarDays, FileText } from "lucide-react";
+import { ArrowLeft, ArrowRight, CalendarDays, FileText } from "lucide-react";
 import Link from "next/link";
 import type { CommitteeMeetingDetail } from "../../shared/types";
+import { buildTranscriptSections } from "../../shared/utils/build-transcript-sections";
 import { getCommitteeTypeLabel } from "../../shared/utils/committee-type";
+import { countSpeechTypes } from "../../shared/utils/count-speech-types";
 import { formatJapaneseDate } from "../../shared/utils/format-japanese-date";
 
 type Props = {
@@ -14,6 +16,12 @@ export function MeetingDetailView({ meeting }: Props) {
   const exchangeCount = meeting.speeches.filter(
     (s) => s.speakerType !== "note"
   ).length;
+
+  // 議題の範囲（seq）で発言を分割し、議題を持つセクションだけを議題リストに使う
+  const topicSections = buildTranscriptSections(
+    meeting.speeches,
+    meeting.topics
+  ).filter((section) => section.topic !== null);
 
   return (
     <div className="flex flex-col gap-8">
@@ -43,6 +51,64 @@ export function MeetingDetailView({ meeting }: Props) {
           )}
         </div>
       </div>
+
+      {topicSections.length === 0 ? (
+        <div className="rounded-2xl border border-mirai-border bg-white p-5">
+          <p className="text-sm text-mirai-text-secondary leading-relaxed">
+            この会議では、委員長の選出など会議を運営するための手続きが中心でした。くわしい内容は「発言のやり取り」をご覧ください。
+          </p>
+        </div>
+      ) : (
+        <section className="flex flex-col gap-4">
+          <h2 className="text-lg font-bold text-mirai-text">
+            この日に話し合われた議題
+          </h2>
+          <ol className="flex flex-col gap-4">
+            {topicSections.map((section) => {
+              const topic = section.topic;
+              if (!topic) return null;
+              const counts = countSpeechTypes(section.speeches);
+              return (
+                <li
+                  key={topic.id}
+                  className="rounded-2xl border-l-4 border-primary bg-white shadow-sm px-5 py-4"
+                >
+                  <div className="flex items-start gap-3">
+                    <span className="flex-shrink-0 mt-0.5 w-6 h-6 rounded-full bg-mirai-gradient-start text-primary-accent text-xs font-bold flex items-center justify-center">
+                      {topic.topicOrder}
+                    </span>
+                    <h3 className="font-bold text-mirai-text leading-relaxed">
+                      {topic.title}
+                    </h3>
+                  </div>
+                  {topic.summary && (
+                    <p className="mt-2 pl-9 text-sm text-mirai-text-secondary leading-relaxed">
+                      {topic.summary}
+                    </p>
+                  )}
+                  <div className="mt-3 pl-9 flex flex-wrap gap-1.5">
+                    <span className="rounded-full bg-mirai-gradient-end px-2.5 py-0.5 text-xs text-mirai-text-secondary">
+                      質疑・意見 {counts.member}件
+                    </span>
+                    <span className="rounded-full bg-mirai-surface-grouped px-2.5 py-0.5 text-xs text-mirai-text-secondary">
+                      答弁 {counts.executive}件
+                    </span>
+                  </div>
+                  <div className="mt-3 pl-9">
+                    <Link
+                      href={`${transcriptPath}#topic-${topic.topicOrder}`}
+                      className="inline-flex items-center gap-1 text-sm font-medium text-primary-accent hover:underline"
+                    >
+                      このやり取りを読む
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
+        </section>
+      )}
 
       <div className="rounded-2xl border border-mirai-border bg-white p-5">
         <Link
