@@ -96,6 +96,22 @@ slug は `r8-3` 形式（令和8年第3回 → r8-3）。`name` は「令和8年
 
 継続審査になった議案は最新の会期IDに `council_session_id` を更新する（1議案=1会期のまま運用）。
 
+## 議案質疑（定例会第１日）
+
+議案カードの「議会での審議」欄（`bill_discussions` と `bills.discussion_overview_points`）は、定例会第１日の議案質疑から作る。
+
+1. 会議録を `docs/fukuoka/meeting-minutes/<会期名>/<YYYY-MM-DD>_1日目.txt` に保存する（[README](../../../docs/fukuoka/meeting-minutes/README.md) 参照）
+2. `packages/seed/fukuoka/bill-discussions-<会期slug>.json` に、議案ごとの要約・答弁者・質疑本文の行範囲を書く
+3. ユーザーレビュー後に取り込む:
+   ```bash
+   cd packages/seed && pnpm exec tsx --env-file=../../.env.production \
+     fukuoka/import-bill-discussions.ts fukuoka/bill-discussions-<会期slug>.json --dry-run
+   ```
+
+**1人の質問者が複数議案を続けて質疑する点に注意**。質問段落と答弁ブロックを議案ごとに切り分け、JSONの `questionLines` / `answerLines` に議案別の行範囲を持たせること。質問者単位でまとめると、所管の異なる答弁者が無関係な議案のレコードに載る（過去に発生済み）。答弁者が複数のときは `answererRole` に「役職（氏名）」を「・」で連結し、`answerer_name` は入れない。
+
+旧 `seed-bill-discussions.ts` / `parse-minutes.ts` は質問者単位でのグループ化しかできず、上記の取り違えが起きるため新規の取り込みには使わない。
+
 ## 関連
 
 - 設計書: [docs/fukuoka/20260329_1000_福岡市議会データ取込設計.md](../../../docs/fukuoka/20260329_1000_福岡市議会データ取込設計.md)、[docs/fukuoka/20260405_1500_意見書案・決議案・議員提出議案取込設計書.md](../../../docs/fukuoka/20260405_1500_意見書案・決議案・議員提出議案取込設計書.md)
