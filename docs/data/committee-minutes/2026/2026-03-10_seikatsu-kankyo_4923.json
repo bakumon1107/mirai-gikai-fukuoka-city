@@ -1,0 +1,53 @@
+{
+  "documentId": 4923,
+  "title": "令和８年生活環境委員会",
+  "committee": {
+    "dbsrName": "生活環境委員会",
+    "currentName": "生活環境委員会",
+    "slug": "seikatsu-kankyo",
+    "type": "standing"
+  },
+  "meetingDate": "2026-03-10",
+  "sourceUrl": "https://www.city.fukuoka.fukuoka.dbsr.jp/index.php/1?Template=doc-one-frame&VoiceType=onehit&DocumentID=4923",
+  "scrapedAt": "2026-08-04T07:41:12.126Z",
+  "segmentCount": 6,
+  "speeches": [
+    {
+      "seq": 1,
+      "voiceNo": 1,
+      "speakerType": "note",
+      "text": "３月10日　　午前11時51分開会\n　　　　　　　午後０時８分閉会\n\n　１人から傍聴の申出があり、これを許した。\n\n水事情について\n　本件について、理事者から資料に基づき報告があった。\n　なお、次のような質疑・意見があった。"
+    },
+    {
+      "seq": 2,
+      "voiceNo": 2,
+      "speakerType": "member",
+      "text": "海水淡水化施設の稼働状況を尋ねる。"
+    },
+    {
+      "seq": 3,
+      "voiceNo": 3,
+      "speakerType": "executive",
+      "text": "施設の更新工事などの影響で能力が限られている状況であるが、現状における最大能力で運転していると聞いている。"
+    },
+    {
+      "seq": 4,
+      "voiceNo": 4,
+      "speakerType": "member",
+      "text": "更新工事はいつまでなのか。"
+    },
+    {
+      "seq": 5,
+      "voiceNo": 5,
+      "speakerType": "executive",
+      "text": "高圧ＲＯポンプ設備の更新工事については、令和12年度までの予定と聞いている。"
+    },
+    {
+      "seq": 6,
+      "voiceNo": 6,
+      "speakerType": "member",
+      "text": "現在、同施設では日量最大３万トンを供給していると聞いているが、今後同施設の状況も分かるよう資料に記載するなどされたい"
+    }
+  ],
+  "rawText": "３月10日　　午前11時51分開会\n　　　　　　　午後０時８分閉会\n\n　１人から傍聴の申出があり、これを許した。\n\n水事情について\n　本件について、理事者から資料に基づき報告があった。\n　なお、次のような質疑・意見があった。\n\n［質疑・意見］\n海水淡水化施設の稼働状況を尋ねる。\n\n［答弁］\n施設の更新工事などの影響で能力が限られている状況であるが、現状における最大能力で運転していると聞いている。\n\n［質疑・意見］\n更新工事はいつまでなのか。\n\n［答弁］\n高圧ＲＯポンプ設備の更新工事については、令和12年度までの予定と聞いている。\n\n［質疑・意見］\n現在、同施設では日量最大３万トンを供給していると聞いているが、今後同施設の状況も分かるよう資料に記載するなどされたい"
+}
