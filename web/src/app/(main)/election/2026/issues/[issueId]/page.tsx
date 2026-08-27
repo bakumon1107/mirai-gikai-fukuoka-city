@@ -2,13 +2,12 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/layouts/container";
 import { IssueCompareView } from "@/features/election/server/components/issue-compare-view";
-import { ISSUES } from "@/features/election/shared/data/issues";
-import { ELECTION_SCHEDULE } from "@/features/election/shared/data/schedule";
 import {
-  getCandidateNoun,
-  getElectionPhase,
-} from "@/features/election/shared/utils/election-phase";
-import { getLatestSessionWithQuestions } from "@/features/general-questions/server/loaders/get-latest-session-with-questions";
+  getCurrentElectionPhase,
+  getIssuePageData,
+} from "@/features/election/server/loaders/get-election-page-data";
+import { ISSUES } from "@/features/election/shared/data/issues";
+import { getCandidateNoun } from "@/features/election/shared/utils/election-phase";
 
 type Props = {
   params: Promise<{ issueId: string }>;
@@ -26,36 +25,31 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { issueId } = await params;
-  const issue = ISSUES.find((item) => item.id === issueId);
-  if (!issue) {
+  const data = await getIssuePageData(issueId);
+  if (!data) {
     return {};
   }
 
-  const noun = getCandidateNoun(
-    getElectionPhase(new Date(), ELECTION_SCHEDULE)
-  );
+  const noun = getCandidateNoun(getCurrentElectionPhase());
   return {
-    title: `${issue.label} | 福岡市長選挙 2026 | みらい議会＠福岡市`,
-    description: `福岡市長選挙の${noun}について、${issue.label}に関する公表内容を横並びで整理しています。分類は記述にもとづく整理であり、優劣を示すものではありません。`,
+    title: `${data.issue.label} | 福岡市長選挙 2026 | みらい議会＠福岡市`,
+    description: `福岡市長選挙の${noun}について、${data.issue.label}に関する公表内容を横並びで整理しています。分類は記述にもとづく整理であり、優劣を示すものではありません。`,
   };
 }
 
 export default async function IssueComparePage({ params }: Props) {
   const { issueId } = await params;
-  const issue = ISSUES.find((item) => item.id === issueId);
-  if (!issue) {
+  const data = await getIssuePageData(issueId);
+  if (!data) {
     notFound();
   }
-
-  const questionsSlug = await getLatestSessionWithQuestions();
-  const phase = getElectionPhase(new Date(), ELECTION_SCHEDULE);
 
   return (
     <Container className="py-8">
       <IssueCompareView
-        issue={issue}
-        phase={phase}
-        questionsSlug={questionsSlug}
+        issue={data.issue}
+        phase={data.phase}
+        questionsSlug={data.questionsSlug}
       />
     </Container>
   );

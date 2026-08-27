@@ -1,8 +1,6 @@
 import { Container } from "@/components/layouts/container";
 import { ElectionTopView } from "@/features/election/server/components/election-top-view";
-import { ELECTION_SCHEDULE } from "@/features/election/shared/data/schedule";
-import { getElectionPhase } from "@/features/election/shared/utils/election-phase";
-import { getLatestSessionWithQuestions } from "@/features/general-questions/server/loaders/get-latest-session-with-questions";
+import { getElectionTopPageData } from "@/features/election/server/loaders/get-election-page-data";
 
 export const metadata = {
   title: "福岡市長選挙 2026 | みらい議会＠福岡市",
@@ -17,8 +15,7 @@ export const metadata = {
 export const revalidate = 3600;
 
 export default async function ElectionTopPage() {
-  const questionsSlug = await getLatestSessionWithQuestions();
-  const phase = getElectionPhase(new Date(), ELECTION_SCHEDULE);
+  const { phase, questionsSlug } = await getElectionTopPageData();
 
   return (
     <Container className="py-8">
