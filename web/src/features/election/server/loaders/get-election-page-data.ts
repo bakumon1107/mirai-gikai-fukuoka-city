@@ -3,7 +3,13 @@ import { getLatestSessionWithQuestions } from "@/features/general-questions/serv
 import { CANDIDATES } from "../../shared/data/candidates";
 import { ISSUES } from "../../shared/data/issues";
 import { ELECTION_SCHEDULE } from "../../shared/data/schedule";
-import type { Candidate, ElectionPhase, Issue } from "../../shared/types";
+import type {
+  Candidate,
+  CandidateTab,
+  ElectionPhase,
+  Issue,
+} from "../../shared/types";
+import { parseCandidateTab } from "../../shared/utils/candidate-tab";
 import { getElectionPhase } from "../../shared/utils/election-phase";
 
 export type ElectionTopPageData = {
@@ -16,6 +22,7 @@ export type CandidatePageData = {
   /** 表明順（0始まり）。顔写真プレースホルダーの配色に使う */
   index: number;
   phase: ElectionPhase;
+  tab: CandidateTab;
 };
 
 export type IssuePageData = {
@@ -32,7 +39,10 @@ export async function getElectionTopPageData(): Promise<ElectionTopPageData> {
 }
 
 /** 該当する立候補予定者がいない場合は null（呼び出し側で notFound する） */
-export function getCandidatePageData(id: string): CandidatePageData | null {
+export function getCandidatePageData(
+  id: string,
+  tab?: string
+): CandidatePageData | null {
   const index = CANDIDATES.findIndex((candidate) => candidate.id === id);
   if (index === -1) {
     return null;
@@ -42,6 +52,7 @@ export function getCandidatePageData(id: string): CandidatePageData | null {
     candidate: CANDIDATES[index],
     index,
     phase: getElectionPhase(new Date(), ELECTION_SCHEDULE),
+    tab: parseCandidateTab(tab),
   };
 }
 

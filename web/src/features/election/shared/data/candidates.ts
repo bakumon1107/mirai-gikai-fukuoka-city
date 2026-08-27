@@ -77,6 +77,26 @@ export const CANDIDATES: Candidate[] = [
         url: "https://search.yahoo.co.jp/search?p=%E6%B8%A1%E8%BE%BA%E4%B9%85%E4%B9%9F",
       },
     ],
+    sns: [
+      { kind: "公式サイト", handle: "", url: "" },
+      { kind: "X", handle: "", url: "" },
+      {
+        kind: "YouTube",
+        handle: "渡辺久也(わたなべひさや)のYouTubeチャンネル",
+        url: "https://www.youtube.com/channel/UCNo58Kr2Rwt1tsSTsWzgnJA",
+      },
+      {
+        kind: "Instagram",
+        handle: "@watanabehisaya.fukuoka",
+        url: "https://www.instagram.com/watanabehisaya.fukuoka/",
+      },
+      {
+        kind: "Facebook",
+        handle: "hisaya.watanabe.35",
+        url: "https://www.facebook.com/hisaya.watanabe.35/?locale=ja_JP",
+      },
+      { kind: "note", handle: "", url: "" },
+    ],
     positions: {
       kosodate: {
         stance: "未表明",
@@ -154,6 +174,13 @@ export const CANDIDATES: Candidate[] = [
         updated: "",
         log: [],
       },
+      sonota: {
+        stance: "未表明",
+        summary:
+          "上の分野に当てはまらない主張は、いまのところ確認できていません。",
+        updated: "",
+        log: [],
+      },
     },
   },
   {
@@ -202,6 +229,15 @@ export const CANDIDATES: Candidate[] = [
         label: "プロフィール（選挙ドットコム）",
         url: GO2SENKYO_NISHIWAKI,
       },
+    ],
+    // Xアカウントが存在するとの情報はあるが本人のものと確認できていないため未掲載
+    sns: [
+      { kind: "公式サイト", handle: "", url: "" },
+      { kind: "X", handle: "", url: "" },
+      { kind: "YouTube", handle: "", url: "" },
+      { kind: "Instagram", handle: "", url: "" },
+      { kind: "Facebook", handle: "", url: "" },
+      { kind: "note", handle: "", url: "" },
     ],
     positions: {
       kosodate: {
@@ -294,6 +330,13 @@ export const CANDIDATES: Candidate[] = [
           },
         ],
       },
+      sonota: {
+        stance: "未表明",
+        summary:
+          "上の分野に当てはまらない主張は、いまのところ確認できていません。",
+        updated: "",
+        log: [],
+      },
     },
   },
   {
@@ -351,6 +394,18 @@ export const CANDIDATES: Candidate[] = [
         label: "本人サイト（OVER THE RAINBOW）",
         url: ARAMAKI_SITE_URL,
       },
+    ],
+    sns: [
+      {
+        kind: "公式サイト",
+        handle: "lgbt-connect.com",
+        url: ARAMAKI_SITE_URL,
+      },
+      { kind: "X", handle: "", url: "" },
+      { kind: "YouTube", handle: "", url: "" },
+      { kind: "Instagram", handle: "", url: "" },
+      { kind: "Facebook", handle: "", url: "" },
+      { kind: "note", handle: "", url: "" },
     ],
     positions: {
       kosodate: {
@@ -412,6 +467,13 @@ export const CANDIDATES: Candidate[] = [
       zaisei: {
         stance: "未表明",
         summary: "この分野についての具体的な言及はまだ確認できていません。",
+        updated: "",
+        log: [],
+      },
+      sonota: {
+        stance: "未表明",
+        summary:
+          "上の分野に当てはまらない主張は、いまのところ確認できていません。",
         updated: "",
         log: [],
       },

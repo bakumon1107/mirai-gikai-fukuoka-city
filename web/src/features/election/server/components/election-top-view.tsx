@@ -203,7 +203,8 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
             </div>
             <div className="mt-3 flex items-center justify-between gap-2 border-t border-mirai-surface-muted pt-2.5">
               <span className="text-[11px] text-mirai-text-muted">
-                9分野のうち {countStatedIssues(candidate)}分野で言及あり
+                {ISSUES.length}分野のうち {countStatedIssues(candidate)}
+                分野で言及あり
               </span>
               <span className="flex items-center gap-1 text-xs font-bold text-primary-accent">
                 詳しく見る

@@ -1,4 +1,10 @@
-/** 争点（分野）のID。並び順は全立候補予定者で共通に固定する。 */
+/**
+ * 争点（分野）のID。並び順は全立候補予定者で共通に固定する。
+ *
+ * `sonota` は他の分野に当てはまらない主張の受け皿で、常に最後に置く。
+ * この枠がないと、分類できない主張が「言及なし」として消えるか、
+ * 近い分野へ無理に押し込まれる。どちらも中立性を損なうため削らないこと。
+ */
 export type IssueId =
   | "kosodate"
   | "fukushi"
@@ -8,7 +14,8 @@ export type IssueId =
   | "keizai"
   | "kanko"
   | "dx"
-  | "zaisei";
+  | "zaisei"
+  | "sonota";
 
 /**
  * 分野ごとの立場。
@@ -87,6 +94,31 @@ export type CandidateLink = {
   url: string;
 };
 
+/** 発信チャンネルの種別。並びは全立候補予定者で共通固定 */
+export type SnsKind =
+  | "公式サイト"
+  | "X"
+  | "YouTube"
+  | "Instagram"
+  | "Facebook"
+  | "note";
+
+/**
+ * 発信チャンネル。リンクの掲載のみで、タイムラインの埋め込みは行わない。
+ *
+ * 埋め込みは確認できた人のページにだけプレーヤーが出ることになり、
+ * 露出の差が生まれる。また本人の発信が自動更新でそのまま載るため、
+ * 「報道と公表資料をAIで要約し人が確認する」という関門を通らなくなる。
+ * どちらもこのページの成立条件に反するため、全員リンクのみで揃える。
+ */
+export type SnsChannel = {
+  kind: SnsKind;
+  /** 表示用のハンドル。未確認なら空文字 */
+  handle: string;
+  /** チャンネルのURL。未確認なら空文字（ダミーリンクを置かない） */
+  url: string;
+};
+
 export type Candidate = {
   id: string;
   /** 表明順（告示後は届出順）。"01" 形式 */
@@ -106,9 +138,14 @@ export type Candidate = {
   /** 高島市政への評価。言及が確認できない場合は null（推測で埋めない） */
   takashimaAssessment: TakashimaAssessment | null;
   links: CandidateLink[];
+  /** 発信チャンネル。6種すべてを共通の並びで持ち、未確認は url を空にする */
+  sns: SnsChannel[];
   /** 全 IssueId のキーを必ず持つ。情報がない分野は「未表明」として並べる。 */
   positions: Record<IssueId, CandidatePosition>;
 };
+
+/** 立候補予定者ページのタブ。URLの ?tab= に反映する */
+export type CandidateTab = "profile" | "policies";
 
 export type EarlyVotingPlace = {
   ward: string;

@@ -3,12 +3,19 @@ import { ArrowLeft, ArrowUpRight, Scale } from "lucide-react";
 import Link from "next/link";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { CandidatePhoto } from "../../client/components/candidate-photo";
 import { DisclaimerBar } from "../../client/components/disclaimer-bar";
 import { PositionBody } from "../../client/components/position-body";
+import { SnsChannels } from "../../client/components/sns-channels";
 import { StancePill } from "../../client/components/stance-pill";
 import { ISSUES } from "../../shared/data/issues";
-import type { Candidate, ElectionPhase } from "../../shared/types";
+import type {
+  Candidate,
+  CandidateTab,
+  ElectionPhase,
+} from "../../shared/types";
+import { CANDIDATE_TABS } from "../../shared/utils/candidate-tab";
 import {
   getCandidateNoun,
   getOrderLabel,
@@ -19,9 +26,10 @@ type Props = {
   /** 表明順（0始まり）。プレースホルダーの配色に使う */
   index: number;
   phase: ElectionPhase;
+  tab: CandidateTab;
 };
 
-export function CandidateDetailView({ candidate, index, phase }: Props) {
+export function CandidateDetailView({ candidate, index, phase, tab }: Props) {
   const noun = getCandidateNoun(phase);
   const orderLabel = getOrderLabel(phase);
 
@@ -92,123 +100,161 @@ export function CandidateDetailView({ candidate, index, phase }: Props) {
         {noun}への投票を呼びかけるものではありません。
       </DisclaimerBar>
 
-      <section className="px-6 py-7">
-        <h2 className="text-base font-bold text-mirai-text">経歴</h2>
-        <dl className="mt-3">
-          {candidate.bio.map((row, rowIndex) => (
-            <div
-              key={`${row.label}-${rowIndex}`}
-              className="grid grid-cols-[64px_1fr] gap-3.5 border-b border-mirai-surface-grouped py-[11px] last:border-b-0"
+      {/* タブはURLに反映する（リンク共有とブラウザバックのため） */}
+      <nav className="flex flex-wrap gap-[7px] border-b border-mirai-surface-muted bg-card px-6 py-3.5">
+        {CANDIDATE_TABS.map((candidateTab) => {
+          const isActive = candidateTab.id === tab;
+          return (
+            <Link
+              key={candidateTab.id}
+              href={`/election/2026/candidates/${candidate.id}?tab=${candidateTab.id}`}
+              aria-current={isActive ? "page" : undefined}
+              scroll={false}
+              className={cn(
+                "rounded-full border px-4 py-2 text-xs font-bold transition-colors",
+                isActive
+                  ? "border-mirai-text bg-mirai-gradient text-mirai-text"
+                  : "border-mirai-border bg-card text-mirai-text-note hover:border-primary"
+              )}
             >
-              <dt className="font-lexend text-[11px] font-medium text-mirai-text-muted">
-                {row.label}
-              </dt>
-              <dd className="text-[12.5px] leading-[1.8] text-mirai-text-secondary text-pretty">
-                {row.text}
-              </dd>
-            </div>
-          ))}
-        </dl>
-        <p className="mt-3 text-[10.5px] leading-[1.7] text-mirai-text-muted">
-          出典：{candidate.bioSource}
-        </p>
-      </section>
+              {candidateTab.label}
+            </Link>
+          );
+        })}
+      </nav>
 
-      <section className="px-6 pb-7">
-        <div className="overflow-hidden rounded-xl border border-mirai-border">
-          <div className="bg-mirai-light-gradient px-4 py-3.5">
-            <p className="font-lexend text-[8.5px] font-bold tracking-[0.2em] text-primary">
-              STATED SO FAR
-            </p>
-            <h2 className="mt-1 text-base font-bold text-mirai-text">
-              これまでに表明していること
-            </h2>
-          </div>
-          {candidate.claims.map((claim, claimIndex) => (
-            <div
-              key={`${claim.label}-${claimIndex}`}
-              className="grid grid-cols-[88px_1fr] gap-3.5 border-t border-mirai-surface-grouped px-4 py-3.5"
-            >
-              <p className="text-[11.5px] font-bold text-primary-deep">
-                {claim.label}
-              </p>
-              <p className="text-[12.5px] leading-[1.85] text-mirai-text-secondary text-pretty">
-                {claim.text}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="px-6 pb-7">
-        <div className="overflow-hidden rounded-xl border border-mirai-border">
-          <div className="bg-mirai-light-gradient px-4 py-3.5">
-            <p className="font-lexend text-[8.5px] font-bold tracking-[0.2em] text-primary">
-              ON THE TAKASHIMA ADMINISTRATION
-            </p>
-            <h2 className="mt-1 text-base font-bold text-mirai-text">
-              高島市政への評価
-            </h2>
-          </div>
-          <div className="border-t border-mirai-surface-grouped px-4 py-3.5">
-            {candidate.takashimaAssessment ? (
-              <PositionBody
-                summary={candidate.takashimaAssessment.summary}
-                updated={candidate.takashimaAssessment.updated}
-                log={candidate.takashimaAssessment.log}
-              />
-            ) : (
-              <p className="text-[12.5px] leading-[1.9] text-mirai-text-muted text-pretty">
-                高島市政について述べている内容は、まだ確認できていません。
-              </p>
-            )}
-            <p className="mt-3 text-[10.5px] leading-[1.7] text-mirai-text-muted text-pretty">
-              高島宗一郎市長は不出馬を表明しています。ここでの評価の対象は4期16年の市政であり、「継承」「転換」といった分類はこちらでは付けていません。
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="px-6 pb-7">
-        <h2 className="text-base font-bold text-mirai-text">分野別の言及</h2>
-        <p className="mt-1.5 text-[11.5px] leading-[1.8] text-mirai-text-muted text-pretty">
-          9分野すべてを同じ並び順で掲載しています。言及が確認できていない分野も「未表明」として省略せずに並べています。
-        </p>
-        <div className="mt-4 flex flex-col gap-2.5">
-          {ISSUES.map((issue) => {
-            const position = candidate.positions[issue.id];
-            return (
-              <div
-                key={issue.id}
-                className="overflow-hidden rounded-[10px] border border-mirai-border"
-              >
-                <div className="flex items-center justify-between gap-3 border-b border-mirai-surface-muted bg-mirai-surface px-3.5 py-3">
-                  <p className="flex items-center gap-2 text-[13px] font-bold text-mirai-text">
-                    <span className="font-lexend text-[10px] font-bold text-primary">
-                      {issue.no}
-                    </span>
-                    {issue.label}
-                  </p>
-                  <StancePill stance={position.stance} />
+      {tab === "profile" && (
+        <>
+          <section className="px-6 py-7">
+            <h2 className="text-base font-bold text-mirai-text">経歴</h2>
+            <dl className="mt-3">
+              {candidate.bio.map((row, rowIndex) => (
+                <div
+                  key={`${row.label}-${rowIndex}`}
+                  className="grid grid-cols-[64px_1fr] gap-3.5 border-b border-mirai-surface-grouped py-[11px] last:border-b-0"
+                >
+                  <dt className="font-lexend text-[11px] font-medium text-mirai-text-muted">
+                    {row.label}
+                  </dt>
+                  <dd className="text-[12.5px] leading-[1.8] text-mirai-text-secondary text-pretty">
+                    {row.text}
+                  </dd>
                 </div>
-                <div className="px-3.5 py-3.5">
-                  <PositionBody
-                    summary={position.summary}
-                    updated={position.updated}
-                    log={position.log}
-                  />
-                  <Link
-                    href={`/election/2026/issues/${issue.id}`}
-                    className="mt-2.5 inline-block text-[10.5px] text-mirai-text-subtle"
-                  >
-                    この分野で比べる
-                  </Link>
-                </div>
+              ))}
+            </dl>
+            <p className="mt-3 text-[10.5px] leading-[1.7] text-mirai-text-muted">
+              出典：{candidate.bioSource}
+            </p>
+          </section>
+
+          <section className="px-6 pb-7">
+            <SnsChannels sns={candidate.sns} candidateName={candidate.name} />
+          </section>
+        </>
+      )}
+
+      {tab === "policies" && (
+        <>
+          <section className="px-6 pb-7">
+            <div className="overflow-hidden rounded-xl border border-mirai-border">
+              <div className="bg-mirai-light-gradient px-4 py-3.5">
+                <p className="font-lexend text-[8.5px] font-bold tracking-[0.2em] text-primary">
+                  STATED SO FAR
+                </p>
+                <h2 className="mt-1 text-base font-bold text-mirai-text">
+                  これまでに表明していること
+                </h2>
               </div>
-            );
-          })}
-        </div>
-      </section>
+              {candidate.claims.map((claim, claimIndex) => (
+                <div
+                  key={`${claim.label}-${claimIndex}`}
+                  className="grid grid-cols-[88px_1fr] gap-3.5 border-t border-mirai-surface-grouped px-4 py-3.5"
+                >
+                  <p className="text-[11.5px] font-bold text-primary-deep">
+                    {claim.label}
+                  </p>
+                  <p className="text-[12.5px] leading-[1.85] text-mirai-text-secondary text-pretty">
+                    {claim.text}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="px-6 pb-7">
+            <div className="overflow-hidden rounded-xl border border-mirai-border">
+              <div className="bg-mirai-light-gradient px-4 py-3.5">
+                <p className="font-lexend text-[8.5px] font-bold tracking-[0.2em] text-primary">
+                  ON THE TAKASHIMA ADMINISTRATION
+                </p>
+                <h2 className="mt-1 text-base font-bold text-mirai-text">
+                  高島市政への評価
+                </h2>
+              </div>
+              <div className="border-t border-mirai-surface-grouped px-4 py-3.5">
+                {candidate.takashimaAssessment ? (
+                  <PositionBody
+                    summary={candidate.takashimaAssessment.summary}
+                    updated={candidate.takashimaAssessment.updated}
+                    log={candidate.takashimaAssessment.log}
+                  />
+                ) : (
+                  <p className="text-[12.5px] leading-[1.9] text-mirai-text-muted text-pretty">
+                    高島市政について述べている内容は、まだ確認できていません。
+                  </p>
+                )}
+                <p className="mt-3 text-[10.5px] leading-[1.7] text-mirai-text-muted text-pretty">
+                  高島宗一郎市長は不出馬を表明しています。ここでの評価の対象は4期16年の市政であり、「継承」「転換」といった分類はこちらでは付けていません。
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section className="px-6 pb-7">
+            <h2 className="text-base font-bold text-mirai-text">
+              分野別の言及
+            </h2>
+            <p className="mt-1.5 text-[11.5px] leading-[1.8] text-mirai-text-muted text-pretty">
+              {ISSUES.length}
+              分野すべてを同じ並び順で掲載しています。言及が確認できていない分野も「未表明」として省略せずに並べています。
+            </p>
+            <div className="mt-4 flex flex-col gap-2.5">
+              {ISSUES.map((issue) => {
+                const position = candidate.positions[issue.id];
+                return (
+                  <div
+                    key={issue.id}
+                    className="overflow-hidden rounded-[10px] border border-mirai-border"
+                  >
+                    <div className="flex items-center justify-between gap-3 border-b border-mirai-surface-muted bg-mirai-surface px-3.5 py-3">
+                      <p className="flex items-center gap-2 text-[13px] font-bold text-mirai-text">
+                        <span className="font-lexend text-[10px] font-bold text-primary">
+                          {issue.no}
+                        </span>
+                        {issue.label}
+                      </p>
+                      <StancePill stance={position.stance} />
+                    </div>
+                    <div className="px-3.5 py-3.5">
+                      <PositionBody
+                        summary={position.summary}
+                        updated={position.updated}
+                        log={position.log}
+                      />
+                      <Link
+                        href={`/election/2026/issues/${issue.id}`}
+                        className="mt-2.5 inline-block text-[10.5px] text-mirai-text-subtle"
+                      >
+                        この分野で比べる
+                      </Link>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        </>
+      )}
 
       <section className="flex flex-col gap-2.5 px-6 pb-10 sm:flex-row">
         <Button asChild variant="outline" className="h-11 flex-1">

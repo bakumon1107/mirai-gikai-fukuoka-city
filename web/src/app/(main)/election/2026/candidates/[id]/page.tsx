@@ -11,6 +11,7 @@ import { getCandidateNoun } from "@/features/election/shared/utils/election-phas
 
 type Props = {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ tab?: string }>;
 };
 
 /**
@@ -23,7 +24,9 @@ export function generateStaticParams() {
   return CANDIDATES.map((candidate) => ({ id: candidate.id }));
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: Pick<Props, "params">): Promise<Metadata> {
   const { id } = await params;
   const data = getCandidatePageData(id);
   if (!data) {
@@ -38,9 +41,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function CandidateDetailPage({ params }: Props) {
-  const { id } = await params;
-  const data = getCandidatePageData(id);
+export default async function CandidateDetailPage({
+  params,
+  searchParams,
+}: Props) {
+  const [{ id }, { tab }] = await Promise.all([params, searchParams]);
+  const data = getCandidatePageData(id, tab);
   if (!data) {
     notFound();
   }
@@ -51,6 +57,7 @@ export default async function CandidateDetailPage({ params }: Props) {
         candidate={data.candidate}
         index={data.index}
         phase={data.phase}
+        tab={data.tab}
       />
     </Container>
   );

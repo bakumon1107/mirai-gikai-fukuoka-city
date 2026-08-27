@@ -282,6 +282,58 @@
     font-family: var(--font-lexend-giga), system-ui, sans-serif;
   }
 
+  /*
+   * 発信チャンネルの媒体色。カード上端の3pxラインとアイコンタイルに使う。
+   * 各社の公式ロゴは商標のため、アイコンは文字ベースにしている。
+   */
+  .bg-sns-website {
+    background-image: linear-gradient(150deg, #8d7ec4, #6b5fa8);
+  }
+
+  .bg-sns-x {
+    background-image: linear-gradient(150deg, #3a3a3f, #18181b);
+  }
+
+  .bg-sns-youtube {
+    background-image: linear-gradient(150deg, #f0464c, #c9272a);
+  }
+
+  .bg-sns-instagram {
+    background-image: linear-gradient(150deg, #c9457f, #8b4bb5);
+  }
+
+  .bg-sns-facebook {
+    background-image: linear-gradient(150deg, #4a7fd4, #2d5fb0);
+  }
+
+  .bg-sns-note {
+    background-image: linear-gradient(150deg, #3ec1b3, #0f8472);
+  }
+
+  .border-sns-website {
+    border-top-color: #6b5fa8;
+  }
+
+  .border-sns-x {
+    border-top-color: #18181b;
+  }
+
+  .border-sns-youtube {
+    border-top-color: #c9272a;
+  }
+
+  .border-sns-instagram {
+    border-top-color: #8b4bb5;
+  }
+
+  .border-sns-facebook {
+    border-top-color: #2d5fb0;
+  }
+
+  .border-sns-note {
+    border-top-color: #0f8472;
+  }
+
   /* 選挙特設ページの影 */
   .shadow-candidate-photo {
     box-shadow: 0 4px 14px rgba(31, 41, 55, 0.16);

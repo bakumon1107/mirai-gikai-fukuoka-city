@@ -17,7 +17,7 @@ export function getStanceClass(stance: Stance): string {
   return STANCE_CLASS[stance];
 }
 
-/** 9分野のうち、何らかの言及が確認できている分野の数 */
+/** 何らかの言及が確認できている分野の数 */
 export function countStatedIssues(candidate: Candidate): number {
   return Object.values(candidate.positions).filter(
     (position) => position.stance !== "未表明"

@@ -31,6 +31,7 @@ const buildCandidate = (stances: Stance[]): Candidate => ({
   claims: [],
   takashimaAssessment: null,
   links: [],
+  sns: [],
   positions: buildPositions(stances),
 });
 
@@ -71,13 +72,15 @@ describe("countStatedIssues", () => {
     expect(countStatedIssues(candidate)).toBe(3);
   });
 
-  it("全分野に言及があれば9", () => {
-    expect(countStatedIssues(buildCandidate(ISSUES.map(() => "推進")))).toBe(9);
+  it("全分野に言及があれば分野数と一致する", () => {
+    expect(countStatedIssues(buildCandidate(ISSUES.map(() => "推進")))).toBe(
+      ISSUES.length
+    );
   });
 });
 
 describe("立候補予定者データの整合性", () => {
-  it("全員が9分野すべてのキーを持つ（分野を省略しない）", () => {
+  it("全員が全分野のキーを持つ（分野を省略しない）", () => {
     for (const candidate of CANDIDATES) {
       for (const issue of ISSUES) {
         expect(candidate.positions[issue.id]).toBeDefined();
