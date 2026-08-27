@@ -54,9 +54,11 @@ export function CandidateDetailView({ candidate, index, phase }: Props) {
             {candidate.name}
           </h1>
           <div className="mt-2.5 flex flex-wrap gap-1.5">
-            <span className="rounded-[5px] bg-mirai-surface-grouped px-2 py-1 text-[11.5px] font-medium text-mirai-text-secondary">
-              {candidate.age}歳
-            </span>
+            {candidate.age !== null && (
+              <span className="rounded-[5px] bg-mirai-surface-grouped px-2 py-1 text-[11.5px] font-medium text-mirai-text-secondary">
+                {candidate.age}歳
+              </span>
+            )}
             <span className="rounded-[5px] bg-mirai-surface-grouped px-2 py-1 text-[11.5px] font-medium text-mirai-text-secondary">
               {candidate.title}
             </span>

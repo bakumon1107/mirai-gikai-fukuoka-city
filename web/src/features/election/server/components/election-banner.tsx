@@ -47,7 +47,8 @@ export function ElectionBanner() {
             {noun}と争点
           </span>
           <span className="mt-2.5 block max-w-[400px] text-xs leading-[1.85] text-mirai-text-secondary text-pretty">
-            出馬の意向を示した{CANDIDATES.length}
+            {phase === "before-kokuji" ? "出馬の意向を示した" : "立候補した"}
+            {CANDIDATES.length}
             人の公表内容を、9つの分野で同じ物差しに並べています。評価や推薦は行いません。
           </span>
 

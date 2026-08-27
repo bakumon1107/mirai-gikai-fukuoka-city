@@ -2,6 +2,11 @@ import type { Candidate } from "../types";
 
 const GO2SENKYO_NISHIWAKI = "https://go2senkyo.com/seijika/200151";
 const NISHIWAKI_PROFILE_SOURCE = "選挙ドットコム 政治家データベース";
+const ARAMAKI_SITE_URL = "https://www.lgbt-connect.com/";
+const ARAMAKI_SITE_SOURCE = "本人サイト（OVER THE RAINBOW）";
+// 本人サイトには市長選出馬の記載がないため、出馬表明・公約は陣営の公表資料が出典。
+// TODO: 党公式・本人SNSで出馬表明のURLが確認でき次第、log の url に追加する
+const ARAMAKI_SOURCE = "陣営の公表プロフィール（2026年8月）";
 
 /**
  * 立候補予定者データ。
@@ -288,6 +293,127 @@ export const CANDIDATES: Candidate[] = [
             url: GO2SENKYO_NISHIWAKI,
           },
         ],
+      },
+    },
+  },
+  {
+    id: "aramaki-akira",
+    no: "03",
+    name: "荒牧 明楽",
+    kana: "あらまき あきら",
+    // 本人サイトに「1985年生まれ」とあるのみで月日が不明なため、
+    // 投開票日時点で40歳か41歳か確定できない。推測で埋めず生年を経歴に載せる
+    age: null,
+    title: "社会起業家・nTech講師",
+    party: "0=∞=1党（こころ党）福岡支部",
+    lead: "「心のインフラ尊厳City福岡」を掲げ、孤独や不安を解消する「心のインフラ」を福岡から示すとしている。",
+    bioSource: `${ARAMAKI_SITE_SOURCE}／${ARAMAKI_SOURCE}`,
+    bio: [
+      { label: "1985", text: "生まれ。福岡県出身" },
+      { label: "学歴", text: "佐賀大学経済学部卒業" },
+      {
+        label: "職歴",
+        text: "株式会社リクルートに入社。広告業界・医療業界を経る",
+      },
+      { label: "2018", text: "社会起業家として独立" },
+      {
+        label: "現在",
+        text: "「OVER THE RAINBOW」代表、NPO法人カラフルチェンジラボ研修研究グループリーダー、九州レインボープライド実行委員、nOU（nTech Online University）学長などを務めるとしている",
+      },
+      {
+        label: "活動",
+        text: "nTech講師のほか、福岡県講師団、NPO法人理事、久留米大学医学部非常勤講師などに携わる。講演は1000本以上、相談件数は1万人以上としている",
+      },
+      { label: "著書", text: "『トランスジェンダーの私が悟るまで』" },
+      { label: "2026", text: "福岡市長選への出馬を表明" },
+    ],
+    claims: [
+      {
+        label: "基本姿勢",
+        text: "「心のインフラ尊厳City福岡」を掲げている。",
+      },
+      {
+        label: "背景",
+        text: "トランスジェンダー当事者として差別や分断の根本原因と向き合い、認識技術nTechに出会ったとしている。",
+      },
+      {
+        label: "目指すもの",
+        text: "誰もが自らの存在理由を確信し、孤独や不安を解消できる「心のインフラ」を福岡から世界へ示すとしている。",
+      },
+      {
+        label: "モットー",
+        text: "本人サイトでは「真のダイバーシティ＆インクルージョンを実現したい！」を掲げ、「明るく楽しく自分らしく」をモットーとしている。",
+      },
+    ],
+    takashimaAssessment: null,
+    links: [
+      {
+        label: "本人サイト（OVER THE RAINBOW）",
+        url: ARAMAKI_SITE_URL,
+      },
+    ],
+    positions: {
+      kosodate: {
+        stance: "未表明",
+        summary: "この分野についての具体的な言及はまだ確認できていません。",
+        updated: "",
+        log: [],
+      },
+      fukushi: {
+        stance: "表明済み",
+        summary:
+          "誰もが自らの存在理由を確信し、孤独や不安を解消できる「心のインフラ」を福岡から示すとしている。個別の施策や予算の裏づけはまだ確認できていません。",
+        updated: "2026年8月",
+        log: [
+          {
+            date: "2026-08",
+            place: "公表資料",
+            source: ARAMAKI_SOURCE,
+            text: "トランスジェンダー当事者として差別や分断の根本原因と向き合い、認識技術nTechに出会う。誰もが自らの存在理由を確信し、孤独や不安を解消できる「心のインフラ」を福岡から世界へ示す、としている。",
+          },
+        ],
+      },
+      kotsu: {
+        stance: "未表明",
+        summary: "この分野についての具体的な言及はまだ確認できていません。",
+        updated: "",
+        log: [],
+      },
+      saikaihatsu: {
+        stance: "未表明",
+        summary: "この分野についての具体的な言及はまだ確認できていません。",
+        updated: "",
+        log: [],
+      },
+      bosai: {
+        stance: "未表明",
+        summary: "この分野についての具体的な言及はまだ確認できていません。",
+        updated: "",
+        log: [],
+      },
+      keizai: {
+        stance: "未表明",
+        summary: "この分野についての具体的な言及はまだ確認できていません。",
+        updated: "",
+        log: [],
+      },
+      kanko: {
+        stance: "未表明",
+        summary: "この分野についての具体的な言及はまだ確認できていません。",
+        updated: "",
+        log: [],
+      },
+      dx: {
+        stance: "未表明",
+        summary: "この分野についての具体的な言及はまだ確認できていません。",
+        updated: "",
+        log: [],
+      },
+      zaisei: {
+        stance: "未表明",
+        summary: "この分野についての具体的な言及はまだ確認できていません。",
+        updated: "",
+        log: [],
       },
     },
   },

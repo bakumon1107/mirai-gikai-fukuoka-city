@@ -127,12 +127,14 @@ export function IssueCompareView({ issue, phase, questionsSlug }: Props) {
           );
         })}
 
-        <div className="rounded-[10px] border-[1.5px] border-dashed border-mirai-border bg-mirai-surface px-4.5 py-5 text-center">
-          <p className="text-[11.5px] leading-[1.9] text-mirai-text-muted text-pretty">
-            この分野は、出馬表明があった人から順に行が増えていきます。告示は
-            {ELECTION_SCHEDULE.kokujiLabel}です。
-          </p>
-        </div>
+        {phase === "before-kokuji" && (
+          <div className="rounded-[10px] border-[1.5px] border-dashed border-mirai-border bg-mirai-surface px-4.5 py-5 text-center">
+            <p className="text-[11.5px] leading-[1.9] text-mirai-text-muted text-pretty">
+              この分野は、出馬表明があった人から順に行が増えていきます。告示は
+              {ELECTION_SCHEDULE.kokujiLabel}です。
+            </p>
+          </div>
+        )}
       </section>
 
       <section className="px-6 pb-8">

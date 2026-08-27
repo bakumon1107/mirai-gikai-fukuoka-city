@@ -10,10 +10,17 @@ import type { ElectionSchedule } from "../types";
  * 全区で確実に開設される区役所のみを掲載している。
  * 施設の追加公表があった時点で earlyVotingPlaces に追記し、
  * earlyVotingNote を空文字にすること。
+ *
+ * voteClosesAt の 20:00 は公職選挙法40条の標準的な投票終了時刻であって、
+ * 市選管が投票所ごとの時刻を公表したものではない。投票所によっては
+ * 繰り上げ閉鎖がありうるため、カウントダウンは「目安」として扱い、
+ * 投票所ごとの時刻が公表されたら voteClosesNote を空にすること。
  */
 export const ELECTION_SCHEDULE: ElectionSchedule = {
   kokujiAt: "2026-11-01T00:00:00+09:00",
   voteClosesAt: "2026-11-15T20:00:00+09:00",
+  voteClosesNote:
+    "カウントダウンは投票終了の標準時刻（午後8時）を目安にしています。投票所ごとの時刻は入場整理券でご確認ください。",
   kokujiLabel: "11月1日（日）",
   voteDateLabel: "11月15日（日）",
   earlyVotingPeriod: "11月2日（月）〜11月14日（土）",

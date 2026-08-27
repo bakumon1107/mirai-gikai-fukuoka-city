@@ -93,8 +93,8 @@ export type Candidate = {
   no: string;
   name: string;
   kana: string;
-  /** 投開票日時点の年齢 */
-  age: number;
+  /** 投開票日時点の年齢。公表が確認できない場合は null（推測で埋めない） */
+  age: number | null;
   title: string;
   party: string;
   /** 一覧カードのリード文 */
@@ -118,8 +118,13 @@ export type EarlyVotingPlace = {
 export type ElectionSchedule = {
   /** 告示日（日本時間の 00:00） */
   kokujiAt: string;
-  /** 投票締切日時。カウントダウンの基準 */
+  /**
+   * カウントダウンの基準となる投票終了日時。
+   * 公職選挙法40条の標準時刻であり、投票所ごとの公表値ではない。
+   */
   voteClosesAt: string;
+  /** カウントダウンが目安である旨の注記。投票所ごとの時刻が公表されたら空にする */
+  voteClosesNote: string;
   kokujiLabel: string;
   voteDateLabel: string;
   earlyVotingPeriod: string;

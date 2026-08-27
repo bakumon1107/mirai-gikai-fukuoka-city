@@ -32,12 +32,16 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
     new Date(),
     ELECTION_SCHEDULE.voteClosesAt
   ).days;
+  // 告示で立候補の届出が締め切られるため、以降は「表明待ち」の枠を出さない
+  const isBeforeKokuji = phase === "before-kokuji";
   // 表明待ちスロットは、ヒーローの枠が合計4つになるよう候補者数に応じて増減させる
-  const pendingSlotIds = Array.from(
-    { length: Math.max(0, HERO_SLOT_COUNT - CANDIDATES.length) },
-    (_, offset) =>
-      `slot-${String(CANDIDATES.length + offset + 1).padStart(2, "0")}`
-  );
+  const pendingSlotIds = isBeforeKokuji
+    ? Array.from(
+        { length: Math.max(0, HERO_SLOT_COUNT - CANDIDATES.length) },
+        (_, offset) =>
+          `slot-${String(CANDIDATES.length + offset + 1).padStart(2, "0")}`
+      )
+    : [];
 
   return (
     <div className="overflow-hidden rounded-2xl bg-card shadow-lg">
@@ -121,7 +125,7 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
             </div>
             <div>
               <p className="text-[10px] font-bold tracking-[0.08em] text-primary-deep">
-                出馬表明
+                {isBeforeKokuji ? "出馬表明" : "立候補届出"}
               </p>
               <p className="mt-0.5 text-[15px] font-bold leading-tight text-mirai-text">
                 {CANDIDATES.length}人{" "}
@@ -130,6 +134,11 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
                 </span>
               </p>
             </div>
+            {ELECTION_SCHEDULE.voteClosesNote && (
+              <p className="w-full text-[10px] leading-[1.7] text-mirai-text-muted">
+                {ELECTION_SCHEDULE.voteClosesNote}
+              </p>
+            )}
           </div>
         </div>
       </section>
@@ -144,8 +153,12 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
       <section className="px-6 pb-2 pt-8">
         <SectionHeading
           eyebrow="01 — CANDIDATES"
-          title="出馬を表明した人"
-          description={`${orderLabel}・敬称略。新たな表明があり次第、随時追加します。`}
+          title={isBeforeKokuji ? "出馬を表明した人" : "立候補した人"}
+          description={
+            isBeforeKokuji
+              ? `${orderLabel}・敬称略。新たな表明があり次第、随時追加します。`
+              : `${orderLabel}・敬称略。告示で立候補の届出が締め切られています。`
+          }
         />
       </section>
 
@@ -171,9 +184,11 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
                   {candidate.name}
                 </p>
                 <div className="mt-1.5 flex flex-wrap gap-1.5">
-                  <span className="rounded-[5px] bg-mirai-surface-grouped px-1.5 py-0.5 text-[11px] font-medium text-mirai-text-secondary">
-                    {candidate.age}歳
-                  </span>
+                  {candidate.age !== null && (
+                    <span className="rounded-[5px] bg-mirai-surface-grouped px-1.5 py-0.5 text-[11px] font-medium text-mirai-text-secondary">
+                      {candidate.age}歳
+                    </span>
+                  )}
                   <span className="rounded-[5px] bg-mirai-surface-grouped px-1.5 py-0.5 text-[11px] font-medium text-mirai-text-secondary">
                     {candidate.title}
                   </span>
@@ -198,15 +213,17 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
           </Link>
         ))}
 
-        <div className="rounded-xl border-[1.5px] border-dashed border-mirai-border bg-mirai-surface px-4.5 py-5 text-center">
-          <p className="text-[13px] font-bold text-mirai-text-secondary">
-            ほかの出馬表明を待っています
-          </p>
-          <p className="mx-auto mt-2 max-w-[400px] text-[11.5px] leading-[1.9] text-mirai-text-muted text-pretty">
-            告示は{ELECTION_SCHEDULE.kokujiLabel}
-            。新たに出馬を表明した人が確認できた時点で、同じ様式のカードと分野別の整理を追加します。現職の高島宗一郎市長は不出馬を表明しています。
-          </p>
-        </div>
+        {isBeforeKokuji && (
+          <div className="rounded-xl border-[1.5px] border-dashed border-mirai-border bg-mirai-surface px-4.5 py-5 text-center">
+            <p className="text-[13px] font-bold text-mirai-text-secondary">
+              ほかの出馬表明を待っています
+            </p>
+            <p className="mx-auto mt-2 max-w-[400px] text-[11.5px] leading-[1.9] text-mirai-text-muted text-pretty">
+              告示は{ELECTION_SCHEDULE.kokujiLabel}
+              。新たに出馬を表明した人が確認できた時点で、同じ様式のカードと分野別の整理を追加します。現職の高島宗一郎市長は不出馬を表明しています。
+            </p>
+          </div>
+        )}
       </section>
 
       <section className="px-6 pb-8">
