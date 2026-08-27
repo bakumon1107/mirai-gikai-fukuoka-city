@@ -298,6 +298,10 @@
     background-image: linear-gradient(150deg, #f0464c, #c9272a);
   }
 
+  .bg-sns-tiktok {
+    background-image: linear-gradient(150deg, #25f4ee, #fe2c55);
+  }
+
   .bg-sns-instagram {
     background-image: linear-gradient(150deg, #c9457f, #8b4bb5);
   }
@@ -320,6 +324,10 @@
 
   .border-sns-youtube {
     border-top-color: #c9272a;
+  }
+
+  .border-sns-tiktok {
+    border-top-color: #fe2c55;
   }
 
   .border-sns-instagram {

@@ -99,6 +99,7 @@ export type SnsKind =
   | "公式サイト"
   | "X"
   | "YouTube"
+  | "TikTok"
   | "Instagram"
   | "Facebook"
   | "note";

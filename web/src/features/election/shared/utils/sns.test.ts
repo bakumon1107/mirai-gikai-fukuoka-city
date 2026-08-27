@@ -7,6 +7,7 @@ const ALL_KINDS: SnsKind[] = [
   "公式サイト",
   "X",
   "YouTube",
+  "TikTok",
   "Instagram",
   "Facebook",
   "note",
@@ -43,6 +44,7 @@ describe("getConfirmedChannels / getUnconfirmedKinds", () => {
     channel("公式サイト", "https://example.com"),
     channel("X", ""),
     channel("YouTube", "https://youtube.com/channel/UC1"),
+    channel("TikTok", ""),
     channel("Instagram", ""),
     channel("Facebook", ""),
     channel("note", ""),
@@ -58,6 +60,7 @@ describe("getConfirmedChannels / getUnconfirmedKinds", () => {
   it("URLが空のものを未確認として返す", () => {
     expect(getUnconfirmedKinds(sns)).toEqual([
       "X",
+      "TikTok",
       "Instagram",
       "Facebook",
       "note",

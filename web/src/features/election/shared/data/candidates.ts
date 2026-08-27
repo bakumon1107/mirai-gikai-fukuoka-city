@@ -3,7 +3,7 @@ import type { Candidate } from "../types";
 const GO2SENKYO_NISHIWAKI = "https://go2senkyo.com/seijika/200151";
 const NISHIWAKI_PROFILE_SOURCE = "選挙ドットコム 政治家データベース";
 const ARAMAKI_SITE_URL = "https://www.lgbt-connect.com/";
-const ARAMAKI_SITE_SOURCE = "本人サイト（OVER THE RAINBOW）";
+const ARAMAKI_SITE_SOURCE = "本人サイト（OVER THE RAINBOW）・本人Instagram";
 // 本人サイトには市長選出馬の記載がないため、出馬表明・公約は陣営の公表資料が出典。
 // TODO: 党公式・本人SNSで出馬表明のURLが確認でき次第、log の url に追加する
 const ARAMAKI_SOURCE = "陣営の公表プロフィール（2026年8月）";
@@ -14,7 +14,7 @@ const ARAMAKI_SOURCE = "陣営の公表プロフィール（2026年8月）";
  * 並び順は出馬表明順で固定し、告示後は届出順に差し替える。
  * ランダム化やソート機能は設けない（中立性の担保）。
  *
- * 全員が9分野すべてのキーを持つこと。情報がない分野は「未表明」とし、
+ * 全員が ISSUES のすべてのキーを持つこと。情報がない分野は「未表明」とし、
  * 分野そのものを省略しない。
  *
  * ## 更新のしかた
@@ -85,6 +85,7 @@ export const CANDIDATES: Candidate[] = [
         handle: "渡辺久也(わたなべひさや)のYouTubeチャンネル",
         url: "https://www.youtube.com/channel/UCNo58Kr2Rwt1tsSTsWzgnJA",
       },
+      { kind: "TikTok", handle: "", url: "" },
       {
         kind: "Instagram",
         handle: "@watanabehisaya.fukuoka",
@@ -230,11 +231,15 @@ export const CANDIDATES: Candidate[] = [
         url: GO2SENKYO_NISHIWAKI,
       },
     ],
-    // Xアカウントが存在するとの情報はあるが本人のものと確認できていないため未掲載
     sns: [
       { kind: "公式サイト", handle: "", url: "" },
-      { kind: "X", handle: "", url: "" },
+      {
+        kind: "X",
+        handle: "@nishiwaki_hk",
+        url: "https://x.com/nishiwaki_hk",
+      },
       { kind: "YouTube", handle: "", url: "" },
+      { kind: "TikTok", handle: "", url: "" },
       { kind: "Instagram", handle: "", url: "" },
       { kind: "Facebook", handle: "", url: "" },
       { kind: "note", handle: "", url: "" },
@@ -352,7 +357,7 @@ export const CANDIDATES: Candidate[] = [
     lead: "「心のインフラ尊厳City福岡」を掲げ、孤独や不安を解消する「心のインフラ」を福岡から示すとしている。",
     bioSource: `${ARAMAKI_SITE_SOURCE}／${ARAMAKI_SOURCE}`,
     bio: [
-      { label: "1985", text: "生まれ。福岡県出身" },
+      { label: "1985", text: "生まれ。柳川市出身、福岡市在住" },
       { label: "学歴", text: "佐賀大学経済学部卒業" },
       {
         label: "職歴",
@@ -403,8 +408,21 @@ export const CANDIDATES: Candidate[] = [
       },
       { kind: "X", handle: "", url: "" },
       { kind: "YouTube", handle: "", url: "" },
-      { kind: "Instagram", handle: "", url: "" },
-      { kind: "Facebook", handle: "", url: "" },
+      {
+        kind: "TikTok",
+        handle: "@aramaki.fukuoka",
+        url: "https://www.tiktok.com/@aramaki.fukuoka",
+      },
+      {
+        kind: "Instagram",
+        handle: "@akira_555",
+        url: "https://www.instagram.com/akira_555/",
+      },
+      {
+        kind: "Facebook",
+        handle: "akira.aramaki.5",
+        url: "https://www.facebook.com/akira.aramaki.5/",
+      },
       { kind: "note", handle: "", url: "" },
     ],
     positions: {

@@ -28,6 +28,12 @@ const SNS_META: Record<SnsKind, SnsMeta> = {
     tileClass: "bg-sns-youtube",
     borderClass: "border-sns-youtube",
   },
+  TikTok: {
+    icon: "♪",
+    description: "短い動画",
+    tileClass: "bg-sns-tiktok",
+    borderClass: "border-sns-tiktok",
+  },
   Instagram: {
     icon: "IG",
     description: "活動の写真",
