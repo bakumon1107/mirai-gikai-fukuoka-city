@@ -5,6 +5,7 @@ import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { cn } from "@/lib/utils";
 import { CandidatePhoto } from "../../client/components/candidate-photo";
 import { DisclaimerBar } from "../../client/components/disclaimer-bar";
+import { PositionBody } from "../../client/components/position-body";
 import { StancePill } from "../../client/components/stance-pill";
 import { CANDIDATES } from "../../shared/data/candidates";
 import { ISSUES } from "../../shared/data/issues";
@@ -106,33 +107,14 @@ export function IssueCompareView({ issue, phase, questionsSlug }: Props) {
                 </div>
                 <StancePill stance={position.stance} />
               </div>
-              <p className="mt-3 text-[12.5px] leading-[1.9] text-mirai-text-secondary text-pretty">
-                {position.text}
-              </p>
-              <div className="mt-2.5 flex flex-wrap items-center justify-between gap-2">
-                {position.source ? (
-                  <span className="flex flex-wrap items-center gap-2">
-                    <span className="text-[10px] font-bold text-mirai-text-muted">
-                      出典
-                    </span>
-                    {position.sourceUrl ? (
-                      <a
-                        href={position.sourceUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-[10.5px]"
-                      >
-                        {position.source}
-                      </a>
-                    ) : (
-                      <span className="text-[10.5px] text-mirai-text-subtle">
-                        {position.source}
-                      </span>
-                    )}
-                  </span>
-                ) : (
-                  <span />
-                )}
+              <div className="mt-3">
+                <PositionBody
+                  summary={position.summary}
+                  updated={position.updated}
+                  log={position.log}
+                />
+              </div>
+              <div className="mt-2.5 flex justify-end">
                 <Link
                   href={`/election/2026/candidates/${candidate.id}`}
                   className="flex items-center gap-1 text-[10.5px] font-bold text-primary-accent"

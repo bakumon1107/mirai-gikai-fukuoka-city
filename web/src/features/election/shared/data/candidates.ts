@@ -1,5 +1,8 @@
 import type { Candidate } from "../types";
 
+const GO2SENKYO_NISHIWAKI = "https://go2senkyo.com/seijika/200151";
+const NISHIWAKI_PROFILE_SOURCE = "選挙ドットコム 政治家データベース";
+
 /**
  * 立候補予定者データ。
  *
@@ -7,8 +10,13 @@ import type { Candidate } from "../types";
  * ランダム化やソート機能は設けない（中立性の担保）。
  *
  * 全員が9分野すべてのキーを持つこと。情報がない分野は「未表明」とし、
- * 分野そのものを省略しない。出典が確認できない項目には source を空文字にし、
- * ダミーのリンクは置かない。
+ * 分野そのものを省略しない。
+ *
+ * ## 更新のしかた
+ * 新しい発言が出たら、その分野の `log` に**追記**し、`summary` は
+ * 追記ではなく**書き換える**（`updated` も同時に更新）。こうすると
+ * カードの高さが伸びず比較が保たれ、要約の根拠がログに残るので
+ * 後から検証できる。立場が変わった場合も変更前の発言がログに残る。
  */
 export const CANDIDATES: Candidate[] = [
   {
@@ -45,6 +53,19 @@ export const CANDIDATES: Candidate[] = [
         text: "現在の市政はトップダウンで政策が進んでいるとし、オープンな形で市政を進めていきたいとしている。",
       },
     ],
+    takashimaAssessment: {
+      summary:
+        "現在の市政はトップダウンで政策が進んでいるとし、オープンな形で市政を進めていきたいとしている。個別の施策への評価は述べていない。",
+      updated: "2026年8月",
+      log: [
+        {
+          date: "2026-08",
+          place: "報道",
+          source: "KBC九州朝日放送",
+          text: "今の市政はトップダウンで政策が進んでいるとし、オープンな形で市政を進めていきたいとしている。",
+        },
+      ],
+    },
     links: [
       {
         label: "関連報道を検索",
@@ -54,48 +75,79 @@ export const CANDIDATES: Candidate[] = [
     positions: {
       kosodate: {
         stance: "未表明",
-        text: "この分野についての具体的な言及はまだ確認できていません。記者会見以降に追記します。",
-        source: "",
+        summary:
+          "この分野についての具体的な言及はまだ確認できていません。記者会見以降に追記します。",
+        updated: "",
+        log: [],
       },
       fukushi: {
         stance: "未表明",
-        text: "個別の施策は未表明です。「誰一人取り残さない」という基本姿勢のみが示されています。",
-        source: "",
+        summary:
+          "個別の施策は未表明です。「誰一人取り残さない」という基本姿勢のみが示されています。",
+        updated: "",
+        log: [],
       },
       kotsu: {
         stance: "未表明",
-        text: "この分野についての具体的な言及はまだ確認できていません。記者会見以降に追記します。",
-        source: "",
+        summary:
+          "この分野についての具体的な言及はまだ確認できていません。記者会見以降に追記します。",
+        updated: "",
+        log: [],
       },
       saikaihatsu: {
         stance: "未表明",
-        text: "個別の施策は未表明です。現市政の進め方について「トップダウン」との指摘が示されています。",
-        source: "",
+        summary:
+          "個別の施策は未表明です。市政の進め方について「トップダウン」との指摘が示されています。",
+        updated: "",
+        log: [],
       },
       bosai: {
         stance: "未表明",
-        text: "この分野についての具体的な言及はまだ確認できていません。記者会見以降に追記します。",
-        source: "",
+        summary:
+          "この分野についての具体的な言及はまだ確認できていません。記者会見以降に追記します。",
+        updated: "",
+        log: [],
       },
       keizai: {
         stance: "未表明",
-        text: "この分野についての具体的な言及はまだ確認できていません。記者会見以降に追記します。",
-        source: "",
+        summary:
+          "この分野についての具体的な言及はまだ確認できていません。記者会見以降に追記します。",
+        updated: "",
+        log: [],
       },
       kanko: {
         stance: "未表明",
-        text: "この分野についての具体的な言及はまだ確認できていません。記者会見以降に追記します。",
-        source: "",
+        summary:
+          "この分野についての具体的な言及はまだ確認できていません。記者会見以降に追記します。",
+        updated: "",
+        log: [],
       },
       dx: {
         stance: "表明済み",
-        text: "現在の市政はトップダウンで政策が進んでいるとし、オープンな形で市政を進めていきたいとしている。",
-        source: "報道（KBC九州朝日放送 2026年8月）",
+        summary:
+          "現在の市政はトップダウンで政策が進んでいるとし、オープンな形で市政を進めていきたいとしている。あわせて、行政の単位そのものを見直す道州制を打ち出したいとしている。",
+        updated: "2026年8月",
+        log: [
+          {
+            date: "2026-08",
+            place: "報道",
+            source: "KBC九州朝日放送",
+            text: "今の市政はトップダウンで政策が進んでいるとし、オープンな形で市政を進めていきたいとしている。",
+          },
+          {
+            date: "2026-08",
+            place: "報道",
+            source: "RKB毎日放送",
+            text: "行政の単位から見直す道州制を打ち出したいとしている。",
+          },
+        ],
       },
       zaisei: {
-        stance: "表明済み",
-        text: "行政の単位そのものを見直す道州制を打ち出したいとしている。",
-        source: "報道（RKB毎日放送 2026年8月）",
+        stance: "未表明",
+        summary:
+          "市の予算や税制についての具体的な言及はまだ確認できていません。記者会見以降に追記します。",
+        updated: "",
+        log: [],
       },
     },
   },
@@ -139,61 +191,103 @@ export const CANDIDATES: Candidate[] = [
         text: "福岡市の財政・交通・子育て・税制・都市政策などについて、調査・発信を続けてきたとしている。",
       },
     ],
+    takashimaAssessment: null,
     links: [
       {
         label: "プロフィール（選挙ドットコム）",
-        url: "https://go2senkyo.com/seijika/200151",
+        url: GO2SENKYO_NISHIWAKI,
       },
     ],
     positions: {
       kosodate: {
         stance: "未表明",
-        text: "子育てを調査・発信のテーマの一つに挙げていますが、個別の施策はまだ確認できていません。",
-        source: "選挙ドットコム 政治家データベース（2026年8月時点）",
-        sourceUrl: "https://go2senkyo.com/seijika/200151",
+        summary:
+          "子育てを調査・発信のテーマの一つに挙げていますが、個別の施策はまだ確認できていません。",
+        updated: "2026年8月",
+        log: [
+          {
+            date: "2026-08",
+            place: "プロフィール",
+            source: NISHIWAKI_PROFILE_SOURCE,
+            text: "福岡市の財政・交通・子育て・税制・都市政策などについて調査・発信していると記載されている。",
+            url: GO2SENKYO_NISHIWAKI,
+          },
+        ],
       },
       fukushi: {
         stance: "未表明",
-        text: "この分野についての具体的な言及はまだ確認できていません。",
-        source: "",
+        summary: "この分野についての具体的な言及はまだ確認できていません。",
+        updated: "",
+        log: [],
       },
       kotsu: {
         stance: "未表明",
-        text: "交通を調査・発信のテーマの一つに挙げていますが、個別の施策はまだ確認できていません。",
-        source: "選挙ドットコム 政治家データベース（2026年8月時点）",
-        sourceUrl: "https://go2senkyo.com/seijika/200151",
+        summary:
+          "交通を調査・発信のテーマの一つに挙げていますが、個別の施策はまだ確認できていません。",
+        updated: "2026年8月",
+        log: [
+          {
+            date: "2026-08",
+            place: "プロフィール",
+            source: NISHIWAKI_PROFILE_SOURCE,
+            text: "福岡市の財政・交通・子育て・税制・都市政策などについて調査・発信していると記載されている。",
+            url: GO2SENKYO_NISHIWAKI,
+          },
+        ],
       },
       saikaihatsu: {
         stance: "未表明",
-        text: "都市政策を調査・発信のテーマの一つに挙げていますが、再開発についての個別の施策はまだ確認できていません。",
-        source: "選挙ドットコム 政治家データベース（2026年8月時点）",
-        sourceUrl: "https://go2senkyo.com/seijika/200151",
+        summary:
+          "都市政策を調査・発信のテーマの一つに挙げていますが、再開発についての個別の施策はまだ確認できていません。",
+        updated: "2026年8月",
+        log: [
+          {
+            date: "2026-08",
+            place: "プロフィール",
+            source: NISHIWAKI_PROFILE_SOURCE,
+            text: "福岡市の財政・交通・子育て・税制・都市政策などについて調査・発信していると記載されている。",
+            url: GO2SENKYO_NISHIWAKI,
+          },
+        ],
       },
       bosai: {
         stance: "未表明",
-        text: "この分野についての具体的な言及はまだ確認できていません。",
-        source: "",
+        summary: "この分野についての具体的な言及はまだ確認できていません。",
+        updated: "",
+        log: [],
       },
       keizai: {
         stance: "未表明",
-        text: "この分野についての具体的な言及はまだ確認できていません。",
-        source: "",
+        summary: "この分野についての具体的な言及はまだ確認できていません。",
+        updated: "",
+        log: [],
       },
       kanko: {
         stance: "未表明",
-        text: "この分野についての具体的な言及はまだ確認できていません。",
-        source: "",
+        summary: "この分野についての具体的な言及はまだ確認できていません。",
+        updated: "",
+        log: [],
       },
       dx: {
         stance: "未表明",
-        text: "この分野についての具体的な言及はまだ確認できていません。",
-        source: "",
+        summary: "この分野についての具体的な言及はまだ確認できていません。",
+        updated: "",
+        log: [],
       },
       zaisei: {
         stance: "未表明",
-        text: "財政・税制を調査・発信のテーマの一つに挙げていますが、個別の施策はまだ確認できていません。",
-        source: "選挙ドットコム 政治家データベース（2026年8月時点）",
-        sourceUrl: "https://go2senkyo.com/seijika/200151",
+        summary:
+          "財政・税制を調査・発信のテーマの一つに挙げていますが、個別の施策はまだ確認できていません。",
+        updated: "2026年8月",
+        log: [
+          {
+            date: "2026-08",
+            place: "プロフィール",
+            source: NISHIWAKI_PROFILE_SOURCE,
+            text: "福岡市の財政・交通・子育て・税制・都市政策などについて調査・発信していると記載されている。",
+            url: GO2SENKYO_NISHIWAKI,
+          },
+        ],
       },
     },
   },

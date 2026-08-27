@@ -58,8 +58,9 @@ export const ISSUES: Issue[] = [
   {
     id: "dx",
     no: "08",
-    label: "行政DX",
-    background: "窓口のオンライン化、システム調達に関する議案が対象範囲です。",
+    label: "行政運営・DX",
+    background:
+      "市政の進め方や行政のあり方についての方針と、窓口のオンライン化、システム調達に関する議案が対象範囲です。",
   },
   {
     id: "zaisei",

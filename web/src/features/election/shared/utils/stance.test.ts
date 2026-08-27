@@ -4,19 +4,35 @@ import { ISSUES } from "../data/issues";
 import type { Candidate, CandidatePosition, Stance } from "../types";
 import { countStatedIssues, getStanceClass } from "./stance";
 
-const buildCandidate = (stances: Stance[]): Candidate =>
-  ({
-    positions: Object.fromEntries(
-      ISSUES.map((issue, index) => [
-        issue.id,
-        {
-          stance: stances[index] ?? "未表明",
-          text: "",
-          source: "",
-        } satisfies CandidatePosition,
-      ])
-    ),
-  }) as Candidate;
+const buildPositions = (stances: Stance[]): Candidate["positions"] => {
+  const positions = {} as Candidate["positions"];
+  ISSUES.forEach((issue, index) => {
+    positions[issue.id] = {
+      stance: stances[index] ?? "未表明",
+      summary: "",
+      updated: "",
+      log: [],
+    } satisfies CandidatePosition;
+  });
+  return positions;
+};
+
+const buildCandidate = (stances: Stance[]): Candidate => ({
+  id: "test",
+  no: "01",
+  name: "テスト 太郎",
+  kana: "てすと たろう",
+  age: 50,
+  title: "テスト",
+  party: "無所属",
+  lead: "",
+  bioSource: "",
+  bio: [],
+  claims: [],
+  takashimaAssessment: null,
+  links: [],
+  positions: buildPositions(stances),
+});
 
 describe("getStanceClass", () => {
   it("立場ごとに異なる配色クラスを返す", () => {
@@ -82,13 +98,58 @@ describe("立候補予定者データの整合性", () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
-  it("出典URLを持つ項目は必ず出典表記も持つ（ダミーリンクを置かない）", () => {
+  it("要約は必ず書かれている（空欄のまま公開しない）", () => {
     for (const candidate of CANDIDATES) {
       for (const position of Object.values(candidate.positions)) {
-        if (position.sourceUrl) {
-          expect(position.source).not.toBe("");
-          expect(position.sourceUrl).toMatch(/^https:\/\//);
+        expect(position.summary).not.toBe("");
+      }
+    }
+  });
+
+  it("発言ログがあるなら要約の最終更新も入っている", () => {
+    for (const candidate of CANDIDATES) {
+      for (const position of Object.values(candidate.positions)) {
+        if (position.log.length > 0) {
+          expect(position.updated).not.toBe("");
         }
+      }
+    }
+  });
+
+  it("発言ログは出典の媒体名を必ず持ち、URLがあるならhttps（ダミーリンクを置かない）", () => {
+    const allLogs = CANDIDATES.flatMap((candidate) => [
+      ...Object.values(candidate.positions).flatMap((p) => p.log),
+      ...(candidate.takashimaAssessment?.log ?? []),
+    ]);
+
+    expect(allLogs.length).toBeGreaterThan(0);
+    for (const statement of allLogs) {
+      expect(statement.source).not.toBe("");
+      expect(statement.place).not.toBe("");
+      expect(statement.date).toMatch(/^\d{4}-\d{2}(-\d{2})?$/);
+      if (statement.url) {
+        expect(statement.url).toMatch(/^https:\/\//);
+      }
+    }
+  });
+
+  it("言及ありの分野には根拠となる発言ログがある（要約の検証可能性）", () => {
+    for (const candidate of CANDIDATES) {
+      for (const position of Object.values(candidate.positions)) {
+        if (position.stance !== "未表明") {
+          expect(position.log.length).toBeGreaterThan(0);
+        }
+      }
+    }
+  });
+
+  it("高島市政への評価は、あるなら要約と根拠ログをセットで持つ", () => {
+    for (const candidate of CANDIDATES) {
+      const assessment = candidate.takashimaAssessment;
+      if (assessment) {
+        expect(assessment.summary).not.toBe("");
+        expect(assessment.updated).not.toBe("");
+        expect(assessment.log.length).toBeGreaterThan(0);
       }
     }
   });
