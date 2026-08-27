@@ -2,6 +2,14 @@ import type { Candidate } from "../types";
 
 const GO2SENKYO_NISHIWAKI = "https://go2senkyo.com/seijika/200151";
 const NISHIWAKI_PROFILE_SOURCE = "選挙ドットコム 政治家データベース";
+const NISHIWAKI_X_SOURCE = "本人X（@nishiwaki_hk）";
+/**
+ * 「これから詳細をアップしようと考えているリストです」として25項目を列挙した投稿。
+ * 確定した公約ではなく検討中の項目リストなので、要約は「挙げている」で統一し、
+ * 立場も「推進」ではなく「表明済み」に留めている。
+ */
+const NISHIWAKI_X_LIST =
+  "https://x.com/nishiwaki_hk/status/2092747468555571648";
 const ARAMAKI_SITE_URL = "https://www.lgbt-connect.com/";
 const ARAMAKI_SITE_SOURCE = "本人サイト（OVER THE RAINBOW）・本人Instagram";
 // 本人サイトには市長選出馬の記載がないため、出馬表明・公約は陣営の公表資料が出典。
@@ -192,7 +200,7 @@ export const CANDIDATES: Candidate[] = [
     age: 35,
     title: "「福岡の未来を、誰よりも考える市民」（本人表記）",
     party: "無所属（表明時点）",
-    lead: "「国がやらないなら、福岡から。暮らしを変える政治を。」を掲げ、財政・交通・子育て・税制・都市政策の調査と発信を続けてきたとしている。",
+    lead: "「国がやらないなら、福岡から。暮らしを変える政治を。」を掲げ、交通・子育て・防災から生活環境まで25項目を検討中の政策として列挙している。",
     bioSource: "選挙ドットコム 政治家データベース（2026年8月時点）",
     bio: [
       { label: "1991", text: "9月30日生まれ（投開票日時点で35歳）" },
@@ -223,6 +231,10 @@ export const CANDIDATES: Candidate[] = [
         label: "これまでの活動",
         text: "福岡市の財政・交通・子育て・税制・都市政策などについて、調査・発信を続けてきたとしている。",
       },
+      {
+        label: "検討中の政策",
+        text: "交通・子育て・防災・生活環境など25項目を挙げ、「これから詳細をアップしようと考えているリスト」としている。個々の内容は今後の公表待ち。",
+      },
     ],
     takashimaAssessment: null,
     links: [
@@ -246,9 +258,9 @@ export const CANDIDATES: Candidate[] = [
     ],
     positions: {
       kosodate: {
-        stance: "未表明",
+        stance: "表明済み",
         summary:
-          "子育てを調査・発信のテーマの一つに挙げていますが、個別の施策はまだ確認できていません。",
+          "第1子の保育料無償化、出生順位によらない子育て現金給付、保育士の給与引き上げを挙げている。いずれも詳細は今後公表するとしている。",
         updated: "2026年8月",
         log: [
           {
@@ -257,19 +269,35 @@ export const CANDIDATES: Candidate[] = [
             source: NISHIWAKI_PROFILE_SOURCE,
             text: "福岡市の財政・交通・子育て・税制・都市政策などについて調査・発信していると記載されている。",
             url: GO2SENKYO_NISHIWAKI,
+          },
+          {
+            date: "2026-08-27",
+            place: "SNS",
+            source: NISHIWAKI_X_SOURCE,
+            text: "第1子保育料の無償化（市が実施済みの第2子無償化を第1子まで拡張）、子育て現金給付の設計見直し（出産祝い金と子ども手当を出生順位に関わらず支給）、保育士の処遇改善（給与引き上げ）を挙げている。",
+            url: NISHIWAKI_X_LIST,
           },
         ],
       },
       fukushi: {
-        stance: "未表明",
-        summary: "この分野についての具体的な言及はまだ確認できていません。",
-        updated: "",
-        log: [],
+        stance: "表明済み",
+        summary:
+          "老人ホームの増設と介護士の給与引き上げ、市内全域のバリアフリー総点検、市民向けの生活支援パス「福岡パスポート」を挙げている。",
+        updated: "2026年8月",
+        log: [
+          {
+            date: "2026-08-27",
+            place: "SNS",
+            source: NISHIWAKI_X_SOURCE,
+            text: "介護の受け皿整備（老人ホームの増設と介護士の給与引き上げ）、バリアフリー総点検（車椅子で不便な箇所を市内全域で洗い出し優先順位をつけて整備）、神戸のNobinobiパスポートを模した市民向け生活支援パス「福岡パスポート」を挙げている。",
+            url: NISHIWAKI_X_LIST,
+          },
+        ],
       },
       kotsu: {
-        stance: "未表明",
+        stance: "表明済み",
         summary:
-          "交通を調査・発信のテーマの一つに挙げていますが、個別の施策はまだ確認できていません。",
+          "都市高速の定期券制度、頓挫したロープウェイ構想の掘り起こし、大規模で格安の市営立体駐車場の整備を挙げている。",
         updated: "2026年8月",
         log: [
           {
@@ -278,13 +306,20 @@ export const CANDIDATES: Candidate[] = [
             source: NISHIWAKI_PROFILE_SOURCE,
             text: "福岡市の財政・交通・子育て・税制・都市政策などについて調査・発信していると記載されている。",
             url: GO2SENKYO_NISHIWAKI,
+          },
+          {
+            date: "2026-08-27",
+            place: "SNS",
+            source: NISHIWAKI_X_SOURCE,
+            text: "通勤者・市内業者向けの都市高速定期券「ワーク都市高パス」、頓挫した市のロープウェイ構想を掘り起こし渋滞に左右されない移動手段かつ観光資源にすること、九州各県から来やすくするための大規模・格安の市営立体駐車場を挙げている。",
+            url: NISHIWAKI_X_LIST,
           },
         ],
       },
       saikaihatsu: {
-        stance: "未表明",
+        stance: "表明済み",
         summary:
-          "都市政策を調査・発信のテーマの一つに挙げていますが、再開発についての個別の施策はまだ確認できていません。",
+          "博多〜天神を雨に濡れずに歩ける全天候型の動線整備と、博多区の無電柱化を挙げている。",
         updated: "2026年8月",
         log: [
           {
@@ -293,37 +328,79 @@ export const CANDIDATES: Candidate[] = [
             source: NISHIWAKI_PROFILE_SOURCE,
             text: "福岡市の財政・交通・子育て・税制・都市政策などについて調査・発信していると記載されている。",
             url: GO2SENKYO_NISHIWAKI,
+          },
+          {
+            date: "2026-08-27",
+            place: "SNS",
+            source: NISHIWAKI_X_SOURCE,
+            text: "博多〜天神を雨に濡れず日焼けもせず歩けるアーケード（全天候型動線）の設置と、博多区の電柱・電線の地中化による景観と歩道・車椅子・自転車の通行環境の改善を挙げている。",
+            url: NISHIWAKI_X_LIST,
           },
         ],
       },
       bosai: {
-        stance: "未表明",
-        summary: "この分野についての具体的な言及はまだ確認できていません。",
-        updated: "",
-        log: [],
+        stance: "表明済み",
+        summary:
+          "各戸・各棟の電源確保による在宅避難と、マンション・賃貸にも届く蓄電池補助を挙げている。避難所への依存と防災コストを下げる狙いとしている。",
+        updated: "2026年8月",
+        log: [
+          {
+            date: "2026-08-27",
+            place: "SNS",
+            source: NISHIWAKI_X_SOURCE,
+            text: "各戸・各棟に電源を確保して避難所依存と防災コストを下げる「在宅避難できる街」と、太陽光同時設置・戸建て持ち家限定である現行の蓄電池補助をマンション・賃貸にも届く制度にすることを挙げている。",
+            url: NISHIWAKI_X_LIST,
+          },
+        ],
       },
       keizai: {
-        stance: "未表明",
-        summary: "この分野についての具体的な言及はまだ確認できていません。",
-        updated: "",
-        log: [],
+        stance: "表明済み",
+        summary: "週休3日制を導入した企業への助成を挙げている。",
+        updated: "2026年8月",
+        log: [
+          {
+            date: "2026-08-27",
+            place: "SNS",
+            source: NISHIWAKI_X_SOURCE,
+            text: "週休3日制を導入した企業に市から助成金を出すことを挙げている。",
+            url: NISHIWAKI_X_LIST,
+          },
+        ],
       },
       kanko: {
-        stance: "未表明",
-        summary: "この分野についての具体的な言及はまだ確認できていません。",
-        updated: "",
-        log: [],
+        stance: "表明済み",
+        summary:
+          "アジアのナイトマーケット型の夜市の常設化、企業協賛による年代別ミス・ミスター福岡の開催、多言語対応の従業員を雇う事業者への補助を挙げている。",
+        updated: "2026年8月",
+        log: [
+          {
+            date: "2026-08-27",
+            place: "SNS",
+            source: NISHIWAKI_X_SOURCE,
+            text: "観光客も住民も気軽に行ける形で常設化する「福岡夜市」、企業協賛による年代別のミス・ミスター福岡の開催、英語・韓国語・中国語等を話せる従業員を雇う事業者（特に飲食店）への人数に応じた補助を挙げている。",
+            url: NISHIWAKI_X_LIST,
+          },
+        ],
       },
       dx: {
-        stance: "未表明",
-        summary: "この分野についての具体的な言及はまだ確認できていません。",
-        updated: "",
-        log: [],
+        stance: "表明済み",
+        summary:
+          "議員ごとの発言回数・在席率の公開と議会中継の全編アーカイブ、予算の一部の使途を市民が決める参加型予算を挙げている。",
+        updated: "2026年8月",
+        log: [
+          {
+            date: "2026-08-27",
+            place: "SNS",
+            source: NISHIWAKI_X_SOURCE,
+            text: "議員ごとの発言回数・在席率を公開し議会中継の全編アーカイブを残す「議会の見える化」と、予算の一部の使途を市民が決め子ども・外国人住民も意思決定側に入れる「参加型予算」を挙げている。",
+            url: NISHIWAKI_X_LIST,
+          },
+        ],
       },
       zaisei: {
-        stance: "未表明",
+        stance: "表明済み",
         summary:
-          "財政・税制を調査・発信のテーマの一つに挙げていますが、個別の施策はまだ確認できていません。",
+          "財政を精査し、住民税・社会保険料の負担軽減によって市民の手取りを増やす方向を挙げている。",
         updated: "2026年8月",
         log: [
           {
@@ -333,14 +410,29 @@ export const CANDIDATES: Candidate[] = [
             text: "福岡市の財政・交通・子育て・税制・都市政策などについて調査・発信していると記載されている。",
             url: GO2SENKYO_NISHIWAKI,
           },
+          {
+            date: "2026-08-27",
+            place: "SNS",
+            source: NISHIWAKI_X_SOURCE,
+            text: "財政を精査し、住民税・社会保険料の負担軽減によって市民の手取りを増やす方向を挙げている。",
+            url: NISHIWAKI_X_LIST,
+          },
         ],
       },
       sonota: {
-        stance: "未表明",
+        stance: "表明済み",
         summary:
-          "上の分野に当てはまらない主張は、いまのところ確認できていません。",
-        updated: "",
-        log: [],
+          "路上喫煙対策と喫煙可否の店頭表示義務化、ポイ捨ての厳罰化、害虫根絶計画、投票を楽しい体験として設計する「VOTEFES」を挙げている。",
+        updated: "2026年8月",
+        log: [
+          {
+            date: "2026-08-27",
+            place: "SNS",
+            source: NISHIWAKI_X_SOURCE,
+            text: "喫煙所整備と厳罰化による路上喫煙対策、入店前に分かる喫煙可否の店頭表示義務化と分煙店舗への助成、シンガポール型の罰則によるポイ捨ての厳罰化、市全体の害虫根絶計画、投票を楽しい体験として設計し投票率と政治参加を底上げする「VOTEFES」を挙げている。",
+            url: NISHIWAKI_X_LIST,
+          },
+        ],
       },
     },
   },
