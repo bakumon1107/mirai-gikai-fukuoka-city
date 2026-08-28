@@ -23,6 +23,7 @@ import { HomeChatClient } from "@/features/chat/client/components/home-chat-clie
 import { CurrentCouncilSession } from "@/features/council-sessions/client/components/current-council-session";
 import { getAllPastSessions } from "@/features/council-sessions/server/loaders/get-all-past-sessions";
 import { getCurrentCouncilSession } from "@/features/council-sessions/server/loaders/get-current-council-session";
+import { ElectionBanner } from "@/features/election/server/components/election-banner";
 import { getLatestSessionWithQuestions } from "@/features/general-questions/server/loaders/get-latest-session-with-questions";
 import { PressConferenceArchiveSection } from "@/features/press-conferences/client/components/press-conference-archive-section";
 import { PressConferenceNoticeBanner } from "@/features/press-conferences/client/components/press-conference-notice-banner";
@@ -66,6 +67,9 @@ export default async function Home() {
   return (
     <>
       <Hero />
+
+      {/* 福岡市長選挙 特設ページバナー（投開票日を過ぎたら非表示） */}
+      <ElectionBanner />
 
       {/* 本日の定例会セクション */}
       <CurrentCouncilSession session={currentSession} />
