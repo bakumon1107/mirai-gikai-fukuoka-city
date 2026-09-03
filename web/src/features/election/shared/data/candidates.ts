@@ -28,6 +28,11 @@ const ARAMAKI_SITE_SOURCE = "本人サイト（OVER THE RAINBOW）・本人Insta
 // 本人サイトには市長選出馬の記載がないため、出馬表明・公約は陣営の公表資料が出典。
 // TODO: 党公式・本人SNSで出馬表明のURLが確認でき次第、log の url に追加する
 const ARAMAKI_SOURCE = "陣営の公表プロフィール（2026年8月）";
+const NIIMURA_SITE_URL = "https://niimuramasaru.com/";
+const NIIMURA_SITE_SOURCE = "本人サイト（新村まさるオフィシャルHP）";
+const NIIMURA_KBC_SOURCE = "報道（KBC九州朝日放送）";
+const NIIMURA_KBC_URL =
+  "https://news.yahoo.co.jp/articles/a2fce24f5842e38498ca3aa70072e52930d70ddf";
 
 /**
  * 立候補予定者データ。
@@ -625,6 +630,196 @@ export const CANDIDATES: Candidate[] = [
         summary: "この分野についての具体的な言及はまだ確認できていません。",
         updated: "",
         log: [],
+      },
+      dx: {
+        stance: "未表明",
+        summary: "この分野についての具体的な言及はまだ確認できていません。",
+        updated: "",
+        log: [],
+      },
+      zaisei: {
+        stance: "未表明",
+        summary: "この分野についての具体的な言及はまだ確認できていません。",
+        updated: "",
+        log: [],
+      },
+      sonota: {
+        stance: "未表明",
+        summary:
+          "上の分野に当てはまらない主張は、いまのところ確認できていません。",
+        updated: "",
+        log: [],
+      },
+    },
+  },
+  {
+    id: "niimura-masaru",
+    no: "04",
+    name: "新村 優",
+    kana: "にいむら まさる",
+    age: 46,
+    title: "福岡市議会議員（3期・南区）",
+    party: "無所属（地域会派・新しい風ふくおか）",
+    lead: "「人への優しさ」と「都市経済の発展」の両輪を掲げる現職の福岡市議。高島市政について「この流れを止めるわけにはいきません」と述べ、交流人口の増加に伴う都市課題・地域防災・子どもの教育に力を入れるとしている。",
+    bioSource: `${NIIMURA_SITE_SOURCE}／${NIIMURA_KBC_SOURCE}`,
+    bio: [
+      { label: "出身", text: "福岡市出身" },
+      {
+        label: "学歴",
+        text: "福岡市立花畑小学校・柏原小学校、福岡市立柏原中学校、福岡大学附属大濠高校を経て、早稲田大学・早稲田大学院を卒業",
+      },
+      {
+        label: "職歴",
+        text: "アサヒビール株式会社に総合職として入社。横浜統括支社で飲食店や酒販店を担当する営業を務める",
+      },
+      {
+        label: "職歴",
+        text: "参議院議員大久保勉事務所の公設秘書、NPO法人次世代のチカラFUKUOKAの設立、スペクトラムアンドパートナーズ株式会社の取締役を経験",
+      },
+      { label: "2011", text: "福岡市議会議員選挙に立候補し落選（1,797票）" },
+      {
+        label: "2015",
+        text: "福岡市議会議員選挙で初当選（6,287票）。当時34歳",
+      },
+      { label: "2019", text: "福岡市議会議員選挙で再選（7,591票）" },
+      {
+        label: "2023",
+        text: "福岡市議会議員選挙で3選（6,555票）。地域会派「新しい風ふくおか」を設立し、現在4人で活動",
+      },
+      { label: "2026", text: "福岡市長選への出馬の意向を表明" },
+    ],
+    claims: [
+      {
+        label: "基本姿勢",
+        text: "「人への優しさ」と「都市経済の発展」、この両輪のバランスのとれた福岡市政を目指すとしている。",
+      },
+      {
+        label: "政治の役割",
+        text: "「政治は一部の人たちのものではなく、社会全体1人ひとりの幸せを追求するために機能しなければなりません」とし、1人ひとりのチャレンジを応援すること、苦しみや絶望に支援を届けることが政治の本質的な役割だとしている。",
+      },
+      {
+        label: "力を入れる分野",
+        text: "交流人口の増加に伴う都市課題、地域防災、子どもの教育の3点に力を入れたいとしている。",
+      },
+    ],
+    takashimaAssessment: {
+      summary:
+        "「高島市政の間に発展をしてきた福岡の町」とし、「この流れを止めるわけにはいきません」と述べている。個別の施策への評価は述べていない。",
+      updated: "2026年9月",
+      log: [
+        {
+          date: "2026-09-03",
+          place: "報道",
+          source: NIIMURA_KBC_SOURCE,
+          text: "「高島市政の間に発展をしてきた福岡の町です。非常に元気な街と言われているこの福岡の都市なのでこの流れを止めるわけにはいきません」と述べている。",
+          url: NIIMURA_KBC_URL,
+        },
+      ],
+    },
+    links: [
+      { label: "本人サイト", url: NIIMURA_SITE_URL },
+      { label: "新しい風ふくおか", url: "https://atarashi-kaze.jp/" },
+    ],
+    sns: [
+      {
+        kind: "公式サイト",
+        handle: "niimuramasaru.com",
+        url: NIIMURA_SITE_URL,
+      },
+      {
+        kind: "X",
+        handle: "@masaru_niimura",
+        url: "https://x.com/masaru_niimura",
+      },
+      { kind: "YouTube", handle: "", url: "" },
+      { kind: "TikTok", handle: "", url: "" },
+      {
+        kind: "Instagram",
+        handle: "@niimuramasaru",
+        url: "https://www.instagram.com/niimuramasaru/",
+      },
+      {
+        kind: "Facebook",
+        handle: "新村まさる",
+        url: "https://www.facebook.com/profile.php?id=100005777466109",
+      },
+      {
+        // 本人単独ではなく、共同で運営するポッドキャスト「ふくおかのたね」の
+        // アカウント。本人サイトから発信媒体として掲載されている
+        kind: "note",
+        handle: "ふくおかのたね（共同運営）",
+        url: "https://note.com/fukuokanotane",
+      },
+    ],
+    positions: {
+      kosodate: {
+        stance: "表明済み",
+        summary:
+          "子どもの教育を力を入れる分野の一つに挙げていますが、個別の施策はまだ確認できていません。",
+        updated: "2026年9月",
+        log: [
+          {
+            date: "2026-09-03",
+            place: "報道",
+            source: NIIMURA_KBC_SOURCE,
+            text: "交流人口の増加に伴う都市課題、地域防災、子どもの教育に力を入れたいとしている。",
+            url: NIIMURA_KBC_URL,
+          },
+        ],
+      },
+      fukushi: {
+        stance: "未表明",
+        summary: "この分野についての具体的な言及はまだ確認できていません。",
+        updated: "",
+        log: [],
+      },
+      kotsu: {
+        stance: "未表明",
+        summary: "この分野についての具体的な言及はまだ確認できていません。",
+        updated: "",
+        log: [],
+      },
+      saikaihatsu: {
+        stance: "未表明",
+        summary: "この分野についての具体的な言及はまだ確認できていません。",
+        updated: "",
+        log: [],
+      },
+      bosai: {
+        stance: "表明済み",
+        summary:
+          "地域防災を力を入れる分野の一つに挙げていますが、個別の施策はまだ確認できていません。",
+        updated: "2026年9月",
+        log: [
+          {
+            date: "2026-09-03",
+            place: "報道",
+            source: NIIMURA_KBC_SOURCE,
+            text: "交流人口の増加に伴う都市課題、地域防災、子どもの教育に力を入れたいとしている。",
+            url: NIIMURA_KBC_URL,
+          },
+        ],
+      },
+      keizai: {
+        stance: "未表明",
+        summary: "この分野についての具体的な言及はまだ確認できていません。",
+        updated: "",
+        log: [],
+      },
+      kanko: {
+        stance: "表明済み",
+        summary:
+          "交流人口の増加に伴う都市課題を力を入れる分野の一つに挙げていますが、個別の施策はまだ確認できていません。",
+        updated: "2026年9月",
+        log: [
+          {
+            date: "2026-09-03",
+            place: "報道",
+            source: NIIMURA_KBC_SOURCE,
+            text: "交流人口の増加に伴う都市課題、地域防災、子どもの教育に力を入れたいとしている。",
+            url: NIIMURA_KBC_URL,
+          },
+        ],
       },
       dx: {
         stance: "未表明",
