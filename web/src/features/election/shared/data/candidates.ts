@@ -38,6 +38,15 @@ const ARAMAKI_SITE_SOURCE = "本人サイト（OVER THE RAINBOW）・本人Insta
 // 本人サイトには市長選出馬の記載がないため、出馬表明・公約は陣営の公表資料が出典。
 // TODO: 党公式・本人SNSで出馬表明のURLが確認でき次第、log の url に追加する
 const ARAMAKI_SOURCE = "陣営の公表プロフィール（2026年8月）";
+const ARAMAKI_KAIKEN_SOURCE = "報道（KBC九州朝日放送・TNCテレビ西日本・NHK）";
+/**
+ * 2026年9月3日に福岡市役所で開いた出馬表明の記者会見。
+ * 年齢（41歳）はKBC・TNCの両方が報じており、本人サイトの「1985年生まれ」と整合する。
+ */
+const ARAMAKI_KBC_URL =
+  "https://kbc.co.jp/news/article.php?id=18090277&ymd=2026-09-03";
+const ARAMAKI_TNC_URL =
+  "https://news.yahoo.co.jp/articles/89321e480341ad0122af11a2f0484feae443bc83";
 const NIIMURA_SITE_URL = "https://niimuramasaru.com/";
 const NIIMURA_SITE_SOURCE = "本人サイト（新村まさるオフィシャルHP）";
 const NIIMURA_KBC_SOURCE = "報道（KBC九州朝日放送）";
@@ -598,13 +607,13 @@ export const CANDIDATES: Candidate[] = [
     no: "03",
     name: "荒牧 明楽",
     kana: "あらまき あきら",
-    // 本人サイトに「1985年生まれ」とあるのみで月日が不明なため、
-    // 投開票日時点で40歳か41歳か確定できない。推測で埋めず生年を経歴に載せる
-    age: null,
-    title: "社会起業家・nTech講師",
+    // 出馬表明会見の報道（KBC・TNC）が41歳としており、本人サイトの
+    // 「1985年生まれ」とも整合するため確定させた
+    age: 41,
+    title: "民間教育機関の講師",
     party: "0=∞=1党（こころ党）福岡支部",
-    lead: "「心のインフラ尊厳City福岡」を掲げ、孤独や不安を解消する「心のインフラ」を福岡から示すとしている。",
-    bioSource: `${ARAMAKI_SITE_SOURCE}／${ARAMAKI_SOURCE}`,
+    lead: "「福岡を世界の教育首都に」を掲げ、AI時代に向けた新しい学問と教育、孤独や不安を解消する「心のインフラ」を福岡から示すとしている。",
+    bioSource: `${ARAMAKI_KAIKEN_SOURCE}／${ARAMAKI_SITE_SOURCE}／${ARAMAKI_SOURCE}`,
     bio: [
       { label: "1985", text: "生まれ。柳川市出身、福岡市在住" },
       { label: "学歴", text: "佐賀大学経済学部卒業" },
@@ -622,12 +631,15 @@ export const CANDIDATES: Candidate[] = [
         text: "nTech講師のほか、福岡県講師団、NPO法人理事、久留米大学医学部非常勤講師などに携わる。講演は1000本以上、相談件数は1万人以上としている",
       },
       { label: "著書", text: "『トランスジェンダーの私が悟るまで』" },
-      { label: "2026", text: "福岡市長選への出馬を表明" },
+      {
+        label: "2026",
+        text: "9月3日に福岡市役所で記者会見を開き、福岡市長選への出馬を表明",
+      },
     ],
     claims: [
       {
         label: "基本姿勢",
-        text: "「心のインフラ尊厳City福岡」を掲げている。",
+        text: "「福岡を世界の教育首都に」を掲げ、教育を中心とした新しい政治と産業を生み出すとしている。陣営の資料では「心のインフラ尊厳City福岡」を掲げている。",
       },
       {
         label: "背景",
@@ -635,7 +647,11 @@ export const CANDIDATES: Candidate[] = [
       },
       {
         label: "目指すもの",
-        text: "誰もが自らの存在理由を確信し、孤独や不安を解消できる「心のインフラ」を福岡から世界へ示すとしている。",
+        text: "誰もが自らの存在理由を確信し、孤独や不安を解消できる「心のインフラ」を福岡から世界へ示すとしている。会見では「心と心がしっかりと繋がりあう。そんな心のインフラモデルとして福岡をさらに再開発していきたい」と述べた。",
+      },
+      {
+        label: "会見での発言",
+        text: "トランスジェンダーであることを明かしたうえで「誰もが挑戦できる社会を作りたい」と述べている。",
       },
       {
         label: "モットー",
@@ -676,22 +692,38 @@ export const CANDIDATES: Candidate[] = [
     ],
     positions: {
       kosodate: {
-        stance: "未表明",
-        summary: "この分野についての具体的な言及はまだ確認できていません。",
-        updated: "",
-        log: [],
+        stance: "表明済み",
+        summary:
+          "「福岡を世界の教育首都に」を最も前面に掲げている。AI時代に向けた新しい学問と教育をつくり、教育を中心に新しい政治と産業を生み出すとしているが、個別の施策はまだ確認できていません。",
+        updated: "2026年9月",
+        log: [
+          {
+            date: "2026-09-03",
+            place: "記者会見",
+            source: ARAMAKI_KAIKEN_SOURCE,
+            text: "「福岡を世界の教育首都に」を掲げ、教育を中心とした新しい政治・産業の創出を訴えた。「AIの時代に、未来への希望や新しい仕事をさらに生み出していくための新しい教育を生みたい」と述べている。",
+            url: ARAMAKI_TNC_URL,
+          },
+        ],
       },
       fukushi: {
         stance: "表明済み",
         summary:
-          "誰もが自らの存在理由を確信し、孤独や不安を解消できる「心のインフラ」を福岡から示すとしている。個別の施策や予算の裏づけはまだ確認できていません。",
-        updated: "2026年8月",
+          "誰もが自らの存在理由を確信し、孤独や不安を解消できる「心のインフラ」を福岡から示すとしている。トランスジェンダーであることを明かしたうえで「誰もが挑戦できる社会を作りたい」と述べている。個別の施策や予算の裏づけはまだ確認できていません。",
+        updated: "2026年9月",
         log: [
           {
             date: "2026-08",
             place: "公表資料",
             source: ARAMAKI_SOURCE,
             text: "トランスジェンダー当事者として差別や分断の根本原因と向き合い、認識技術nTechに出会う。誰もが自らの存在理由を確信し、孤独や不安を解消できる「心のインフラ」を福岡から世界へ示す、としている。",
+          },
+          {
+            date: "2026-09-03",
+            place: "記者会見",
+            source: ARAMAKI_KAIKEN_SOURCE,
+            text: "「心と心がしっかりと繋がりあう。そんな心のインフラモデルとして福岡をさらに再開発していきたい」と述べた。またトランスジェンダーであることを明かしたうえで「誰もが挑戦できる社会を作りたい」としている。",
+            url: ARAMAKI_KBC_URL,
           },
         ],
       },
@@ -715,7 +747,8 @@ export const CANDIDATES: Candidate[] = [
       },
       keizai: {
         stance: "未表明",
-        summary: "この分野についての具体的な言及はまだ確認できていません。",
+        summary:
+          "個別の施策は未表明です。教育を中心に新しい産業を生み出すという方向性のみが示されています。",
         updated: "",
         log: [],
       },
