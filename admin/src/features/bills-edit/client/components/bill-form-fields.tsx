@@ -133,6 +133,40 @@ export function BillFormFields({
 
       <FormField
         control={control}
+        name="submitted_date"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>提出年月日</FormLabel>
+            <FormControl>
+              <Input type="date" {...field} value={field.value ?? ""} />
+            </FormControl>
+            <FormDescription>
+              議会に議案が提出された日。議会公式サイトの「提出年月日」を入力してください
+            </FormDescription>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={control}
+        name="decided_date"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>議決年月日</FormLabel>
+            <FormControl>
+              <Input type="date" {...field} value={field.value ?? ""} />
+            </FormControl>
+            <FormDescription>
+              議決された日。議会公式サイトの「議決年月日」を入力してください（未議決なら空欄）
+            </FormDescription>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={control}
         name="published_at"
         render={({ field }) => (
           <FormItem>
@@ -141,7 +175,7 @@ export function BillFormFields({
               <Input type="datetime-local" {...field} />
             </FormControl>
             <FormDescription>
-              議案が公開される日時を設定してください
+              みらい議会サイトに議案を公開する日時です（提出年月日とは別のものです）
             </FormDescription>
             <FormMessage />
           </FormItem>

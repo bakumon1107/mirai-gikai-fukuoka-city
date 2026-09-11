@@ -7,6 +7,7 @@ import {
 } from "@/lib/utils/cache-invalidation";
 import { getErrorMessage } from "@/lib/utils/get-error-message";
 import { type BillUpdateInput, billUpdateSchema } from "../../shared/types";
+import { normalizeDateInput } from "../../shared/utils/normalize-date-input";
 import { updateBillRecord } from "../repositories/bill-edit-repository";
 
 export async function updateBill(id: string, input: BillUpdateInput) {
@@ -23,6 +24,8 @@ export async function updateBill(id: string, input: BillUpdateInput) {
       published_at: validatedData.published_at
         ? new Date(validatedData.published_at).toISOString()
         : null,
+      submitted_date: normalizeDateInput(validatedData.submitted_date),
+      decided_date: normalizeDateInput(validatedData.decided_date),
       updated_at: new Date().toISOString(),
     });
 

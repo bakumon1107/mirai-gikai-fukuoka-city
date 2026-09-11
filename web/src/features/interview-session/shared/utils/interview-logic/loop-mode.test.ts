@@ -22,6 +22,8 @@ const makeBill = (
   committee_id: null,
   publish_status: "published",
   published_at: null,
+  submitted_date: null,
+  decided_date: null,
   share_thumbnail_url: null,
   status: "submitted",
   status_note: null,
