@@ -141,6 +141,7 @@ export type Database = {
           committee_id: string | null
           council_session_id: string | null
           created_at: string
+          decided_date: string | null
           discussion_overview_points: string[]
           id: string
           is_featured: boolean
@@ -153,6 +154,7 @@ export type Database = {
           status: Database["public"]["Enums"]["bill_status_enum"]
           status_note: string | null
           status_order: number | null
+          submitted_date: string | null
           thumbnail_url: string | null
           updated_at: string
         }
@@ -162,6 +164,7 @@ export type Database = {
           committee_id?: string | null
           council_session_id?: string | null
           created_at?: string
+          decided_date?: string | null
           discussion_overview_points?: string[]
           id?: string
           is_featured?: boolean
@@ -174,6 +177,7 @@ export type Database = {
           status: Database["public"]["Enums"]["bill_status_enum"]
           status_note?: string | null
           status_order?: number | null
+          submitted_date?: string | null
           thumbnail_url?: string | null
           updated_at?: string
         }
@@ -183,6 +187,7 @@ export type Database = {
           committee_id?: string | null
           council_session_id?: string | null
           created_at?: string
+          decided_date?: string | null
           discussion_overview_points?: string[]
           id?: string
           is_featured?: boolean
@@ -195,6 +200,7 @@ export type Database = {
           status?: Database["public"]["Enums"]["bill_status_enum"]
           status_note?: string | null
           status_order?: number | null
+          submitted_date?: string | null
           thumbnail_url?: string | null
           updated_at?: string
         }
