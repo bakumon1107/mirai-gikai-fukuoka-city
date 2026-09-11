@@ -59,8 +59,16 @@ export async function BillDetailHeader({
         <div className="flex flex-row gap-4">
           <BillStatusBadge status={bill.status} className="w-fit" />
           <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-            {submittedDate && <time>{formatDateJST(submittedDate)} 提出</time>}
-            {decidedDate && <time>{formatDateJST(decidedDate)} 議決</time>}
+            {submittedDate && (
+              <time dateTime={submittedDate}>
+                {formatDateJST(submittedDate)} 提出
+              </time>
+            )}
+            {decidedDate && (
+              <time dateTime={decidedDate}>
+                {formatDateJST(decidedDate)} 議決
+              </time>
+            )}
           </div>
         </div>
       </div>
