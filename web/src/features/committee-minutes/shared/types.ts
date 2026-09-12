@@ -44,7 +44,6 @@ export type CommitteeMeetingSummary = {
   meetingDate: string;
   title: string;
   sourceDocumentId: number;
-  sourceUrl: string;
   /** 会議全体の要約（AI生成・確認後に格納） */
   summary: string | null;
   topics: CommitteeMeetingTopic[];

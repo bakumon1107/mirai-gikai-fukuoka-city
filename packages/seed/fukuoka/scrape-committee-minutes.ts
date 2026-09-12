@@ -14,7 +14,8 @@
  * - リクエスト間にウェイトを入れる（福岡市サイトはレート制限が強い）
  * - 一覧は新しい順で返るため、対象年より古い開催日が現れたらページ送りを打ち切る
  * - タイトルから委員会を特定し、対象年・対象委員会のみを保存する
- * - 取得済みのDocumentIDはスキップするため再実行しても差分のみ取得する
+ * - 取得済みの会議（開催日 × 委員会）はスキップするため再実行しても差分のみ取得する
+ *   ※DocumentIDは市が随時振り直すため、突合のキーには使わない
  */
 
 import { existsSync, mkdirSync, readdirSync, writeFileSync } from "node:fs";
@@ -177,15 +178,22 @@ class DbsrClient {
   }
 }
 
-/** 取得済みDocumentIDの一覧（ファイル名末尾の _<id>.json から復元） */
-function loadScrapedIds(outDir: string): Set<number> {
+/**
+ * 取得済み会議のキー（`<開催日>|<委員会slug>`）をファイル名から復元する。
+ *
+ * DocumentIDは委員会ごとの連番ブロックで管理されており、前のブロックに文書が
+ * 追加されると後続が全てずれる（市が新しい議事録を公開するたびに起きる）。
+ * IDで突合すると取得済みの会議を新規とみなして重複ファイルを作るため、
+ * 突合は必ず（開催日 × 委員会）で行う。
+ */
+function loadScrapedKeys(outDir: string): Set<string> {
   if (!existsSync(outDir)) return new Set();
-  const ids = new Set<number>();
+  const keys = new Set<string>();
   for (const name of readdirSync(outDir)) {
-    const m = name.match(/_(\d+)\.json$/);
-    if (m) ids.add(Number(m[1]));
+    const m = name.match(/^(\d{4}-\d{2}-\d{2})_(.+)_\d+\.json$/);
+    if (m) keys.add(`${m[1]}|${m[2]}`);
   }
-  return ids;
+  return keys;
 }
 
 async function main(): Promise<void> {
@@ -198,7 +206,7 @@ async function main(): Promise<void> {
 
   const outDir = join(REPO_ROOT, "docs/data/committee-minutes", String(year));
   mkdirSync(outDir, { recursive: true });
-  const scrapedIds = loadScrapedIds(outDir);
+  const scrapedKeys = loadScrapedKeys(outDir);
 
   const client = new DbsrClient();
   await client.init();
@@ -247,7 +255,7 @@ async function main(): Promise<void> {
       // 本会議（定例会・臨時会）や対象外の会議はスキップ
       continue;
     }
-    if (scrapedIds.has(doc.documentId)) {
+    if (scrapedKeys.has(`${doc.date}|${committee.slug}`)) {
       skipped++;
       continue;
     }
