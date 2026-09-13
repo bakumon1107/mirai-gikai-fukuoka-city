@@ -6,7 +6,8 @@
  *
  * - 会議録の原文・発言セグメントのみを投入する（AI生成なし）
  * - AI要約（summary）は確認後に apply-committee-ai-content.ts で更新する
- * - source_document_id で既存行を確認し、登録済みの会議はスキップする
+ * - （開催日 × 委員会）で既存行を確認し、登録済みの会議はスキップする
+ *   ※DocumentIDは市が随時振り直すため、突合のキーには使わない
  * - 市の議事録には委員長の議題宣言が無いため議題（committee_meeting_topics）は作らない
  *
  * 使い方:
@@ -63,10 +64,12 @@ async function main(): Promise<void> {
       readFileSync(join(DATA_DIR, file), "utf-8")
     );
 
+    // DocumentIDは市が随時振り直すため、登録済み判定は（開催日 × 委員会）で行う
     const { data: existing, error: existingError } = await supabase
       .from("committee_meetings")
       .select("id")
-      .eq("source_document_id", meeting.documentId)
+      .eq("meeting_date", meeting.meetingDate)
+      .eq("committee_slug", meeting.committee.slug)
       .maybeSingle();
     if (existingError) {
       throw new Error(`既存確認に失敗 (${file}): ${existingError.message}`);
