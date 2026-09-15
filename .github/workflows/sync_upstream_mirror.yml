@@ -1,0 +1,53 @@
+# 本家 team-mirai/mirai-gikai の develop を mirror/develop へ fast-forward 同期する。
+# 本家へは fetch（読み取り）のみ行い、push・PR・コメント等は一切しない。
+name: Sync upstream mirror
+
+on:
+  schedule:
+    - cron: "0 18 * * *" # 毎日 03:00 JST
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-upstream-mirror
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    # スターターを fork した先では動かさない
+    if: github.repository == 'bakumon1107/local-mirai-gikai-starter'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Fast-forward mirror/develop to upstream develop
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git init -q mirror
+          cd mirror
+          git remote add upstream https://github.com/team-mirai/mirai-gikai.git
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
+          # blob を取得しない軽量 fetch で本家への負荷を抑える
+          git fetch --no-tags --filter=blob:none upstream develop
+          git fetch --no-tags --filter=blob:none origin mirror/develop
+
+          upstream_sha=$(git rev-parse upstream/develop)
+          mirror_sha=$(git rev-parse origin/mirror/develop)
+
+          if [ "$upstream_sha" = "$mirror_sha" ]; then
+            echo "mirror/develop is up to date ($mirror_sha)"
+            exit 0
+          fi
+
+          # mirror/develop に独自コミットが混入していたら上書きせず失敗させる
+          if ! git merge-base --is-ancestor "$mirror_sha" "$upstream_sha"; then
+            echo "::error::mirror/develop ($mirror_sha) is not an ancestor of upstream develop ($upstream_sha). Fast-forward is impossible; investigate manually."
+            exit 1
+          fi
+
+          git push origin "${upstream_sha}:refs/heads/mirror/develop"
+          echo "mirror/develop: $mirror_sha -> $upstream_sha"
