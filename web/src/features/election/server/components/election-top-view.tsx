@@ -17,6 +17,7 @@ import {
 } from "../../shared/utils/election-phase";
 import { countStatedIssues } from "../../shared/utils/stance";
 
+/** 冒頭の一覧に最低限並べる行数。表明者が少ないうちは「表明待ち」の行で埋める */
 const HERO_SLOT_COUNT = 4;
 
 type Props = {
@@ -32,9 +33,9 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
     new Date(),
     ELECTION_SCHEDULE.voteClosesAt
   ).days;
-  // 告示で立候補の届出が締め切られるため、以降は「表明待ち」の枠を出さない
+  // 告示で立候補の届出が締め切られるため、以降は「表明待ち」の行を出さない
   const isBeforeKokuji = phase === "before-kokuji";
-  // 表明待ちスロットは、ヒーローの枠が合計4つになるよう候補者数に応じて増減させる
+  // 表明待ちの行は、冒頭の一覧が合計4行になるよう候補者数に応じて増減させる（4人以上なら出ない）
   const pendingSlotIds = isBeforeKokuji
     ? Array.from(
         { length: Math.max(0, HERO_SLOT_COUNT - CANDIDATES.length) },

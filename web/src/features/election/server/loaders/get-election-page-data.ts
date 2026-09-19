@@ -41,7 +41,7 @@ export function getCandidatePageData(
   id: string,
   tab?: string
 ): CandidatePageData | null {
-  const candidate = CANDIDATES.find((c) => c.id === id);
+  const candidate = CANDIDATES.find((item) => item.id === id);
   if (!candidate) {
     return null;
   }
