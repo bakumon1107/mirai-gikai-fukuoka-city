@@ -343,14 +343,6 @@
   }
 
   /* 選挙特設ページの影 */
-  .shadow-candidate-photo {
-    box-shadow: 0 4px 14px rgba(31, 41, 55, 0.16);
-  }
-
-  .shadow-candidate-photo-lg {
-    box-shadow: 0 6px 20px rgba(31, 41, 55, 0.18);
-  }
-
   .shadow-election-card-hover {
     box-shadow: 0 10px 26px rgba(122, 108, 192, 0.18);
   }
@@ -361,26 +353,6 @@
 
   .shadow-election-banner-hover {
     box-shadow: 0 12px 28px rgba(122, 108, 192, 0.24);
-  }
-
-  /*
-   * 立候補予定者の顔写真プレースホルダー。
-   * 実画像の提供を受けるまでの暫定表示で、表明順に4色を循環させる。
-   */
-  .bg-candidate-photo-1 {
-    background-image: linear-gradient(150deg, #b6a9e0, #8d7ec4);
-  }
-
-  .bg-candidate-photo-2 {
-    background-image: linear-gradient(150deg, #a8c4d8, #7d9db6);
-  }
-
-  .bg-candidate-photo-3 {
-    background-image: linear-gradient(150deg, #c0b39a, #9c8e73);
-  }
-
-  .bg-candidate-photo-4 {
-    background-image: linear-gradient(150deg, #a9c9bb, #7fa494);
   }
 }
 

@@ -19,8 +19,6 @@ export type ElectionTopPageData = {
 
 export type CandidatePageData = {
   candidate: Candidate;
-  /** 表明順（0始まり）。顔写真プレースホルダーの配色に使う */
-  index: number;
   phase: ElectionPhase;
   tab: CandidateTab;
 };
@@ -43,14 +41,13 @@ export function getCandidatePageData(
   id: string,
   tab?: string
 ): CandidatePageData | null {
-  const index = CANDIDATES.findIndex((candidate) => candidate.id === id);
-  if (index === -1) {
+  const candidate = CANDIDATES.find((item) => item.id === id);
+  if (!candidate) {
     return null;
   }
 
   return {
-    candidate: CANDIDATES[index],
-    index,
+    candidate,
     phase: getElectionPhase(new Date(), ELECTION_SCHEDULE),
     tab: parseCandidateTab(tab),
   };

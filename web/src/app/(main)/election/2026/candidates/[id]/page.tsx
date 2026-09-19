@@ -56,7 +56,6 @@ export default async function CandidateDetailPage({
     <Container className="py-8">
       <CandidateDetailView
         candidate={data.candidate}
-        index={data.index}
         phase={data.phase}
         tab={data.tab}
       />
