@@ -75,7 +75,7 @@ export function StatementLogList({ log }: Props) {
                   </a>
                 )}
               </div>
-              <p className="mt-1.5 text-xs leading-[1.85] text-mirai-text-secondary text-pretty">
+              <p className="mt-1.5 text-xs leading-[1.85] text-mirai-text-secondary">
                 {statement.text}
               </p>
             </li>

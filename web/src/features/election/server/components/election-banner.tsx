@@ -42,12 +42,12 @@ export function ElectionBanner() {
           <span className="inline-block rounded-[5px] bg-primary-accent px-2.5 py-1 text-[10.5px] font-bold tracking-[0.1em] text-white">
             特設ページ
           </span>
-          <span className="mt-3 block text-[21px] font-bold leading-[1.4] tracking-[-0.02em] text-mirai-text text-pretty">
+          <span className="mt-3 block text-[21px] font-bold leading-[1.4] tracking-[-0.02em] text-mirai-text">
             福岡市長選挙
             <br />
             {noun}と争点
           </span>
-          <span className="mt-2.5 block max-w-[400px] text-xs leading-[1.85] text-mirai-text-secondary text-pretty">
+          <span className="mt-2.5 block max-w-[400px] text-xs leading-[1.85] text-mirai-text-secondary">
             {phase === "before-kokuji" ? "出馬の意向を示した" : "立候補した"}
             {CANDIDATES.length}
             人の公表内容を、{ISSUES.length}

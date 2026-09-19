@@ -41,10 +41,10 @@ export function IssueCompareView({ issue, phase, questionsSlug }: Props) {
       </div>
 
       <section className="px-4 sm:px-6 pb-5 pt-7">
-        <h1 className="text-2xl font-bold tracking-[-0.02em] text-mirai-text text-pretty">
+        <h1 className="text-2xl font-bold tracking-[-0.02em] text-mirai-text">
           {issue.label}
         </h1>
-        <p className="mt-2.5 text-[12.5px] leading-[1.9] text-mirai-text-secondary text-pretty">
+        <p className="mt-2.5 text-[12.5px] leading-[1.9] text-mirai-text-secondary">
           {orderLabel}に並べています。分類は各{noun}
           の記述にもとづく整理であり、優劣を示すものではありません。
         </p>
@@ -77,7 +77,7 @@ export function IssueCompareView({ issue, phase, questionsSlug }: Props) {
           <p className="mt-1 text-base font-bold text-mirai-text">
             {issue.label}
           </p>
-          <p className="mt-1.5 text-xs leading-[1.9] text-mirai-text-secondary text-pretty">
+          <p className="mt-1.5 text-xs leading-[1.9] text-mirai-text-secondary">
             {issue.background}
           </p>
         </div>
@@ -129,7 +129,7 @@ export function IssueCompareView({ issue, phase, questionsSlug }: Props) {
 
         {phase === "before-kokuji" && (
           <div className="rounded-[10px] border-[1.5px] border-dashed border-mirai-border bg-mirai-surface px-4.5 py-5 text-center">
-            <p className="text-[11.5px] leading-[1.9] text-mirai-text-muted text-pretty">
+            <p className="text-[11.5px] leading-[1.9] text-mirai-text-muted">
               この分野は、出馬表明があった人から順に行が増えていきます。告示は
               {ELECTION_SCHEDULE.kokujiLabel}です。
             </p>

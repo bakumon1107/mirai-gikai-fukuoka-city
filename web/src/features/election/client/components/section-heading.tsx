@@ -16,7 +16,7 @@ export function SectionHeading({ eyebrow, title, description }: Props) {
         {title}
       </h2>
       {description && (
-        <p className="mt-2 text-xs leading-[1.9] text-mirai-text-muted text-pretty">
+        <p className="mt-2 text-xs leading-[1.9] text-mirai-text-muted">
           {description}
         </p>
       )}

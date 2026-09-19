@@ -14,7 +14,7 @@ type Props = {
 export function PositionBody({ summary, updated, log }: Props) {
   return (
     <div>
-      <p className="text-[12.5px] leading-[1.9] text-mirai-text-secondary text-pretty">
+      <p className="text-[12.5px] leading-[1.9] text-mirai-text-secondary">
         {summary}
       </p>
       {updated && (
