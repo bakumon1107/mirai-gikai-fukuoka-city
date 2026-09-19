@@ -116,10 +116,12 @@ const SHIRABE_BLOG_KENSEI = "https://www.t-shirabe.net/blog/4766/";
  * 要約には使わず発言ログにのみ載せ、市議時代のものであることを明記する。
  */
 const SHIRABE_SHIGI_POLICY = "https://www.t-shirabe.net/policy/";
-/** 新村氏・調氏・阿部氏の市議辞職（9月16日）を伝えた報道 */
+/**
+ * 新村氏・調氏・阿部氏の市議辞職（9月16日）を伝えた報道（読売新聞オンライン、2026年9月17日）。
+ * 経歴の出典（bioSource）は媒体名だけを載せる欄なので、URLはここに記録として残す:
+ * https://news.yahoo.co.jp/articles/240c6e9e4de585a8b24998be1bbe3914c5d24452
+ */
 const SHIGI_JISHOKU_SOURCE = "報道（読売新聞オンライン）";
-const SHIGI_JISHOKU_URL =
-  "https://news.yahoo.co.jp/articles/240c6e9e4de585a8b24998be1bbe3914c5d24452";
 const INOUE_SITE_URL = "https://genzeinippon.com/member/inouekiyoshi/";
 const INOUE_SITE_SOURCE = "減税日本 公式サイト（候補予定者紹介）";
 const INOUE_KAIKEN_SOURCE = "報道（福岡テレQ・出馬表明記者会見ノーカット）";

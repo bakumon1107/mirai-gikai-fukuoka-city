@@ -1,7 +1,7 @@
 import "server-only";
 import { ArrowRight, ArrowUpRight, ChevronRight, Plus } from "lucide-react";
 import Link from "next/link";
-import { CandidatePhoto } from "../../client/components/candidate-photo";
+import { CandidateNumber } from "../../client/components/candidate-number";
 import { DisclaimerBar } from "../../client/components/disclaimer-bar";
 import { SectionHeading } from "../../client/components/section-heading";
 import { VoteCountdown } from "../../client/components/vote-countdown";
@@ -68,40 +68,42 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
             つの分野で同じ物差しに並べていきます。評価や推薦は行いません。
           </p>
 
-          <div className="mt-7 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-            {CANDIDATES.map((candidate, index) => (
-              <Link
-                key={candidate.id}
-                href={`/election/2026/candidates/${candidate.id}`}
-                className="group block transition-transform duration-200 hover:-translate-y-1"
-              >
-                <CandidatePhoto
-                  candidate={candidate}
-                  index={index}
-                  size="hero"
-                />
-                <p className="mt-2 text-[12.5px] font-bold leading-[1.4] tracking-[-0.01em] text-mirai-text">
-                  {candidate.name}
-                </p>
-                <p className="mt-px text-[10px] leading-[1.4] text-primary-deep">
-                  {candidate.title}
-                </p>
-              </Link>
+          <ol className="mt-6 grid grid-cols-2 gap-1.5">
+            {CANDIDATES.map((candidate) => (
+              <li key={candidate.id}>
+                <Link
+                  href={`/election/2026/candidates/${candidate.id}`}
+                  className="flex items-center gap-2 rounded-lg bg-white/75 px-2 py-1.5 transition-colors duration-200 hover:bg-white"
+                >
+                  <CandidateNumber no={candidate.no} size="sm" />
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-[13px] font-bold leading-[1.35] text-mirai-text">
+                      {candidate.name}
+                    </span>
+                    <span className="hidden truncate text-[10px] leading-[1.4] text-primary-deep sm:block">
+                      {candidate.title}
+                    </span>
+                  </span>
+                </Link>
+              </li>
             ))}
             {pendingSlotIds.map((slotId) => (
-              <div key={slotId}>
-                <div className="grid aspect-[3/4] w-full place-items-center rounded-[10px] border-[1.5px] border-dashed border-primary-darkest/35 bg-white/35">
+              <li
+                key={slotId}
+                className="flex items-center gap-2 rounded-lg border-[1.5px] border-dashed border-primary-darkest/35 bg-white/35 px-2 py-1.5"
+              >
+                <span className="grid size-8 shrink-0 place-items-center">
                   <Plus
-                    className="size-5 text-primary-darkest/40"
+                    className="size-4 text-primary-darkest/40"
                     strokeWidth={1.5}
                   />
-                </div>
-                <p className="mt-2 text-[11.5px] font-bold leading-[1.4] text-primary-darkest/55">
+                </span>
+                <span className="text-[11.5px] font-bold text-primary-darkest/55">
                   表明待ち
-                </p>
-              </div>
+                </span>
+              </li>
             ))}
-          </div>
+          </ol>
 
           <div className="mt-6 flex flex-wrap items-center gap-5 rounded-xl bg-white/80 px-4.5 py-4">
             <VoteCountdown
@@ -165,19 +167,14 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
       </section>
 
       <section className="flex flex-col gap-3 px-4 sm:px-6 pb-8 pt-4">
-        {CANDIDATES.map((candidate, index) => (
+        {CANDIDATES.map((candidate) => (
           <Link
             key={candidate.id}
             href={`/election/2026/candidates/${candidate.id}`}
             className="rounded-xl border border-mirai-border bg-card p-4 transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-[3px] hover:border-primary hover:shadow-election-card-hover"
           >
-            <div className="flex items-start gap-4">
-              <CandidatePhoto
-                candidate={candidate}
-                index={index}
-                size="card"
-                showPlaceholderLabel
-              />
+            <div className="flex items-center gap-3">
+              <CandidateNumber no={candidate.no} />
               <div className="min-w-0 flex-1">
                 <p className="text-[11px] text-mirai-text-muted">
                   {candidate.kana}
@@ -185,24 +182,24 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
                 <p className="mt-px text-xl font-bold leading-tight tracking-[-0.025em] text-mirai-text">
                   {candidate.name}
                 </p>
-                <div className="mt-1.5 flex flex-wrap gap-1.5">
-                  {candidate.age !== null && (
-                    <span className="rounded-[5px] bg-mirai-surface-grouped px-1.5 py-0.5 text-[11px] font-medium text-mirai-text-secondary">
-                      {candidate.age}歳
-                    </span>
-                  )}
-                  <span className="rounded-[5px] bg-mirai-surface-grouped px-1.5 py-0.5 text-[11px] font-medium text-mirai-text-secondary">
-                    {candidate.title}
-                  </span>
-                  <span className="rounded-[5px] bg-mirai-gradient px-1.5 py-0.5 text-[11px] font-medium text-primary-darkest">
-                    {candidate.party}
-                  </span>
-                </div>
-                <p className="mt-2.5 text-xs leading-[1.85] text-mirai-text-secondary">
-                  {candidate.lead}
-                </p>
               </div>
             </div>
+            <div className="mt-2.5 flex flex-wrap gap-1.5">
+              {candidate.age !== null && (
+                <span className="rounded-[5px] bg-mirai-surface-grouped px-1.5 py-0.5 text-[11px] font-medium text-mirai-text-secondary">
+                  {candidate.age}歳
+                </span>
+              )}
+              <span className="rounded-[5px] bg-mirai-surface-grouped px-1.5 py-0.5 text-[11px] font-medium text-mirai-text-secondary">
+                {candidate.title}
+              </span>
+              <span className="rounded-[5px] bg-mirai-gradient px-1.5 py-0.5 text-[11px] font-medium text-primary-darkest">
+                {candidate.party}
+              </span>
+            </div>
+            <p className="mt-2.5 text-xs leading-[1.85] text-mirai-text-secondary">
+              {candidate.lead}
+            </p>
             <div className="mt-3 flex items-center justify-between gap-2 border-t border-mirai-surface-muted pt-2.5">
               <span className="text-[11px] text-mirai-text-muted">
                 {ISSUES.length}分野のうち {countStatedIssues(candidate)}
