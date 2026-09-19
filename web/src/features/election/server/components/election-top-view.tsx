@@ -45,7 +45,7 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
 
   return (
     <div className="overflow-hidden rounded-2xl bg-card shadow-lg">
-      <section className="relative overflow-hidden bg-mirai-gradient px-6 pb-7 pt-8">
+      <section className="relative overflow-hidden bg-mirai-gradient px-4 sm:px-6 pb-7 pt-8">
         <span
           aria-hidden="true"
           className="pointer-events-none absolute -right-1.5 top-[46px] select-none font-lexend text-[92px] font-black leading-none tracking-[-0.055em] text-white/45"
@@ -152,7 +152,7 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
         への投票を呼びかけるものではありません。
       </DisclaimerBar>
 
-      <section className="px-6 pb-2 pt-8">
+      <section className="px-4 sm:px-6 pb-2 pt-8">
         <SectionHeading
           eyebrow="01 — CANDIDATES"
           title={isBeforeKokuji ? "出馬を表明した人" : "立候補した人"}
@@ -164,7 +164,7 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
         />
       </section>
 
-      <section className="flex flex-col gap-3 px-6 pb-8 pt-4">
+      <section className="flex flex-col gap-3 px-4 sm:px-6 pb-8 pt-4">
         {CANDIDATES.map((candidate, index) => (
           <Link
             key={candidate.id}
@@ -229,7 +229,7 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
         )}
       </section>
 
-      <section className="px-6 pb-8">
+      <section className="px-4 sm:px-6 pb-8">
         <SectionHeading
           eyebrow="02 — ISSUES"
           title="争点で比べる"
@@ -299,7 +299,7 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
         </div>
       </section>
 
-      <section className="px-6 pb-10">
+      <section className="px-4 sm:px-6 pb-10">
         <SectionHeading
           eyebrow="03 — CONTEXT"
           title="争点の背景を、市議会の記録から読む"

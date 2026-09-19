@@ -30,7 +30,7 @@ export function IssueCompareView({ issue, phase, questionsSlug }: Props) {
 
   return (
     <div className="overflow-hidden rounded-2xl bg-card shadow-lg">
-      <div className="border-b border-mirai-border bg-mirai-surface px-6 py-3.5">
+      <div className="border-b border-mirai-border bg-mirai-surface px-4 sm:px-6 py-3.5">
         <Breadcrumb
           items={[
             { label: "福岡市長選挙", href: "/election/2026" },
@@ -40,7 +40,7 @@ export function IssueCompareView({ issue, phase, questionsSlug }: Props) {
         />
       </div>
 
-      <section className="px-6 pb-5 pt-7">
+      <section className="px-4 sm:px-6 pb-5 pt-7">
         <h1 className="text-2xl font-bold tracking-[-0.02em] text-mirai-text text-pretty">
           {issue.label}
         </h1>
@@ -83,7 +83,7 @@ export function IssueCompareView({ issue, phase, questionsSlug }: Props) {
         </div>
       </section>
 
-      <section className="flex flex-col gap-2.5 px-6 pb-7">
+      <section className="flex flex-col gap-2.5 px-4 sm:px-6 pb-7">
         {CANDIDATES.map((candidate, index) => {
           const position = candidate.positions[issue.id];
           return (
@@ -137,7 +137,7 @@ export function IssueCompareView({ issue, phase, questionsSlug }: Props) {
         )}
       </section>
 
-      <section className="px-6 pb-8">
+      <section className="px-4 sm:px-6 pb-8">
         <h2 className="text-[15px] font-bold text-mirai-text">
           市議会の記録から背景を読む
         </h2>

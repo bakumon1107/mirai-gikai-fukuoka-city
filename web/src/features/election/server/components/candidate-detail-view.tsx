@@ -35,7 +35,7 @@ export function CandidateDetailView({ candidate, index, phase, tab }: Props) {
 
   return (
     <div className="overflow-hidden rounded-2xl bg-card shadow-lg">
-      <div className="border-b border-mirai-border bg-mirai-surface px-6 py-3.5">
+      <div className="border-b border-mirai-border bg-mirai-surface px-4 sm:px-6 py-3.5">
         <Breadcrumb
           items={[
             { label: "福岡市長選挙", href: "/election/2026" },
@@ -44,7 +44,7 @@ export function CandidateDetailView({ candidate, index, phase, tab }: Props) {
         />
       </div>
 
-      <section className="flex flex-col gap-5 px-6 py-7 sm:flex-row">
+      <section className="flex flex-col gap-5 px-4 sm:px-6 py-7 sm:flex-row">
         <CandidatePhoto
           candidate={candidate}
           index={index}
@@ -101,7 +101,7 @@ export function CandidateDetailView({ candidate, index, phase, tab }: Props) {
       </DisclaimerBar>
 
       {/* タブはURLに反映する（リンク共有とブラウザバックのため） */}
-      <nav className="flex flex-wrap gap-[7px] border-b border-mirai-surface-muted bg-card px-6 py-3.5">
+      <nav className="flex flex-wrap gap-[7px] border-b border-mirai-surface-muted bg-card px-4 sm:px-6 py-3.5">
         {CANDIDATE_TABS.map((candidateTab) => {
           const isActive = candidateTab.id === tab;
           return (
@@ -125,7 +125,7 @@ export function CandidateDetailView({ candidate, index, phase, tab }: Props) {
 
       {tab === "profile" && (
         <>
-          <section className="px-6 py-7">
+          <section className="px-4 sm:px-6 py-7">
             <h2 className="text-base font-bold text-mirai-text">経歴</h2>
             <dl className="mt-3">
               {candidate.bio.map((row, rowIndex) => (
@@ -147,7 +147,7 @@ export function CandidateDetailView({ candidate, index, phase, tab }: Props) {
             </p>
           </section>
 
-          <section className="px-6 pb-7">
+          <section className="px-4 sm:px-6 pb-7">
             <SnsChannels sns={candidate.sns} candidateName={candidate.name} />
           </section>
         </>
@@ -155,7 +155,7 @@ export function CandidateDetailView({ candidate, index, phase, tab }: Props) {
 
       {tab === "policies" && (
         <>
-          <section className="px-6 pb-7">
+          <section className="px-4 sm:px-6 pb-7">
             <div className="overflow-hidden rounded-xl border border-mirai-border">
               <div className="bg-mirai-light-gradient px-4 py-3.5">
                 <p className="font-lexend text-[8.5px] font-bold tracking-[0.2em] text-primary">
@@ -168,7 +168,7 @@ export function CandidateDetailView({ candidate, index, phase, tab }: Props) {
               {candidate.claims.map((claim, claimIndex) => (
                 <div
                   key={`${claim.label}-${claimIndex}`}
-                  className="grid grid-cols-[88px_1fr] gap-3.5 border-t border-mirai-surface-grouped px-4 py-3.5"
+                  className="grid grid-cols-1 gap-1 border-t border-mirai-surface-grouped px-4 py-3.5 sm:grid-cols-[88px_1fr] sm:gap-3.5"
                 >
                   <p className="text-[11.5px] font-bold text-primary-deep">
                     {claim.label}
@@ -181,7 +181,7 @@ export function CandidateDetailView({ candidate, index, phase, tab }: Props) {
             </div>
           </section>
 
-          <section className="px-6 pb-7">
+          <section className="px-4 sm:px-6 pb-7">
             <div className="overflow-hidden rounded-xl border border-mirai-border">
               <div className="bg-mirai-light-gradient px-4 py-3.5">
                 <p className="font-lexend text-[8.5px] font-bold tracking-[0.2em] text-primary">
@@ -210,7 +210,7 @@ export function CandidateDetailView({ candidate, index, phase, tab }: Props) {
             </div>
           </section>
 
-          <section className="px-6 pb-7">
+          <section className="px-4 sm:px-6 pb-7">
             <h2 className="text-base font-bold text-mirai-text">
               分野別の言及
             </h2>
@@ -256,7 +256,7 @@ export function CandidateDetailView({ candidate, index, phase, tab }: Props) {
         </>
       )}
 
-      <section className="flex flex-col gap-2.5 px-6 pb-10 sm:flex-row">
+      <section className="flex flex-col gap-2.5 px-4 sm:px-6 pb-10 sm:flex-row">
         <Button asChild variant="outline" className="h-11 flex-1">
           <Link href="/election/2026">
             <ArrowLeft className="size-4" />
