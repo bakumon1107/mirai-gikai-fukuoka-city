@@ -136,7 +136,7 @@ export function CandidateDetailView({ candidate, index, phase, tab }: Props) {
                   <dt className="font-lexend text-[11px] font-medium text-mirai-text-muted">
                     {row.label}
                   </dt>
-                  <dd className="text-[12.5px] leading-[1.8] text-mirai-text-secondary text-pretty">
+                  <dd className="text-[12.5px] leading-[1.8] text-mirai-text-secondary">
                     {row.text}
                   </dd>
                 </div>
@@ -173,7 +173,7 @@ export function CandidateDetailView({ candidate, index, phase, tab }: Props) {
                   <p className="text-[11.5px] font-bold text-primary-deep">
                     {claim.label}
                   </p>
-                  <p className="text-[12.5px] leading-[1.85] text-mirai-text-secondary text-pretty">
+                  <p className="text-[12.5px] leading-[1.85] text-mirai-text-secondary">
                     {claim.text}
                   </p>
                 </div>
@@ -199,11 +199,11 @@ export function CandidateDetailView({ candidate, index, phase, tab }: Props) {
                     log={candidate.takashimaAssessment.log}
                   />
                 ) : (
-                  <p className="text-[12.5px] leading-[1.9] text-mirai-text-muted text-pretty">
+                  <p className="text-[12.5px] leading-[1.9] text-mirai-text-muted">
                     高島市政について述べている内容は、まだ確認できていません。
                   </p>
                 )}
-                <p className="mt-3 text-[10.5px] leading-[1.7] text-mirai-text-muted text-pretty">
+                <p className="mt-3 text-[10.5px] leading-[1.7] text-mirai-text-muted">
                   高島宗一郎市長は不出馬を表明しています。ここでの評価の対象は4期16年の市政であり、「継承」「転換」といった分類はこちらでは付けていません。
                 </p>
               </div>
@@ -214,7 +214,7 @@ export function CandidateDetailView({ candidate, index, phase, tab }: Props) {
             <h2 className="text-base font-bold text-mirai-text">
               分野別の言及
             </h2>
-            <p className="mt-1.5 text-[11.5px] leading-[1.8] text-mirai-text-muted text-pretty">
+            <p className="mt-1.5 text-[11.5px] leading-[1.8] text-mirai-text-muted">
               {ISSUES.length}
               分野すべてを同じ並び順で掲載しています。言及が確認できていない分野も「未表明」として省略せずに並べています。
             </p>

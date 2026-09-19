@@ -24,7 +24,7 @@ export function SnsChannels({ sns, candidateName }: Props) {
     return (
       <div className="rounded-xl border border-mirai-border bg-mirai-surface px-4.5 py-4">
         <p className="text-[13px] font-bold text-mirai-text">発信チャンネル</p>
-        <p className="mt-1.5 text-[11.5px] leading-[1.8] text-mirai-text-note text-pretty">
+        <p className="mt-1.5 text-[11.5px] leading-[1.8] text-mirai-text-note">
           {candidateName}
           の公式サイトやSNSは、いまのところ確認できていません。本人のものと確認できた時点で掲載します。
         </p>
@@ -100,7 +100,7 @@ export function SnsChannels({ sns, candidateName }: Props) {
             未確認：{unconfirmed.join("・")}
           </p>
         )}
-        <p className="mt-1 text-[10.5px] leading-[1.7] text-mirai-text-muted text-pretty">
+        <p className="mt-1 text-[10.5px] leading-[1.7] text-mirai-text-muted">
           本人のものと確認できたアカウントのみを掲載しています。内容の転載や埋め込みは行っていません。
         </p>
       </div>

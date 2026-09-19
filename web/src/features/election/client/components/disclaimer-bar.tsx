@@ -14,7 +14,7 @@ export function DisclaimerBar({ children }: Props) {
       <span className="shrink-0 mt-px rounded-sm border border-stance-neutral/40 px-1.5 py-0.5 text-[10px] font-bold text-stance-neutral">
         注記
       </span>
-      <p className="text-[11px] leading-[1.8] text-mirai-text-note text-pretty">
+      <p className="text-[11px] leading-[1.8] text-mirai-text-note">
         {children}
       </p>
     </div>

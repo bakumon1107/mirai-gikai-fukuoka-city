@@ -57,12 +57,12 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
           <p className="inline-flex items-center rounded-full border border-primary-darkest/35 px-3.5 py-1.5 font-lexend text-[9.5px] font-bold tracking-[0.2em] text-primary-darkest">
             FUKUOKA MAYORAL ELECTION
           </p>
-          <h1 className="mt-4 text-[30px] font-bold leading-[1.35] tracking-[-0.015em] text-mirai-text text-pretty">
+          <h1 className="mt-4 text-[30px] font-bold leading-[1.35] tracking-[-0.015em] text-mirai-text">
             福岡市長選挙
             <br />
             {noun}と争点
           </h1>
-          <p className="mt-3.5 max-w-[430px] text-[13px] leading-[1.95] text-mirai-text-secondary text-pretty">
+          <p className="mt-3.5 max-w-[430px] text-[13px] leading-[1.95] text-mirai-text-secondary">
             現職の高島宗一郎市長は不出馬を表明。出馬の意向を示した人から順に、公表内容を
             {ISSUES.length}
             つの分野で同じ物差しに並べていきます。評価や推薦は行いません。
@@ -198,7 +198,7 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
                     {candidate.party}
                   </span>
                 </div>
-                <p className="mt-2.5 text-xs leading-[1.85] text-mirai-text-secondary text-pretty">
+                <p className="mt-2.5 text-xs leading-[1.85] text-mirai-text-secondary">
                   {candidate.lead}
                 </p>
               </div>
@@ -221,7 +221,7 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
             <p className="text-[13px] font-bold text-mirai-text-secondary">
               ほかの出馬表明を待っています
             </p>
-            <p className="mx-auto mt-2 max-w-[400px] text-[11.5px] leading-[1.9] text-mirai-text-muted text-pretty">
+            <p className="mx-auto mt-2 max-w-[400px] text-[11.5px] leading-[1.9] text-mirai-text-muted">
               告示は{ELECTION_SCHEDULE.kokujiLabel}
               。新たに出馬を表明した人が確認できた時点で、同じ様式のカードと分野別の整理を追加します。現職の高島宗一郎市長は不出馬を表明しています。
             </p>
@@ -245,7 +245,7 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
               <span className="w-[22px] shrink-0 font-lexend text-[10px] font-bold tracking-[0.06em] text-primary">
                 {issue.no}
               </span>
-              <span className="min-w-0 flex-1 text-[13.5px] font-bold leading-[1.5] text-mirai-text text-pretty">
+              <span className="min-w-0 flex-1 text-[13.5px] font-bold leading-[1.5] text-mirai-text">
                 {issue.label}
               </span>
               <span className="shrink-0 whitespace-nowrap text-[10.5px] text-mirai-text-subtle">
@@ -318,7 +318,7 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
                 </span>
                 <ArrowUpRight className="size-3.5 text-primary" />
               </span>
-              <span className="text-[11px] leading-[1.7] text-mirai-text-subtle text-pretty">
+              <span className="text-[11px] leading-[1.7] text-mirai-text-subtle">
                 {link.description}
               </span>
             </Link>
