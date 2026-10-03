@@ -56,4 +56,18 @@ export const policyLinks: FooterPolicyLink[] = [
     label: "プライバシーポリシー",
     href: routes.privacy(),
   },
+  /**
+   * AGPL-3.0 第13条により、稼働中のバージョンのソースコード入手手段の提示が必要。
+   * siteConfig.sourceCodeUrl が空の場合は表示されない（＝ライセンス違反状態）ため、
+   * fork 時は必ず自身の公開リポジトリ URL を設定すること。
+   */
+  ...(siteConfig.sourceCodeUrl
+    ? [
+        {
+          label: "ソースコード（GitHub）",
+          href: siteConfig.sourceCodeUrl,
+          external: true,
+        },
+      ]
+    : []),
 ];

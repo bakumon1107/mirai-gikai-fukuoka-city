@@ -12,4 +12,6 @@ export const EXTERNAL_LINKS = {
   TERMS: siteConfig.externalLinks.terms,
   PRIVACY: siteConfig.externalLinks.privacy,
   FAQ: siteConfig.externalLinks.faq,
+  /** このサイト自身のソースコード公開先（AGPL-3.0 第13条） */
+  SOURCE_CODE: siteConfig.sourceCodeUrl,
 } as const;

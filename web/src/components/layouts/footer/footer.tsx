@@ -22,7 +22,11 @@ export function Footer() {
         {siteConfig.features.showTeamMiraiSection && <FooterLogoSection />}
         <FooterPrimaryLinks />
         <FooterPolicies />
-        {siteConfig.features.showTeamMiraiSection && <FooterCopyright />}
+        {siteConfig.features.showTeamMiraiSection ? (
+          <FooterCopyright />
+        ) : (
+          <FooterDisclaimer />
+        )}
       </div>
     </footer>
   );
@@ -91,6 +95,23 @@ function FooterPolicies() {
           </li>
         ))}
       </ul>
+    </div>
+  );
+}
+
+/**
+ * 非公式運営時の免責表示。
+ * 本家サービスとの混同を防ぐため、FORK_GUIDELINES で表示が required とされている文言。
+ * 運営者の立場（議員・会派等の利益相反）を開示する場合は siteConfig.operator.disclosure に設定する。
+ * @see FORK_GUIDELINES.md 5. 免責文言の表示
+ */
+function FooterDisclaimer() {
+  return (
+    <div className="mt-1 mb-3 flex flex-col gap-1 text-center text-[11px] text-slate-500">
+      <p>このサービスは政党チームみらいが運営しているものではありません</p>
+      {siteConfig.operator.disclosure && (
+        <p>{siteConfig.operator.disclosure}</p>
+      )}
     </div>
   );
 }

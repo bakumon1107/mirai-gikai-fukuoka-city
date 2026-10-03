@@ -27,8 +27,11 @@ export function BillShareButtonsClient({
     setIsModalOpen(false);
   };
 
+  // 報告フォームが未設定の場合はボタンを出さない（本家フォームへの誤誘導を防ぐ）
+  const reportUrl = siteConfig.externalLinks.report;
+
   const handleReport = () => {
-    window.open(siteConfig.externalLinks.report, "_blank");
+    window.open(reportUrl, "_blank");
   };
 
   return (
@@ -48,20 +51,22 @@ export function BillShareButtonsClient({
           />
           記事を共有する
         </Button>
-        <Button
-          variant="outline"
-          onClick={handleReport}
-          className="rounded-full px-6 py-3 h-auto font-bold text-base bg-white text-gray-800 hover:bg-gray-50 border-gray-800"
-        >
-          <Image
-            src="/icons/report-error.svg"
-            alt="報告アイコン"
-            width={26}
-            height={26}
-            className="shrink-0"
-          />
-          問題を報告する
-        </Button>
+        {reportUrl && (
+          <Button
+            variant="outline"
+            onClick={handleReport}
+            className="rounded-full px-6 py-3 h-auto font-bold text-base bg-white text-gray-800 hover:bg-gray-50 border-gray-800"
+          >
+            <Image
+              src="/icons/report-error.svg"
+              alt="報告アイコン"
+              width={26}
+              height={26}
+              className="shrink-0"
+            />
+            問題を報告する
+          </Button>
+        )}
       </div>
 
       {/* 共有モーダル */}

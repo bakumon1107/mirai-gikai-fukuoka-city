@@ -2,6 +2,11 @@ import Image from "next/image";
 import { EXTERNAL_LINKS } from "@/config/external-links";
 
 export function ReportProblemButton() {
+  // 報告フォームが未設定の場合は表示しない（本家フォームへの誤誘導を防ぐ）
+  if (!EXTERNAL_LINKS.REPORT) {
+    return null;
+  }
+
   return (
     <a
       href={EXTERNAL_LINKS.REPORT}
