@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { siteConfig } from "@/config/site.config";
 import { buildBillChatSystemHardPrompt } from "./bill-chat-system-hard";
 
 describe("buildBillChatSystemHardPrompt", () => {
@@ -23,10 +24,18 @@ describe("buildBillChatSystemHardPrompt", () => {
     expect(result).toContain("専門用語を正確に使用");
   });
 
-  it("みらい議会の説明が含まれる", () => {
+  it("設定されたサービス名・議会名が含まれる", () => {
     const result = buildBillChatSystemHardPrompt("a", "b", "c", "d");
 
-    expect(result).toContain("みらい議会");
-    expect(result).toContain("チームみらい");
+    expect(result).toContain(siteConfig.siteName);
+    expect(result).toContain(siteConfig.councilName);
+  });
+
+  it("非公式運営の設定では政党の紹介を含まない", () => {
+    expect(siteConfig.features.showTeamMiraiSection).toBe(false);
+
+    const result = buildBillChatSystemHardPrompt("a", "b", "c", "d");
+
+    expect(result).not.toContain("チームみらいの概要");
   });
 });
