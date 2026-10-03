@@ -1,5 +1,5 @@
 -- billsテーブルにstatusのソート順を表すgenerated columnを追加
--- 審議進行度順で並べるための整数カラム（川崎市議会版ステータス対応）
+-- 審議進行度順で並べるための整数カラム（地方議会版ステータス対応）
 ALTER TABLE bills ADD COLUMN status_order INT GENERATED ALWAYS AS (
   CASE status
     WHEN 'approved'        THEN 0

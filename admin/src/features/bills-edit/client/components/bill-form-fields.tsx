@@ -11,6 +11,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { siteConfig } from "@/config/site.config";
 import {
   Select,
   SelectContent,
@@ -290,7 +291,7 @@ export function BillFormFields({
             <FormControl>
               <Input
                 type="url"
-                placeholder="https://www.city.kawasaki.jp/..."
+                placeholder={`${siteConfig.councilBaseUrl}...`}
                 {...field}
                 value={field.value ?? ""}
               />
