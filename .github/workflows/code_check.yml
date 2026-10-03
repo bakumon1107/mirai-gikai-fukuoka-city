@@ -1,10 +1,11 @@
-name: Code Check kawasaki/develop
+name: Code Check
 
+# fork 時は自分のベースブランチ名に変更すること
 on:
   push:
-    branches: [kawasaki/develop]
+    branches: [base-local/develop]
   pull_request:
-    branches: [kawasaki/develop]
+    branches: [base-local/develop]
 
 jobs:
   lint-and-typecheck:

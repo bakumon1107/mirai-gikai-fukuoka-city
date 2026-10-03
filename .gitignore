@@ -5,6 +5,9 @@ node_modules
 .vscode
 .claude/worktrees
 
+# 調査・取り込み作業で生成する一時ファイル（議事録PDF等）
+tmp_*
+
 # env files
 .env
 .env.*

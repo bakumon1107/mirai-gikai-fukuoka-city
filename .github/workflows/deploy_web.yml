@@ -1,8 +1,15 @@
 name: Migrate DB then Deploy Web
 
+# このベーステンプレート（base-local/develop）は稼働サービスを持たないため、
+# push による自動デプロイは無効にしてある。
+#
+# fork 先で実際にデプロイする場合は、以下の2点を自分のベースブランチ名に変更すること。
+#   1. 下の `push: branches:` のコメントアウトを解除
+#   2. checkout の `ref:` を同じブランチ名に変更
+# あわせて SUPABASE_* / WEB_VERCEL_DEPLOY_HOOK_URL のシークレット設定が必要。
 on:
-  push:
-    branches: [kawasaki/develop]
+  # push:
+  #   branches: [your-base/develop]
   workflow_dispatch:
 
 jobs:
@@ -11,8 +18,6 @@ jobs:
     environment: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
     steps:
       - uses: actions/checkout@v5
-        with:
-          ref: kawasaki/develop
 
       # Supabase CLI セットアップ
       - uses: supabase/setup-cli@b60b5899c73b63a2d2d651b1e90db8d4c9392f51 # v1.6.0

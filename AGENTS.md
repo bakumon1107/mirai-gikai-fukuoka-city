@@ -9,28 +9,28 @@
 
 ```bash
 # 1. worktreeを作成
-git worktree add ../mirai-gikai-kawasaki-worktree/<branch-name> -b <branch-name>
+git worktree add ../mirai-gikai-local-worktree/<branch-name> -b <branch-name>
 
 # 2. settings.local.jsonをコピー（権限設定のため必須）
-mkdir -p ../mirai-gikai-kawasaki-worktree/<branch-name>/.claude
-cp .claude/settings.local.json ../mirai-gikai-kawasaki-worktree/<branch-name>/.claude/
+mkdir -p ../mirai-gikai-local-worktree/<branch-name>/.claude
+cp .claude/settings.local.json ../mirai-gikai-local-worktree/<branch-name>/.claude/
 
 # 3. .envをコピー（環境変数の引き継ぎ）
-cp .env ../mirai-gikai-kawasaki-worktree/<branch-name>/
+cp .env ../mirai-gikai-local-worktree/<branch-name>/
 
 # 4. 依存パッケージをインストール
-cd ../mirai-gikai-kawasaki-worktree/<branch-name> && pnpm install --frozen-lockfile
+cd ../mirai-gikai-local-worktree/<branch-name> && pnpm install --frozen-lockfile
 ```
 
-- **目的**: kawasaki/developブランチを常にクリーンに保ち、作業の分離と並列作業を容易にする
-- **重要**: worktreeは必ずプロジェクト外（`../mirai-gikai-kawasaki-worktree/`）に作成すること。プロジェクト内（`.claude/worktrees/` 等）に作成するとBiomeが「nested root configuration」エラーを起こす。
+- **目的**: base-local/developブランチを常にクリーンに保ち、作業の分離と並列作業を容易にする
+- **重要**: worktreeは必ずプロジェクト外（`../mirai-gikai-local-worktree/`）に作成すること。プロジェクト内（`.claude/worktrees/` 等）に作成するとBiomeが「nested root configuration」エラーを起こす。
 
 ### Worktreeクリーンアップ（必須）
 PR作成・マージ完了後は、不要になったworktreeを速やかに削除すること。放置するとディスクを圧迫し、Biome等のツールがエラーを起こす原因になる。
 
 ```bash
 # 1. worktreeを削除
-git worktree remove ../mirai-gikai-kawasaki-worktree/<branch-name>
+git worktree remove ../mirai-gikai-local-worktree/<branch-name>
 
 # 2. マージ済みブランチを削除
 git branch -d <branch-name>
@@ -42,10 +42,14 @@ git worktree prune
 ### 実装完了後は即PR作成
 実装完了後は「コミットしますか？」等の確認を挟まず、コミット → push → PR作成まで一気に進めること。ユーザーへの確認は不要。
 
-**ベースブランチは必ず `kawasaki/develop`**。`develop` や `main` へのPRは出さないこと。
+**ベースブランチは必ず `base-local/develop`**。`develop` や `main` へのPRは出さないこと。
 ```bash
-gh pr create --base kawasaki/develop ...
+gh pr create --base base-local/develop ...
 ```
+
+> fork 時はこのファイル内の `base-local/develop` と `../mirai-gikai-local-worktree/` を、
+> fork 先のベースブランチ名・worktree パスに一括置換してください。
+> 同じ値が `.github/workflows/` と `.claude/` 配下にもあります。
 
 ### セルフレビュー必須
 実装完了後（コミット前）に、必ず `/review` スキルを実行してセルフレビューを受けること。`/review` はCodexレビュー・`test-guidelines-checker` によるテストガイドラインチェック・`code-quality-checker` によるコード品質チェックを同時に実行する。指摘があれば修正してからコミットする。
