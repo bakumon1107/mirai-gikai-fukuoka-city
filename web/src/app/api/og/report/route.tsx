@@ -1,6 +1,8 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
+import { brandColors, brandGradient } from "@/config/brand";
+import { siteConfig } from "@/config/site.config";
 import { getReportOgData } from "@/features/interview-report/server/loaders/get-report-og-data";
 import { truncateText } from "@/features/interview-report/shared/utils/truncate-text";
 
@@ -129,8 +131,7 @@ export async function GET(request: Request) {
           width: 1140,
           height: 560,
           borderRadius: 30,
-          backgroundImage:
-            "linear-gradient(-30deg, rgb(188, 236, 211) 1%, rgb(100, 216, 198) 99%)",
+          backgroundImage: brandGradient,
           padding: 6,
           position: "relative",
         }}
@@ -168,7 +169,7 @@ export async function GET(request: Request) {
               display: "flex",
               fontSize: 32,
               fontWeight: 800,
-              color: "#0f8472",
+              color: brandColors.primaryAccent,
               lineHeight: 1.5,
             }}
           >
@@ -191,8 +192,7 @@ export async function GET(request: Request) {
             paddingBottom: 10,
             borderBottomLeftRadius: 30,
             borderTopRightRadius: 30,
-            backgroundImage:
-              "linear-gradient(-30deg, rgb(188, 236, 211) 1%, rgb(100, 216, 198) 99%)",
+            backgroundImage: brandGradient,
           }}
         >
           <span
@@ -203,7 +203,7 @@ export async function GET(request: Request) {
               letterSpacing: "0.03em",
             }}
           >
-            みらい議会
+            {siteConfig.siteName}
           </span>
         </div>
 
@@ -211,7 +211,7 @@ export async function GET(request: Request) {
         {logoDataUrl && (
           // biome-ignore lint/performance/noImgElement: ignore
           <img
-            alt="チームみらいロゴ"
+            alt={`${siteConfig.siteName}ロゴ`}
             src={logoDataUrl}
             width={189}
             height={160}

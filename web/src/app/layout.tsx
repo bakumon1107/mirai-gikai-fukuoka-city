@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata, Viewport } from "next";
 import { Lexend_Giga, Noto_Sans_JP } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
+import { brandColors } from "@/config/brand";
 import { siteConfig } from "@/config/site.config";
 import type { ReactNode } from "react";
 import { env } from "@/lib/env";
@@ -67,7 +68,8 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
-  themeColor: "#2aa693",
+  /** globals.css の --primary と揃えること（FORK_GUIDELINES 4. カラーテーマの変更） */
+  themeColor: "#4f6d8c",
 };
 
 export default function RootLayout({
@@ -80,7 +82,7 @@ export default function RootLayout({
       <body
         className={`${notoSansJP.variable} ${lexendGiga.variable} font-sans antialiased bg-mirai-surface-light`}
       >
-        <NextTopLoader showSpinner={false} color="#2aa693" />
+        <NextTopLoader showSpinner={false} color={brandColors.primary} />
         {children}
       </body>
     </html>

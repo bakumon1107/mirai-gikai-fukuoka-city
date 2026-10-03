@@ -104,9 +104,14 @@
   --color-mirai-progress-track: #d9d9d9;
   --color-mirai-progress-fill: #a9e89d;
 
-  /* Gradient endpoints */
-  --color-mirai-gradient-start: #64d8c6;
-  --color-mirai-gradient-end: #bcecd3;
+  /*
+   * Gradient endpoints
+   * ★ 本家（team-mirai）と同じグラデーションは使用しないこと。
+   * 下記はニュートラルなプレースホルダーのため、fork 時に独自の配色へ変更する。
+   * @see FORK_GUIDELINES.md 4. カラーテーマの変更
+   */
+  --color-mirai-gradient-start: #9fc0d8;
+  --color-mirai-gradient-end: #cfe1ec;
 }
 
 :root {
@@ -117,8 +122,15 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: #2aa693;
-  --primary-accent: #0f8472;
+  /*
+   * ★ primary カラーは本家（team-mirai）と同じ値を使用しないこと。
+   * 下記はニュートラルなプレースホルダーのため、fork 時に独自の配色へ変更する。
+   * 変更時は layout.tsx の themeColor と web/public/manifest.json の
+   * theme_color も合わせて更新すること。
+   * @see FORK_GUIDELINES.md 4. カラーテーマの変更
+   */
+  --primary: #4f6d8c;
+  --primary-accent: #37506b;
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
