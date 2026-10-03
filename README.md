@@ -9,6 +9,9 @@ fork できるよう、地域固有の情報を設定ファイルに集約して
 
 ## fork するときに必ず読むもの
 
+0. **その自治体で何が作れるか調べる** — 議会サイトの公開範囲は自治体ごとにまったく違います。
+   `/council-survey <自治体名>` スキルで調査してから着手してください
+   （[判定軸とテンプレート](.claude/skills/council-survey/SKILL.md)）。
 1. **[FORK_GUIDELINES.md](FORK_GUIDELINES.md)** — 本家リポジトリが定める fork ガイドライン。
    AGPL-3.0 第7条に基づく追加条件であり、**遵守は任意ではありません**。
    原本は [team-mirai/mirai-gikai](https://github.com/team-mirai/mirai-gikai/blob/develop/FORK_GUIDELINES.md) にあります。
