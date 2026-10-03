@@ -1,26 +1,42 @@
-# みらい議会ー川崎版
+# みらい議会 地方議会版 ベーステンプレート
 
-https://mirai-gikai-kawasaki-web.vercel.app/
-※後でドメイン変更するかもしれない
+チームみらいが開発・公開している [みらい議会](https://github.com/team-mirai/mirai-gikai)（国会版）を、
+**地方議会向けに汎用化したベーステンプレート**です。市議会・県議会・町村議会のいずれにも
+fork できるよう、地域固有の情報を設定ファイルに集約しています。
 
-## 注意事項
-- このプロジェクトは「チームみらい」が開発・運営している「みらい議会」をForkして開発したものとなります。  
-- **非公式**ですので、ここでの不具合や気になる点についての問い合わせは  
-  党公式ではなく[GondoTakashi](https://x.com/TakashiGondo)にご連絡ください。
+このブランチ自体は稼働サービスではありません。実際のサービスを立ち上げる場合は、
+このテンプレートを fork して自地域向けに設定してください。
 
-## 他地方議会向けForkガイド
-- 他の市議会・県議会等のバージョンを作成したい場合は、  
-  以下のドキュメントを参考にすると早いと思います  
-  [fork手順](docs/kawasaki/20260304_1000_別地域向けfork手順.md)
+## fork するときに必ず読むもの
+
+1. **[FORK_GUIDELINES.md](FORK_GUIDELINES.md)** — 本家リポジトリが定める fork ガイドライン。
+   AGPL-3.0 第7条に基づく追加条件であり、**遵守は任意ではありません**。
+   原本は [team-mirai/mirai-gikai](https://github.com/team-mirai/mirai-gikai/blob/develop/FORK_GUIDELINES.md) にあります。
+2. **[別地域向け fork 手順](docs/20260304_1000_別地域向けfork手順.md)** — 実際の変更手順。
+
+### 最低限やること
+
+| 項目 | 変更場所 | 根拠 |
+|---|---|---|
+| サービス名を「みらい議会＠地域名」形式にする | `web/src/config/site.config.ts` の `siteName` | FORK_GUIDELINES 1 |
+| ロゴ・アイコンを独自のものに差し替える | `web/public/img/logo.svg`、`web/public/icons/pwa/` | FORK_GUIDELINES 2 |
+| OGP画像・ヒーロー画像を差し替える | `web/public/ogp.jpg`、`web/public/img/hero_background.png` | FORK_GUIDELINES 3 |
+| カラーテーマを独自の配色に変える | `web/src/app/globals.css`、`web/src/config/brand.ts` | FORK_GUIDELINES 4 |
+| 免責文言を表示する | `features.showTeamMiraiSection` を `false` に（既定） | FORK_GUIDELINES 5 |
+| **自分のリポジトリURLを設定する** | `web/src/config/site.config.ts` の `sourceCodeUrl` | FORK_GUIDELINES 6 / AGPL §13 |
+| 運営者情報・立場の開示を書く | `web/src/config/site.config.ts` の `operator` | — |
+
+> [!IMPORTANT]
+> `sourceCodeUrl` は **稼働中のバージョンのソースコードが置かれた公開リポジトリ** を指す必要があります。
+> 本家リポジトリの URL では代用できません（AGPL-3.0 第13条）。空のままだとフッターにリンクが出ず、
+> ライセンス違反の状態になります。
+
+本テンプレートに同梱されているロゴ・配色はニュートラルなプレースホルダーです。
+そのまま公開せず、必ず独自のものに差し替えてください。
 
 ---
 
-# みらい議会
-
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/team-mirai-volunteer/mirai-gikai)
-[![codecov](https://codecov.io/gh/team-mirai/mirai-gikai/branch/develop/graph/badge.svg)](https://codecov.io/gh/team-mirai/mirai-gikai)
-
-## セットアップ
+# セットアップ
 
 ```bash
 # Supabaseの起動
@@ -62,3 +78,8 @@ WHERE email = '<1で作成したユーザーのemail>';
 
 > [!NOTE]
 > 開発環境では、seedデータによって、`email: admin@example.com, password: admin123456` のAdminユーザーが作成されます。
+
+## ライセンス
+
+[AGPL-3.0](LICENSE)。fork 版をネットワーク経由で提供する場合は、改変後のソースコードを
+利用者が入手できる状態にする義務があります（第13条）。詳細は [FORK_GUIDELINES.md](FORK_GUIDELINES.md) を参照してください。
