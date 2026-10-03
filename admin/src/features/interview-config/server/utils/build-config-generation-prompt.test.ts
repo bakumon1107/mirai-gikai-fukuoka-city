@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
+import { siteConfig } from "@/config/site.config";
 import { buildConfigGenerationPrompt } from "./build-config-generation-prompt";
+
+/** 住民の呼称は地域ごとに異なるため、設定値から組み立てて検証する */
+const baseRoleText = `${siteConfig.residentTerm}インタビューの設計を支援する専門家です`;
 
 const baseParams = {
   billName: "テスト法案",
@@ -13,7 +17,7 @@ describe("buildConfigGenerationPrompt", () => {
   describe("共通部分", () => {
     it("ベースロール（専門家の役割）を含む", () => {
       const result = buildConfigGenerationPrompt(baseParams);
-      expect(result).toContain("市民インタビューの設計を支援する専門家です");
+      expect(result).toContain(baseRoleText);
     });
 
     it("法案情報セクションを含む", () => {
@@ -121,7 +125,7 @@ describe("buildConfigGenerationPrompt", () => {
         ...baseParams,
         stage: "theme_confirmed" as "theme_proposal",
       });
-      expect(result).toContain("市民インタビューの設計を支援する専門家です");
+      expect(result).toContain(baseRoleText);
       expect(result).not.toContain("テーマ提案のガイドライン");
       expect(result).not.toContain("質問提案のガイドライン");
     });

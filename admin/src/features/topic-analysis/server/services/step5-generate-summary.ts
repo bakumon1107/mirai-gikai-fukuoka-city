@@ -1,6 +1,7 @@
 import "server-only";
 
 import { generateObject } from "ai";
+import { siteConfig } from "@/config/site.config";
 import { overallSummarySchema } from "../../shared/schemas";
 
 type TopicSummaryInput = {
@@ -31,7 +32,7 @@ export async function generateOverallSummary(
   const result = await generateObject({
     model,
     schema: overallSummarySchema,
-    prompt: `あなたは市民意見の分析レポートの全体サマリを作成します。
+    prompt: `あなたは${siteConfig.residentTerm}意見の分析レポートの全体サマリを作成します。
 
 ## 法案
 ${billTitle}
@@ -47,7 +48,7 @@ ${billTitle}
 ### ルール
 - markdown形式で記述してください。ただし見出し（#, ##, ### など）は使わず、段落と太字（**）のみで構成してください
 - 太字（**）は短いキーワードや数値（例: **健康被害に関するトピック（76件）**）にのみ使い、文をまたいで長い範囲に適用しないでください
-- 市民意見の全体的な傾向を簡潔にまとめてください
+- ${siteConfig.residentTerm}意見の全体的な傾向を簡潔にまとめてください
 - 特に多くの意見が集まったトピックや、対立する意見が見られるトピックに注目してください
 - 数値（意見数、セッション数）を適切に引用してください
 

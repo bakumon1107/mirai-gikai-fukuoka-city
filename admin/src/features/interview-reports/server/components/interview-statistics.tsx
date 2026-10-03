@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 
 import { Card, CardContent } from "@/components/ui/card";
+import { siteConfig } from "@/config/site.config";
 import type { InterviewStatistics as InterviewStatisticsType } from "../../shared/types";
 import { formatDurationSeconds } from "../../shared/utils/format-average-duration";
 
@@ -121,7 +122,7 @@ function RoleDistribution({
       color: "bg-role-daily-life-affected",
     },
     {
-      label: "一般市民",
+      label: `一般${siteConfig.residentTerm}`,
       count: generalCitizen,
       color: "bg-role-general-citizen",
     },

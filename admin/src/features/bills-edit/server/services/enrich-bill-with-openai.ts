@@ -30,7 +30,7 @@ export async function enrichBillWithOpenAi(
     ? `\n\n## 定例会情報\n${sessionInfo}\n\n**重要**: コンテンツ内で定例会の日程に言及する場合は、必ず上記の正確な日付を使用してください。`
     : "";
 
-  const systemPrompt = `あなたは${siteConfig.councilName}の議案について調査し、市民向けのコンテンツを作成する専門家です。
+  const systemPrompt = `あなたは${siteConfig.councilName}の議案について調査し、${siteConfig.residentTerm}向けのコンテンツを作成する専門家です。
 
 Web検索を使って議案の詳細情報を収集し、以下の2種類のコンテンツをJSON形式で返してください。
 
@@ -38,7 +38,7 @@ Web検索を使って議案の詳細情報を収集し、以下の2種類のコ�
 - content: 専門用語を含む詳細な説明（Markdown形式）。末尾に「## 参照」セクションを設けて参照URLをリスト形式で記載
 - summary: content の要約（500文字以内）
 
-**ふつうバージョン（normal）** - 一般市民向け:
+**ふつうバージョン（normal）** - 一般${siteConfig.residentTerm}向け:
 - title: 現在のタイトル「${existingHardTitle || billName}」に専門用語が含まれていれば日常語に言い換えたタイトル。専門用語がなければそのまま
 - content: hard の content の専門用語を可能な限り平易な言葉に置き換えた説明（Markdown形式）
 - summary: normal の content の要約（500文字以内）

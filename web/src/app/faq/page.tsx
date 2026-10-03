@@ -25,7 +25,8 @@ const faqs: FaqItem[] = [
     answer: (
       <>
         {siteConfig.siteDescription}
-        。議案の情報収集や解説にAIを活用し、市民の皆さまが議会の動向を把握しやすくすることを目的としています。
+        。議案の情報収集や解説にAIを活用し、{siteConfig.residentTerm}
+        の皆さまが議会の動向を把握しやすくすることを目的としています。
       </>
     ),
   },

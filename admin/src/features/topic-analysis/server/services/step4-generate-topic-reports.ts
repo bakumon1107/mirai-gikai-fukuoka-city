@@ -1,6 +1,7 @@
 import "server-only";
 
 import { generateObject } from "ai";
+import { siteConfig } from "@/config/site.config";
 import { TOPIC_ANALYSIS_MAX_CONCURRENCY } from "../../shared/constants";
 import { topicReportSchema } from "../../shared/schemas";
 import type { FlatOpinion, RepresentativeOpinion } from "../../shared/types";
@@ -68,7 +69,7 @@ async function generateSingleTopicReport(
   const result = await generateObject({
     model,
     schema: topicReportSchema,
-    prompt: `あなたは市民意見の分析レポートを作成します。
+    prompt: `あなたは${siteConfig.residentTerm}意見の分析レポートを作成します。
 
 ## 法案
 ${billTitle}

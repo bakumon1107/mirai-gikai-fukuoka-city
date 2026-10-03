@@ -1,3 +1,4 @@
+import { siteConfig } from "@/config/site.config";
 import { AI_MODELS } from "@/lib/ai/models";
 
 /**
@@ -37,7 +38,7 @@ export const aiFeatureConfigs: AiFeatureConfig[] = [
     provider: "OpenAI",
     model: AI_MODELS.gpt5_2,
     modelCategory: "text",
-    description: "市民向けインタビュー対話。議案ごとにモデル変更可能。",
+    description: `${siteConfig.residentTerm}向けインタビュー対話。議案ごとにモデル変更可能。`,
   },
   {
     id: "config-generation",

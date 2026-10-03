@@ -1,6 +1,7 @@
 import "server-only";
 
 import { generateObject } from "ai";
+import { siteConfig } from "@/config/site.config";
 import {
   TOPIC_ANALYSIS_BATCH_SIZE,
   TOPIC_ANALYSIS_MAX_CONCURRENCY,
@@ -68,7 +69,7 @@ async function extractTopicsFromBatch(
       generateObject({
         model,
         schema: topicExtractionSchema,
-        prompt: `あなたは議案に対する市民の意見を分析する専門家です。
+        prompt: `あなたは議案に対する${siteConfig.residentTerm}の意見を分析する専門家です。
 
 ## 議案情報
 タイトル: ${billTitle}

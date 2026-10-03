@@ -1,6 +1,7 @@
 import "server-only";
 
 import { generateObject } from "ai";
+import { siteConfig } from "@/config/site.config";
 import { topicMergeSchema } from "../../shared/schemas";
 
 /**
@@ -19,7 +20,7 @@ export async function mergeTopics(
   const { object } = await generateObject({
     model,
     schema: topicMergeSchema,
-    prompt: `あなたは日本の法案に関する市民意見のトピック整理を行います。
+    prompt: `あなたは${siteConfig.councilName}の議案に関する${siteConfig.residentTerm}意見のトピック整理を行います。
 
 ## 法案
 ${billTitle}
