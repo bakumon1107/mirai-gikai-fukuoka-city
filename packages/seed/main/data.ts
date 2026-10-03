@@ -1,3 +1,14 @@
+/**
+ * 開発用シードデータ
+ *
+ * 架空の自治体「サンプル市」を題材にしたダミーデータです。
+ * 条例名・金額・統計・比較対象の自治体はすべて架空のもので、
+ * 実在の自治体の実データではありません。
+ *
+ * fork 時は自地域の定例会・会派・委員会・議案に差し替えてください。
+ * @see docs/20260304_1000_別地域向けfork手順.md セクション2
+ */
+
 import type { Database } from "@mirai-gikai/supabase";
 
 type BillInsert = Database["public"]["Tables"]["bills"]["Insert"];
@@ -26,7 +37,7 @@ export const councilSessions: CouncilSessionInsert[] = [
     name: "令和7年 第4回定例会",
     slug: "r7-4",
     council_url:
-      "https://www.city.kawasaki.jp/980/page/0000020940.html",
+      "https://www.example.lg.jp/gikai/teireikai/",
     start_date: "2025-11-25",
     end_date: "2025-12-20",
     is_active: true,
@@ -35,7 +46,7 @@ export const councilSessions: CouncilSessionInsert[] = [
     name: "令和7年 第3回定例会",
     slug: "r7-3",
     council_url:
-      "https://www.city.kawasaki.jp/980/page/0000020940.html",
+      "https://www.example.lg.jp/gikai/teireikai/",
     start_date: "2025-09-01",
     end_date: "2025-10-15",
     is_active: false,
@@ -120,7 +131,7 @@ export const tags: TagInsert[] = [
 
 export const bills: BillInsert[] = [
   {
-    name: "川崎市子ども医療費助成条例の一部改正",
+    name: "サンプル市子ども医療費助成条例の一部改正",
     status: "in_committee",
     status_note: "文教委員会で審査中",
     published_at: "2025-11-25T09:00:00+09:00",
@@ -129,7 +140,7 @@ export const bills: BillInsert[] = [
     thumbnail_url: "https://placehold.co/600x400",
   },
   {
-    name: "川崎市地域包括ケアシステム推進条例",
+    name: "サンプル市地域包括ケアシステム推進条例",
     status: "approved",
     status_note: "本会議で可決",
     published_at: "2025-09-15T10:00:00+09:00",
@@ -138,7 +149,7 @@ export const bills: BillInsert[] = [
     thumbnail_url: "https://placehold.co/600x400",
   },
   {
-    name: "川崎市公園条例の一部改正",
+    name: "サンプル市公園条例の一部改正",
     status: "rejected",
     status_note: "本会議で否決",
     published_at: "2025-10-01T09:00:00+09:00",
@@ -147,7 +158,7 @@ export const bills: BillInsert[] = [
     thumbnail_url: "https://placehold.co/600x400",
   },
   {
-    name: "川崎市学校給食費の無償化に関する条例",
+    name: "サンプル市学校給食費の無償化に関する条例",
     status: "approved",
     status_note: "本会議で可決、来年度から実施",
     published_at: "2025-09-10T09:00:00+09:00",
@@ -156,7 +167,7 @@ export const bills: BillInsert[] = [
     thumbnail_url: "https://placehold.co/600x400",
   },
   {
-    name: "川崎市防災対策基本条例の一部改正",
+    name: "サンプル市防災対策基本条例の一部改正",
     status: "rejected",
     status_note: "本会議で否決",
     published_at: "2025-09-20T10:00:00+09:00",
@@ -172,11 +183,11 @@ export function createBillsTags(
   insertedTags: { id: string; label: string }[]
 ): Omit<BillsTagsInsert, "id" | "created_at">[] {
   const billTagMap: { [billName: string]: string[] } = {
-    "川崎市子ども医療費助成条例の一部改正": ["子育て・教育"],
-    "川崎市地域包括ケアシステム推進条例": ["福祉・医療"],
-    "川崎市公園条例の一部改正": ["まちづくり・環境"],
-    "川崎市学校給食費の無償化に関する条例": ["子育て・教育"],
-    "川崎市防災対策基本条例の一部改正": ["まちづくり・環境"],
+    "サンプル市子ども医療費助成条例の一部改正": ["子育て・教育"],
+    "サンプル市地域包括ケアシステム推進条例": ["福祉・医療"],
+    "サンプル市公園条例の一部改正": ["まちづくり・環境"],
+    "サンプル市学校給食費の無償化に関する条例": ["子育て・教育"],
+    "サンプル市防災対策基本条例の一部改正": ["まちづくり・環境"],
   };
 
   const billsTags: Omit<BillsTagsInsert, "id" | "created_at">[] = [];
@@ -206,11 +217,11 @@ const factionStancesData: Omit<
     type: "for",
     comment: `子どもの医療費助成の拡充は、子育て世代の経済的負担を軽減する重要な施策です。
 
-川崎市の子育て環境をより良くし、安心して子育てできるまちづくりに貢献すると考えます。`,
+サンプル市の子育て環境をより良くし、安心して子育てできるまちづくりに貢献すると考えます。`,
   },
   {
     type: "for",
-    comment: `高齢化が進む中、地域包括ケアシステムの推進は川崎市にとって重要な課題です。
+    comment: `高齢化が進む中、地域包括ケアシステムの推進はサンプル市にとって重要な課題です。
 
 医療・介護・予防・住まい・生活支援を一体的に提供する体制の整備は、市民の安心につながります。`,
   },
@@ -224,7 +235,7 @@ const factionStancesData: Omit<
     type: "for",
     comment: `学校給食の無償化は、子育て支援と教育の充実を同時に実現する重要な政策です。
 
-全ての子どもが質の高い食事を平等に受けられることは、健康格差の解消にもつながります。川崎市の地元食材を活用した食育の推進も期待できます。`,
+全ての子どもが質の高い食事を平等に受けられることは、健康格差の解消にもつながります。サンプル市の地元食材を活用した食育の推進も期待できます。`,
   },
   {
     type: "against",
@@ -595,7 +606,7 @@ export function createDemoMessages(): Omit<
       interview_session_id: DEMO_SESSION_ID,
       role: "assistant",
       content:
-        "こんにちは！本日はインタビューにご協力いただきありがとうございます。\n\n川崎市議会で審議されている議案について、市民の皆さまのご意見をお聞かせください。この議案について、どのようにお考えですか？",
+        "こんにちは！本日はインタビューにご協力いただきありがとうございます。\n\nサンプル市議会で審議されている議案について、市民の皆さまのご意見をお聞かせください。この議案について、どのようにお考えですか？",
     },
     {
       interview_session_id: DEMO_SESSION_ID,
@@ -607,7 +618,7 @@ export function createDemoMessages(): Omit<
       interview_session_id: DEMO_SESSION_ID,
       role: "assistant",
       content:
-        "なるほど。市政のデジタル化を通じて、行政サービスの効率化と市民の利便性向上を期待されているということですね。とても重要な指摘だと思います。\n\n具体的に、川崎市のどのような行政手続きや窓口サービスがデジタル化されると良いとお考えですか？",
+        "なるほど。市政のデジタル化を通じて、行政サービスの効率化と市民の利便性向上を期待されているということですね。とても重要な指摘だと思います。\n\n具体的に、サンプル市のどのような行政手続きや窓口サービスがデジタル化されると良いとお考えですか？",
     },
     {
       interview_session_id: DEMO_SESSION_ID,
@@ -635,7 +646,7 @@ export function createDemoReport(): InterviewReportInsert {
     role: "subject_expert",
     role_title: "フォワーダー",
     role_description:
-      "川崎市在住の会社員\n行政手続きの煩雑さを日常的に感じている",
+      "サンプル市在住の会社員\n行政手続きの煩雑さを日常的に感じている",
     opinions: [
       {
         title:
@@ -793,7 +804,7 @@ export function createAdditionalDemoReports(): InterviewReportInsert[] {
       role: "work_related",
       role_title: "運送会社経営者",
       role_description:
-        "川崎市在住の共働き世帯\n子ども2人\n医療費の負担を日常的に感じている",
+        "サンプル市在住の共働き世帯\n子ども2人\n医療費の負担を日常的に感じている",
       opinions: [
         {
           title: "子どもの医療費負担が大きい",
@@ -813,7 +824,7 @@ export function createAdditionalDemoReports(): InterviewReportInsert[] {
       role: "daily_life_affected",
       role_title: "主婦",
       role_description:
-        "川崎市在住の主婦\n小さい子ども2人の子育て中\n医療費の自己負担を日常的に感じている",
+        "サンプル市在住の主婦\n小さい子ども2人の子育て中\n医療費の自己負担を日常的に感じている",
       opinions: [
         {
           title: "子どもの医療費負担が大きい",
@@ -833,7 +844,7 @@ export function createAdditionalDemoReports(): InterviewReportInsert[] {
       role: "general_citizen",
       role_title: "会社員",
       role_description:
-        "川崎市在住の会社員\n子育て支援に関心あり\n市の財政にも関心がある",
+        "サンプル市在住の会社員\n子育て支援に関心あり\n市の財政にも関心がある",
       opinions: [
         {
           title: "財源と子育て支援のバランス",
