@@ -22,9 +22,7 @@ export const metadata: Metadata = {
   title: `${siteConfig.siteName} Admin`,
   description: `${siteConfig.siteName}の管理者向けダッシュボード`,
   icons: {
-    icon: isDev
-      ? "/icons/pwa/icon_dev_192_v3.png"
-      : "/icons/pwa/icon_android_192.png",
+    icon: isDev ? "/icons/pwa/icon_admin_dev.svg" : "/icons/pwa/icon_admin.svg",
   },
 };
 
