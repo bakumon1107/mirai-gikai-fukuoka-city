@@ -21,6 +21,7 @@ fork できるよう、地域固有の情報を設定ファイルに集約して
 
 | 項目 | 変更場所 | 根拠 |
 |---|---|---|
+| **自地域のブランチへ切り替える** | `<地域>/develop` を作成し、GitHub のデフォルトブランチと `.github/`・`AGENTS.md`・`.claude/` の参照を変更 | fork手順 セクション4 |
 | サービス名を「みらい議会＠地域名」形式にする | `web/src/config/site.config.ts` の `siteName` | FORK_GUIDELINES 1 |
 | ロゴ・アイコンを独自のものに差し替える | `web/public/img/logo.svg`、`web/public/icons/pwa/` | FORK_GUIDELINES 2 |
 | OGP画像・ヒーロー画像を差し替える | `web/public/ogp.jpg`、`web/public/img/hero_background.png` | FORK_GUIDELINES 3 |
