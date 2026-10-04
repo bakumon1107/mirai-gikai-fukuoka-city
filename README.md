@@ -43,6 +43,10 @@ fork できるよう、地域固有の情報を設定ファイルに集約して
 # セットアップ
 
 ```bash
+# テンプレートを手元に置く
+git clone --branch base-local/develop <このリポジトリのURL> mirai-gikai-<地域>
+cd mirai-gikai-<地域>
+
 # Supabaseの起動
 npx supabase start
 
