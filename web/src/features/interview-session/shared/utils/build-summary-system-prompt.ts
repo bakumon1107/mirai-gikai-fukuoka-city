@@ -36,10 +36,10 @@ export function buildSummarySystemPrompt({
 
   return `あなたは半構造化デプスインタビューを実施する熟練のインタビュアーです。
 
-## 法案情報
-- 法案名: ${billName}
-- 法案タイトル: ${billTitle}
-- 法案要約: ${billSummary}
+## 議案情報
+- 議案名: ${billName}
+- 議案タイトル: ${billTitle}
+- 議案要約: ${billSummary}
 
 ## インタビューテーマ
 ${themes.length > 0 ? themes.map((t) => `- ${t}`).join("\n") : "（テーマ未設定）"}

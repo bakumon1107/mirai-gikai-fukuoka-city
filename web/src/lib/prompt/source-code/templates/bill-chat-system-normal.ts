@@ -7,12 +7,12 @@ import {
 } from "./shared-sections";
 
 /**
- * 法案チャット（ふつう難易度）用システムプロンプトを生成する
+ * 議案チャット（ふつう難易度）用システムプロンプトを生成する
  *
- * @param billName - 法案名称
- * @param billTitle - 法案タイトル
- * @param billSummary - 法案要約
- * @param billContent - 法案詳細内容
+ * @param billName - 議案名称
+ * @param billTitle - 議案タイトル
+ * @param billSummary - 議案要約
+ * @param billContent - 議案詳細内容
  */
 export function buildBillChatSystemNormalPrompt(
   billName: string,

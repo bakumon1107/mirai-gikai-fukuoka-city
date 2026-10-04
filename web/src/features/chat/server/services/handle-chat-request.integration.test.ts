@@ -134,7 +134,7 @@ describe("handleChatRequest 統合テスト", () => {
       const messages = createTestMessages({
         pageContext: {
           type: "home",
-          bills: [{ id: "bill-1", name: "テスト法案" }],
+          bills: [{ id: "bill-1", name: "テスト議案" }],
         },
       });
 

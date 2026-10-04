@@ -22,7 +22,7 @@ export async function mergeTopics(
     schema: topicMergeSchema,
     prompt: `あなたは${siteConfig.councilName}の議案に関する${siteConfig.residentTerm}意見のトピック整理を行います。
 
-## 法案
+## 議案
 ${billTitle}
 
 ## タスク

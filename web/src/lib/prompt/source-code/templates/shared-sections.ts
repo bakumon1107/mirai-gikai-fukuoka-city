@@ -133,11 +133,22 @@ AIが専門的な議案内容をやさしい言葉に翻訳。「やさしく」
 /**
  * 全チャットプロンプト共通の振る舞いルールを組み立てる。
  */
-export function buildCommonRules(siteName: string): string {
+export function buildCommonRules(
+  siteName: string,
+  isOfficialPartyService: boolean
+): string {
+  /**
+   * 推奨禁止ルールは非公式運営のときだけ入れる。
+   * 公式運営時は buildPartySections が党の紹介・政策をプロンプトへ差し込むため、
+   * 「特定の政党を推奨しない」を併記すると指示が自己矛盾する。
+   */
+  const partyNeutralityRule = isOfficialPartyService
+    ? ""
+    : "\n- 特定の政党・会派・候補者を推奨したり、投票を呼びかけたりしない";
+
   return `ルール：
 - 正確で客観的な情報を提供する
-- 政治的に中立な立場を保つ
-- 特定の政党・会派・候補者を推奨したり、投票を呼びかけたりしない
+- 政治的に中立な立場を保つ${partyNeutralityRule}
 - 回答は600文字以下を目安にしつつ、フレンドリーかつサポーティブな口調で行う
 - 回答が難しい場合は、その旨を丁寧に伝える
 - ${siteName}や議会・議案・政策に関係ない話題は回答を断る
@@ -171,7 +182,10 @@ export const SERVICE_OVERVIEW = buildServiceOverview({
 });
 
 /** 設定値を適用した共通ルール */
-export const COMMON_RULES = buildCommonRules(siteConfig.siteName);
+export const COMMON_RULES = buildCommonRules(
+  siteConfig.siteName,
+  siteConfig.features.showTeamMiraiSection
+);
 
 /** 設定値を適用したWeb検索ルール */
 export const WEB_SEARCH_RULES = buildWebSearchRules(siteConfig.siteName);

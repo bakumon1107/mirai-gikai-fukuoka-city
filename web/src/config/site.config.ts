@@ -72,7 +72,13 @@ export const siteConfig = {
     teamAbout: "https://team-mir.ai/about",
     terms: "https://team-mir.ai/terms",
     privacy: "https://team-mir.ai/privacy",
-    /** ★ よくある質問の外部ページ（本家の Notion を流用しないこと。空なら /faq を使用） */
+    /**
+     * よくある質問の外部ページ（本家の Notion を流用しないこと）。
+     *
+     * NOTE: 現在この値はどこからも参照されていない。FAQ はアプリ内の `/faq`
+     * （web/src/app/faq/page.tsx）で完結しているため、外部ページへ差し替えたい場合は
+     * 参照側の実装を追加する必要がある。設定するだけでは切り替わらない。
+     */
     faq: "",
   },
   /**

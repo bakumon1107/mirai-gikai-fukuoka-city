@@ -165,7 +165,7 @@ export function useConfigGenerationChat({
           id: "greeting",
           role: "assistant",
           content:
-            "インタビュー設定アシスタントです。法案内容を分析して、テーマと質問を提案します。まずはテーマから始めますね。",
+            "インタビュー設定アシスタントです。議案内容を分析して、テーマと質問を提案します。まずはテーマから始めますね。",
         },
       ]);
       submit({
@@ -253,7 +253,7 @@ export function useConfigGenerationChat({
         content:
           themes.length > 0
             ? "質問提案に移ります。フォームのテーマを使用します。"
-            : "質問提案に移ります。法案内容から質問を提案します。",
+            : "質問提案に移ります。議案内容から質問を提案します。",
       };
       setMessages((prev) => [...prev, skipMessage]);
 
@@ -288,7 +288,7 @@ export function useConfigGenerationChat({
     const switchMessage: ChatMessage = {
       id: `system-${Date.now()}`,
       role: "assistant",
-      content: "テーマ提案に戻ります。法案内容を分析してテーマを提案します。",
+      content: "テーマ提案に戻ります。議案内容を分析してテーマを提案します。",
     };
     setMessages((prev) => [...prev, switchMessage]);
 

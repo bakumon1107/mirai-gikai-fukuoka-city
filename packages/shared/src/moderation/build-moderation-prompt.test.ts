@@ -14,6 +14,7 @@ describe("buildModerationPrompt", () => {
         { role: "assistant", content: "本日はよろしくお願いします。" },
         { role: "user", content: "物流コストについて話したいです。" },
       ],
+      residentTerm: "市民",
     });
 
     expect(prompt).toContain("物流コスト削減を期待する");
@@ -31,6 +32,7 @@ describe("buildModerationPrompt", () => {
       opinions: null,
       roleDescription: null,
       messages: [],
+      residentTerm: "市民",
     });
 
     expect(prompt).toContain("（内容なし）");
@@ -43,6 +45,7 @@ describe("buildModerationPrompt", () => {
       opinions: [],
       roleDescription: null,
       messages: [],
+      residentTerm: "市民",
     });
 
     expect(prompt).toContain("テスト要約");
@@ -55,6 +58,7 @@ describe("buildModerationPrompt", () => {
       opinions: null,
       roleDescription: null,
       messages: [{ role: "user", content: "テストメッセージ" }],
+      residentTerm: "市民",
     });
 
     expect(prompt).toContain("## 会話ログ");
@@ -68,6 +72,7 @@ describe("buildModerationPrompt", () => {
       opinions: null,
       roleDescription: null,
       messages: [],
+      residentTerm: "市民",
     });
 
     const categories = [
