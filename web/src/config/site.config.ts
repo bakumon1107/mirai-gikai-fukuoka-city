@@ -50,10 +50,15 @@ export const siteConfig = {
    * 提供する必要があります。本家（team-mirai/mirai-gikai）の URL では代用できません。
    * 誰でもアクセスできる公開リポジトリを指定してください。
    *
-   * フッターにリンクとして表示されます（空文字列にすると表示されず AGPL 違反になります）。
+   * フッターにリンクとして表示されます。
+   * **未設定（空文字列）またはプレースホルダのままの場合はリンクが表示されません。**
+   * 表示されない状態で公開すると AGPL 違反になるため、公開前に必ず設定してください。
+   * （誤って `https://github.com/YOUR_ACCOUNT/...` のような例示値を残したまま公開し、
+   *   リンクはあるが 404 する――という状態を防ぐため、プレースホルダも弾いています）
    * @see FORK_GUIDELINES.md 6. ソースコード公開先へのリンクの表示
+   * @see web/src/config/is-placeholder-url.ts 判定ロジック
    */
-  sourceCodeUrl: "https://github.com/YOUR_ACCOUNT/YOUR_REPOSITORY" as string,
+  sourceCodeUrl: "" as string,
   externalLinks: {
     /** ★ 誤り報告フォーム（本家のフォームを流用せず、自前のものを用意すること） */
     report: "",
