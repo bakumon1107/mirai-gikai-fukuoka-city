@@ -1,3 +1,4 @@
+import { isPlaceholderUrl } from "@/config/is-placeholder-url";
 import { siteConfig } from "@/config/site.config";
 import { routes } from "@/lib/routes";
 
@@ -58,16 +59,20 @@ export const policyLinks: FooterPolicyLink[] = [
   },
   /**
    * AGPL-3.0 第13条により、稼働中のバージョンのソースコード入手手段の提示が必要。
-   * siteConfig.sourceCodeUrl が空の場合は表示されない（＝ライセンス違反状態）ため、
-   * fork 時は必ず自身の公開リポジトリ URL を設定すること。
+   * siteConfig.sourceCodeUrl が未設定、またはテンプレートのプレースホルダのままの場合は
+   * 表示されない（＝ライセンス違反状態）ため、fork 時は必ず自身の公開リポジトリ URL を
+   * 設定すること。
+   *
+   * プレースホルダを弾くのは、404 するリンクを出すと「提示済み」に見えて
+   * 違反に気づけなくなるため。リンクが無いほうが未設定だと分かる。
    */
-  ...(siteConfig.sourceCodeUrl
-    ? [
+  ...(isPlaceholderUrl(siteConfig.sourceCodeUrl)
+    ? []
+    : [
         {
           label: "ソースコード（GitHub）",
           href: siteConfig.sourceCodeUrl,
           external: true,
         },
-      ]
-    : []),
+      ]),
 ];
