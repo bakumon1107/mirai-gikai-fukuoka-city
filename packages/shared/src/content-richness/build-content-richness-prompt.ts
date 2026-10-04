@@ -10,6 +10,12 @@ type BuildContentRichnessPromptParams = {
   opinions: Array<{ title: string; content: string }> | null;
   roleDescription: string | null;
   messages: Message[];
+  /**
+   * 住民の呼称（"市民" / "県民" / "区民" / "町民" 等）。
+   * このパッケージは web / admin の siteConfig を import できないため、
+   * 呼び出し側から渡す。
+   */
+  residentTerm: string;
 };
 
 /**
@@ -45,9 +51,9 @@ export function buildContentRichnessPrompt(
   const contentToEvaluate =
     parts.length > 0 ? parts.join("\n\n") : "（内容なし）";
 
-  return `あなたはAIインタビューで収集された市民意見の情報充実度を評価する専門家です。
+  return `あなたはAIインタビューで収集された${params.residentTerm}意見の情報充実度を評価する専門家です。
 
-以下のインタビューの会話ログおよびレポート内容を評価し、法案検討にどれだけ活かせる情報が得られたかを判定してください。
+以下のインタビューの会話ログおよびレポート内容を評価し、議案検討にどれだけ活かせる情報が得られたかを判定してください。
 
 ## 評価対象コンテンツ
 ${contentToEvaluate}

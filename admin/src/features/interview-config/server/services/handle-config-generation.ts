@@ -75,7 +75,7 @@ export async function handleConfigGeneration({
             role: "user" as const,
             content:
               stage === "theme_proposal"
-                ? "法案内容を分析して、テーマを提案してください。"
+                ? "議案内容を分析して、テーマを提案してください。"
                 : "確定したテーマに基づいて、質問を提案してください。",
           },
         ]

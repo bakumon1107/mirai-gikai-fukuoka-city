@@ -163,7 +163,7 @@ export async function GET(request: Request) {
             {truncatedSummary}
           </div>
 
-          {/* 法案名 */}
+          {/* 議案名 */}
           <div
             style={{
               display: "flex",
@@ -177,7 +177,7 @@ export async function GET(request: Request) {
           </div>
         </div>
 
-        {/* みらい議会バッジ */}
+        {/* サービス名バッジ */}
         <div
           style={{
             position: "absolute",

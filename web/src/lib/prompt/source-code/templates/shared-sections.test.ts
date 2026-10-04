@@ -56,19 +56,40 @@ describe("buildServiceOverview", () => {
 });
 
 describe("buildCommonRules", () => {
+  const RECOMMENDATION_BAN =
+    "特定の政党・会派・候補者を推奨したり、投票を呼びかけたりしない";
+
   it("サービス名が差し込まれ、政党名を含まない", () => {
-    const result = buildCommonRules("みらい議会＠サンプル市");
+    const result = buildCommonRules("みらい議会＠サンプル市", false);
 
     expect(result).toContain("みらい議会＠サンプル市");
     expect(result).not.toContain("チームみらい");
   });
 
-  it("選挙運動とみなされうる振る舞いを禁止している", () => {
-    const result = buildCommonRules("みらい議会＠サンプル市");
+  it("非公式運営では選挙運動とみなされうる振る舞いを禁止している", () => {
+    const result = buildCommonRules("みらい議会＠サンプル市", false);
 
-    expect(result).toContain(
-      "特定の政党・会派・候補者を推奨したり、投票を呼びかけたりしない"
-    );
+    expect(result).toContain(RECOMMENDATION_BAN);
+  });
+
+  /**
+   * 公式運営時は buildPartySections が党の紹介・政策を差し込むため、
+   * 推奨禁止ルールを併記すると指示が自己矛盾する。
+   */
+  it("公式運営では推奨禁止ルールを入れない（政党紹介との矛盾を避ける）", () => {
+    const result = buildCommonRules("みらい議会", true);
+
+    expect(result).not.toContain(RECOMMENDATION_BAN);
+    expect(result).toContain("政治的に中立な立場を保つ");
+  });
+
+  it("どちらの構成でもルール行が壊れない", () => {
+    for (const isOfficial of [true, false]) {
+      const result = buildCommonRules("サンプル", isOfficial);
+
+      expect(result.startsWith("ルール：\n")).toBe(true);
+      expect(result).not.toContain("\n\n");
+    }
   });
 });
 

@@ -3,6 +3,7 @@
 import type { MouseEvent, KeyboardEvent } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { siteConfig } from "@/config/site.config";
 import {
   shareNative,
   shareOnFacebook,
@@ -33,8 +34,8 @@ export function ReportShareModal({
   if (!isOpen) return null;
 
   const shareMessage = shareMessageProp
-    ? `みらい議会AIインタビュー「${shareMessageProp}」`
-    : `みらい議会AIインタビュー「${billName}」`;
+    ? `${siteConfig.siteName}AIインタビュー「${shareMessageProp}」`
+    : `${siteConfig.siteName}AIインタビュー「${billName}」`;
 
   const shareButtons = [
     {
@@ -91,7 +92,7 @@ export function ReportShareModal({
           {/* シェアセクション */}
           <div className="flex w-full flex-col items-center gap-4">
             <p className="text-center text-base font-bold text-gray-800">
-              法案に対する意見をシェアしよう
+              議案に対する意見をシェアしよう
             </p>
 
             {/* SNSアイコン */}

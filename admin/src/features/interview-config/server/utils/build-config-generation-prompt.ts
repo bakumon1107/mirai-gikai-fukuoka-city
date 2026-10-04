@@ -34,8 +34,8 @@ export function buildConfigGenerationPrompt(params: BuildPromptParams): string {
     existingQuestions,
   } = params;
 
-  const billSection = `## 法案情報
-- 法案名: ${billName}
+  const billSection = `## 議案情報
+- 議案名: ${billName}
 - タイトル: ${billTitle}
 - 要約: ${billSummary}
 - 詳細内容:
@@ -46,7 +46,7 @@ ${billContent}`;
     : "";
 
   const baseRole = `あなたは、${siteConfig.residentTerm}インタビューの設計を支援する専門家です。
-法案に関する${siteConfig.residentTerm}の意見を効果的に収集するためのインタビューテーマと質問を提案します。
+議案に関する${siteConfig.residentTerm}の意見を効果的に収集するためのインタビューテーマと質問を提案します。
 管理者と対話しながら、より良いインタビュー設定を一緒に作り上げてください。`;
 
   if (stage === "theme_proposal") {
@@ -60,10 +60,10 @@ ${billContent}`;
 ${billSection}
 ${knowledgeSection}${existingThemesSection}
 ## あなたの役割
-この法案について、${siteConfig.residentTerm}インタビューで扱うべきテーマを3〜5個提案してください。
+この議案について、${siteConfig.residentTerm}インタビューで扱うべきテーマを3〜5個提案してください。
 
 ## テーマ提案のガイドライン
-- 法案の主要論点をカバーする
+- 議案の主要論点をカバーする
 - ${siteConfig.residentTerm}の生活や仕事への影響に関連する
 - 賛否両論を引き出せるテーマにする
 - 具体的かつ分かりやすい表現にする
@@ -102,7 +102,7 @@ ${themesSection}${existingQuestionsSection}
 質問リストの最初に、ラポール形成と専門知識レベルの確認を目的とした質問を1〜2問配置してください。
 これらの質問は、インタビュー冒頭で回答者との信頼関係を築き、どの程度の専門知識を持っているかを把握するためのものです。
 以下の観点を含めてください:
-- 法案との関わり（例: 「この法案のテーマについて、どのような関わりがありますか？」）
+- 議案との関わり（例: 「この議案のテーマについて、どのような関わりがありますか？」）
 - 日々の業務・生活との関係（例: 「普段のお仕事や暮らしの中で、この分野とどの程度関係がありますか？」）
 - 知識レベルの確認（例: 「この分野について、どの程度ご存知ですか？」）
 これらの質問にも適切なクイックリプライを付けてください（例: 「専門的に関わっている」「業務で関係がある」「暮らしに影響がある」「一般${siteConfig.residentTerm}として関心がある」等）。

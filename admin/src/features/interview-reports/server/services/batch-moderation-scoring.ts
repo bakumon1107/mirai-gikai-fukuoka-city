@@ -1,6 +1,7 @@
 import "server-only";
 
 import { generateObject } from "ai";
+import { siteConfig } from "@/config/site.config";
 import { DEFAULT_INTERVIEW_CHAT_MODEL } from "@/lib/ai/models";
 import { moderationResultSchema } from "@mirai-gikai/shared/moderation/schemas";
 import { buildModerationPrompt } from "@mirai-gikai/shared/moderation/build-prompt";
@@ -43,6 +44,7 @@ export async function runSingleModerationScoring(
     opinions: parseOpinions(report.opinions),
     roleDescription: report.role_description,
     messages: messages.map((m) => ({ role: m.role, content: m.content })),
+    residentTerm: siteConfig.residentTerm,
   });
 
   const { object } = await generateObject({

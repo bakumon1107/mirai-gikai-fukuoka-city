@@ -3,10 +3,13 @@ name: Migrate DB then Deploy Web
 # このベーステンプレート（base-local/develop）は稼働サービスを持たないため、
 # push による自動デプロイは無効にしてある。
 #
-# fork 先で実際にデプロイする場合は、以下の2点を自分のベースブランチ名に変更すること。
-#   1. 下の `push: branches:` のコメントアウトを解除
-#   2. checkout の `ref:` を同じブランチ名に変更
+# fork 先で実際にデプロイする場合は、下の `push: branches:` のコメントアウトを解除し、
+# 自分のベースブランチ名に変更すること。
 # あわせて SUPABASE_* / WEB_VERCEL_DEPLOY_HOOK_URL のシークレット設定が必要。
+#
+# NOTE: checkout に `ref:` は指定していないため、`workflow_dispatch` では
+# 実行時に選択したブランチ（既定はリポジトリのデフォルトブランチ）がデプロイされる。
+# 特定のブランチに固定したい場合は checkout step に `ref:` を追加すること。
 on:
   # push:
   #   branches: [your-base/develop]

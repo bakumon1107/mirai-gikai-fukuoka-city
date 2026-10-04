@@ -13,6 +13,13 @@ export const metadata: Metadata = {
   description: `${siteConfig.siteName}のプライバシーポリシー`,
 };
 
+/**
+ * 本文中で繰り返し使う定義語。
+ * 第1条で「以下『○○AIインタビュー機能』といいます。」と定義し、以降はこれを参照する。
+ * サービス名はfork先ごとに変わるため、文言を直書きしない。
+ */
+const interviewFeatureName = `${siteConfig.siteName}AIインタビュー機能`;
+
 export default function PrivacyPage() {
   return (
     <LegalPageLayout
@@ -34,7 +41,7 @@ export default function PrivacyPage() {
             items={[
               "氏名、年齢、性別、住所、電話番号、職業、メールアドレス",
               "個人ごとに割り当てられたIDやパスワード、その他識別可能な記号",
-              "当組織の提供するサービスであるみらい議会におけるAIインタビュー機能（以下「みらい議会AIインタビュー機能」といいます。）を通じて取得される対話ログ、音声データ、および行動履歴",
+              `当組織の提供するサービスである${siteConfig.siteName}におけるAIインタビュー機能（以下「${interviewFeatureName}」といいます。）を通じて取得される対話ログ、音声データ、および行動履歴`,
               "他の情報と容易に照合することができ、それにより特定の個人を識別できることとなるもの",
             ]}
           />
@@ -58,7 +65,8 @@ export default function PrivacyPage() {
             ]}
           />
           <LegalParagraph>
-            なお、みらい議会AIインタビュー機能を通じて当組織が取得した回答内容については、当組織は、以下の通り取り扱います。
+            なお、{interviewFeatureName}
+            を通じて当組織が取得した回答内容については、当組織は、以下の通り取り扱います。
           </LegalParagraph>
           <LegalList
             items={[
@@ -75,7 +83,7 @@ export default function PrivacyPage() {
           </LegalParagraph>
           <LegalList
             items={[
-              "「2. 個人情報の収集方法と使用範囲」に定めるみらい議会AIインタビュー機能を通じて当組織が取得した回答内容の公開",
+              `「2. 個人情報の収集方法と使用範囲」に定める${interviewFeatureName}を通じて当組織が取得した回答内容の公開`,
               "利用者本人の同意がある場合",
               "統計的なデータなど、個人を特定できない状態で提供する場合",
               "法令に基づく開示請求（裁判所・警察等）があった場合",
@@ -118,7 +126,8 @@ export default function PrivacyPage() {
         <section className="space-y-4">
           <LegalSectionTitle>8. お問い合わせ窓口</LegalSectionTitle>
           <LegalParagraph>
-            個人情報の確認・修正・削除、またはみらい議会AIインタビュー機能の回答公開に関する取り消し等のご相談は、下記までご連絡ください。
+            個人情報の確認・修正・削除、または{interviewFeatureName}
+            の回答公開に関する取り消し等のご相談は、下記までご連絡ください。
           </LegalParagraph>
           <LegalParagraph>お問い合わせ窓口</LegalParagraph>
           <LegalParagraph>

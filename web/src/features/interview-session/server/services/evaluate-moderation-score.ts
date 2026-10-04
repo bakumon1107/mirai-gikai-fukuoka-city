@@ -1,6 +1,7 @@
 import "server-only";
 
 import { generateObject, type LanguageModel } from "ai";
+import { siteConfig } from "@/config/site.config";
 import { DEFAULT_INTERVIEW_CHAT_MODEL } from "@/lib/ai/models";
 import { moderationResultSchema } from "@mirai-gikai/shared/moderation/schemas";
 import { buildModerationPrompt } from "@mirai-gikai/shared/moderation/build-prompt";
@@ -34,7 +35,10 @@ export async function evaluateModerationScore(
   input: ModerationInput,
   deps?: ModerationDeps
 ): Promise<ModerationOutput> {
-  const prompt = buildModerationPrompt(input);
+  const prompt = buildModerationPrompt({
+    ...input,
+    residentTerm: siteConfig.residentTerm,
+  });
   const model = deps?.model ?? DEFAULT_INTERVIEW_CHAT_MODEL;
 
   const { object } = await generateObject({

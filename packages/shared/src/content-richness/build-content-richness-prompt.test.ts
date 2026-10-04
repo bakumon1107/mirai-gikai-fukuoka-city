@@ -9,13 +9,14 @@ describe("buildContentRichnessPrompt", () => {
       roleDescription: "IT企業経営者",
       messages: [
         { role: "assistant", content: "こんにちは" },
-        { role: "user", content: "法案に賛成です" },
+        { role: "user", content: "議案に賛成です" },
       ],
+      residentTerm: "市民",
     });
 
     expect(result).toContain("会話ログ");
     expect(result).toContain("[assistant] こんにちは");
-    expect(result).toContain("[user] 法案に賛成です");
+    expect(result).toContain("[user] 議案に賛成です");
     expect(result).toContain("テスト要約");
     expect(result).toContain("意見1");
     expect(result).toContain("内容1");
@@ -29,6 +30,7 @@ describe("buildContentRichnessPrompt", () => {
       opinions: null,
       roleDescription: null,
       messages: [],
+      residentTerm: "市民",
     });
 
     expect(result).toContain("（内容なし）");
@@ -40,6 +42,7 @@ describe("buildContentRichnessPrompt", () => {
       opinions: null,
       roleDescription: null,
       messages: [],
+      residentTerm: "市民",
     });
 
     expect(result).toContain("content_richness（情報充実度）");
@@ -57,8 +60,35 @@ describe("buildContentRichnessPrompt", () => {
       opinions: [],
       roleDescription: null,
       messages: [],
+      residentTerm: "市民",
     });
 
     expect(result).not.toContain("## 意見");
+  });
+
+  it("residentTerm を住民の呼称として差し込む", () => {
+    const result = buildContentRichnessPrompt({
+      summary: "要約",
+      opinions: null,
+      roleDescription: null,
+      messages: [],
+      residentTerm: "県民",
+    });
+
+    expect(result).toContain("県民意見の情報充実度");
+    expect(result).not.toContain("市民意見の情報充実度");
+  });
+
+  it("国会前提の「法案」ではなく地方議会の「議案」を使う", () => {
+    const result = buildContentRichnessPrompt({
+      summary: "要約",
+      opinions: null,
+      roleDescription: null,
+      messages: [],
+      residentTerm: "市民",
+    });
+
+    expect(result).toContain("議案検討");
+    expect(result).not.toContain("法案");
   });
 });
