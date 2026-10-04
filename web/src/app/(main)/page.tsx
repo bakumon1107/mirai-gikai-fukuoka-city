@@ -74,7 +74,7 @@ export default async function Home() {
       )}
 
       <Container>
-        {/* みらい議会とは セクション */}
+        {/* このサービスについて セクション */}
         <About />
 
         {/* チームみらいについて セクション */}
