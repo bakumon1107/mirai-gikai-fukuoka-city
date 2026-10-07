@@ -25,6 +25,8 @@ export async function findPublishedGeneralQuestionsBySession(
   const { data, error } = await supabase
     .from("general_questions")
     .select("*")
+    // 条例予算特別委員会の総会質疑（budget_plenary）は一般質問のページに混ぜない
+    .eq("question_type", "general")
     .eq("council_session_id", sessionId)
     .eq("publish_status", "published")
     .order("session_day", { ascending: true })
@@ -74,6 +76,7 @@ export async function findLatestSessionSlugWithPublishedQuestions(): Promise<
   const { data: rows, error: qErr } = await supabase
     .from("general_questions")
     .select("council_session_id")
+    .eq("question_type", "general")
     .eq("publish_status", "published");
 
   if (qErr || !rows?.length) return null;
@@ -103,6 +106,7 @@ export async function findPublishedGeneralQuestionById(
   const { data, error } = await supabase
     .from("general_questions")
     .select("*")
+    .eq("question_type", "general")
     .eq("id", id)
     .eq("publish_status", "published")
     .single();

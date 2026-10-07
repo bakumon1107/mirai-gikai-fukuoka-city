@@ -75,6 +75,8 @@ export async function searchGeneralQuestions(
       council_sessions (name)
     `
     )
+    // 検索結果は「一般質問」ラベルで表示されるため、本会議の一般質問に限定する
+    .eq("question_type", "general")
     .eq("publish_status", "published")
     .or(`summary.ilike.%${safeQuery}%,questioner_name.ilike.%${safeQuery}%`)
     .limit(50);
