@@ -119,7 +119,9 @@ export function InterviewConsentModal({
 
         <div className="space-y-4 mt-4">
           <p className="text-sm font-bold">
-            回答データは党内での政策検討に利用します。
+            {siteConfig.managingParty
+              ? `回答データは${siteConfig.managingParty}内での政策検討に利用します。`
+              : "回答データは政策検討に利用します。"}
           </p>
           <p className="text-sm font-bold leading-[22px]">
             インタビュー内容はのちに{siteConfig.siteName}
