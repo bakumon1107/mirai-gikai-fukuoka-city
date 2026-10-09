@@ -21,12 +21,15 @@
 
 ## 取得方法
 
-`update-general-questions` スキルを参照。取得元は2系統ある。
+`update-general-questions` スキルを参照。取得元は3系統ある。
 
 | 取得元 | 位置づけ |
 | --- | --- |
 | 会議録検索システム（`city.fukuoka.fukuoka.dbsr.jp`） | 正式版。URLに一時IDを含むため、一覧のページ送りから辿る必要がある |
 | 会議録速報版（`gikai.city.fukuoka.lg.jp/result/prompt/`） | 暫定版。正式版が出るまでの間に公開される。誤植・表記ゆれを含む |
+| 単体HTML（`gikai.city.fukuoka.lg.jp/wp-content/uploads/`） | 会期・日ごとに公開される一太郎出力のHTML。Shift_JIS・`<DIV>` 1つが1行 |
+
+単体HTMLは `<DIV>` 単位で改行し、`<FONT>` などのインラインタグを除いてテキスト化する（`<DIV>` 内の行頭全角スペースはそのまま残す）。
 
 ## 表記の正規化
 
