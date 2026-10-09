@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { CandidatePhoto } from "../../client/components/candidate-photo";
+import { CandidateNumber } from "../../client/components/candidate-number";
 import { DisclaimerBar } from "../../client/components/disclaimer-bar";
 import { PositionBody } from "../../client/components/position-body";
 import { SnsChannels } from "../../client/components/sns-channels";
@@ -23,13 +23,11 @@ import {
 
 type Props = {
   candidate: Candidate;
-  /** 表明順（0始まり）。プレースホルダーの配色に使う */
-  index: number;
   phase: ElectionPhase;
   tab: CandidateTab;
 };
 
-export function CandidateDetailView({ candidate, index, phase, tab }: Props) {
+export function CandidateDetailView({ candidate, phase, tab }: Props) {
   const noun = getCandidateNoun(phase);
   const orderLabel = getOrderLabel(phase);
 
@@ -44,55 +42,47 @@ export function CandidateDetailView({ candidate, index, phase, tab }: Props) {
         />
       </div>
 
-      <section className="flex flex-col gap-5 px-4 sm:px-6 py-7 sm:flex-row">
-        <CandidatePhoto
-          candidate={candidate}
-          index={index}
-          size="detail"
-          showPlaceholderLabel
-        />
-        <div className="min-w-0 flex-1">
-          <p className="font-lexend text-[10px] tracking-[0.14em] text-primary">
-            {candidate.no} {orderLabel}
-          </p>
-          <p className="mt-1.5 text-xs text-mirai-text-muted">
-            {candidate.kana}
-          </p>
-          <h1 className="mt-px text-[28px] font-bold leading-tight tracking-[-0.02em] text-mirai-text">
-            {candidate.name}
-          </h1>
-          <div className="mt-2.5 flex flex-wrap gap-1.5">
-            {candidate.age !== null && (
-              <span className="rounded-[5px] bg-mirai-surface-grouped px-2 py-1 text-[11.5px] font-medium text-mirai-text-secondary">
-                {candidate.age}歳
-              </span>
-            )}
-            <span className="rounded-[5px] bg-mirai-surface-grouped px-2 py-1 text-[11.5px] font-medium text-mirai-text-secondary">
-              {candidate.title}
-            </span>
-            <span className="rounded-[5px] bg-mirai-gradient px-2 py-1 text-[11.5px] font-medium text-primary-darkest">
-              {candidate.party}
-            </span>
+      <section className="px-4 sm:px-6 py-6">
+        <div className="flex items-center gap-3.5">
+          <CandidateNumber no={candidate.no} size="lg" label={orderLabel} />
+          <div className="min-w-0 flex-1">
+            <p className="text-xs text-mirai-text-muted">{candidate.kana}</p>
+            <h1 className="mt-px text-[28px] font-bold leading-tight tracking-[-0.02em] text-mirai-text">
+              {candidate.name}
+            </h1>
           </div>
-          {candidate.links.length > 0 && (
-            <div className="mt-3 flex flex-wrap gap-2">
-              {candidate.links.map((link) => (
-                <Button
-                  key={link.url}
-                  asChild
-                  variant="outline"
-                  size="sm"
-                  className="h-8 border-mirai-border text-[11.5px] font-bold"
-                >
-                  <a href={link.url} target="_blank" rel="noreferrer">
-                    {link.label}
-                    <ArrowUpRight className="size-3.5" />
-                  </a>
-                </Button>
-              ))}
-            </div>
-          )}
         </div>
+        <div className="mt-2.5 flex flex-wrap gap-1.5">
+          {candidate.age !== null && (
+            <span className="rounded-[5px] bg-mirai-surface-grouped px-2 py-1 text-[11.5px] font-medium text-mirai-text-secondary">
+              {candidate.age}歳
+            </span>
+          )}
+          <span className="rounded-[5px] bg-mirai-surface-grouped px-2 py-1 text-[11.5px] font-medium text-mirai-text-secondary">
+            {candidate.title}
+          </span>
+          <span className="rounded-[5px] bg-mirai-gradient px-2 py-1 text-[11.5px] font-medium text-primary-darkest">
+            {candidate.party}
+          </span>
+        </div>
+        {candidate.links.length > 0 && (
+          <div className="mt-3 flex flex-wrap gap-2">
+            {candidate.links.map((link) => (
+              <Button
+                key={link.url}
+                asChild
+                variant="outline"
+                size="sm"
+                className="h-8 border-mirai-border text-[11.5px] font-bold"
+              >
+                <a href={link.url} target="_blank" rel="noreferrer">
+                  {link.label}
+                  <ArrowUpRight className="size-3.5" />
+                </a>
+              </Button>
+            ))}
+          </div>
+        )}
       </section>
 
       <DisclaimerBar>

@@ -3,7 +3,7 @@ import { ArrowUpRight, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { cn } from "@/lib/utils";
-import { CandidatePhoto } from "../../client/components/candidate-photo";
+import { CandidateNumber } from "../../client/components/candidate-number";
 import { DisclaimerBar } from "../../client/components/disclaimer-bar";
 import { PositionBody } from "../../client/components/position-body";
 import { StancePill } from "../../client/components/stance-pill";
@@ -84,7 +84,7 @@ export function IssueCompareView({ issue, phase, questionsSlug }: Props) {
       </section>
 
       <section className="flex flex-col gap-2.5 px-4 sm:px-6 pb-7">
-        {CANDIDATES.map((candidate, index) => {
+        {CANDIDATES.map((candidate) => {
           const position = candidate.positions[issue.id];
           return (
             <div
@@ -92,17 +92,13 @@ export function IssueCompareView({ issue, phase, questionsSlug }: Props) {
               className="rounded-[10px] border border-mirai-border p-3.5"
             >
               <div className="flex items-center gap-3">
-                <CandidatePhoto
-                  candidate={candidate}
-                  index={index}
-                  size="row"
-                />
+                <CandidateNumber no={candidate.no} size="sm" />
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-bold text-mirai-text">
                     {candidate.name}
                   </p>
                   <p className="text-[10.5px] text-mirai-text-muted">
-                    {candidate.no} ／ {candidate.party}
+                    {candidate.party}
                   </p>
                 </div>
                 <StancePill stance={position.stance} />
