@@ -40,11 +40,60 @@ fork できるよう、地域固有の情報を設定ファイルに集約して
 
 ---
 
+# リポジトリを用意する
+
+> [!IMPORTANT]
+> **`git clone` ではなく、GitHub 上で fork してください。**
+> このテンプレートは本家 [team-mirai/mirai-gikai](https://github.com/team-mirai/mirai-gikai) の
+> fork ネットワークに属しています。fork すればその繋がりが保たれ、本家の更新の取り込みや
+> 本家への改善の還元ができます。clone して別リポジトリに push すると繋がりが切れ、
+> **後から張り直すことはできません**（GitHub の仕様）。
+
+1. このリポジトリのページで **Fork** を押す。
+2. **`Copy the default branch only` のチェックを外す。**
+   配布元リポジトリの既定ブランチは `base-local/develop` ではないため、チェックを外さないと
+   **テンプレートのブランチが fork に含まれません**。
+   なおこの操作で配布元の全ブランチ（福岡市版の作業ブランチ等）もコピーされます。
+   不要なものは準備ができてから削除します（手順は 4-7）。
+3. リポジトリ名を `mirai-gikai-<地域>` に変更して fork を作成する。
+4. 自分の fork を clone し、テンプレートのブランチへ移る。
+
+   ```bash
+   git clone https://github.com/<あなたのアカウント>/mirai-gikai-<地域>.git
+   cd mirai-gikai-<地域>
+   git switch base-local/develop
+   ```
+
+自地域のブランチ（`<地域>/develop`）の作成・既定ブランチの変更・
+**引き継いだ不要ブランチの削除**は、調査で着手が決まってから
+[fork手順 セクション4](docs/20260304_1000_別地域向けfork手順.md#4-自地域のブランチへ切り替える)
+で行います。
+
+> [!WARNING]
+> fork ネットワークの中にいるため、GitHub 上で Pull Request を作ると
+> **base が本家 `team-mirai/mirai-gikai` に初期設定されます。**
+> 自分の fork 内で PR を出すときは、base リポジトリが自分のものになっているか毎回確認してください。
+
+> [!NOTE]
+> **既に `mirai-gikai` 系のリポジトリを fork 済みの場合**、GitHub は1アカウントにつき
+> 同じネットワークの fork を1つしか作らせないため、この fork は作れません。
+> その場合は fork せず、既存の fork にこのリポジトリを remote として足してください
+> （繋がりは既存の fork が持っているので維持されます）。
+>
+> ```bash
+> git remote add template https://github.com/bakumon1107/mirai-gikai-fukuoka-city.git
+> git fetch template base-local/develop
+> git switch -c base-local/develop template/base-local/develop
+> ```
+
+---
+
 # セットアップ
 
+リポジトリの用意は上の「[リポジトリを用意する](#リポジトリを用意する)」を済ませてください。
+以降は clone した自分の fork のディレクトリで実行します。
+
 ```bash
-# テンプレートを手元に置く
-git clone --branch base-local/develop <このリポジトリのURL> mirai-gikai-<地域>
 cd mirai-gikai-<地域>
 
 # Supabaseの起動
