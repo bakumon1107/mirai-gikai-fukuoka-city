@@ -27,7 +27,6 @@ type MeetingRow = {
   meeting_date: string;
   title: string;
   source_document_id: number;
-  source_url: string;
   summary: string | null;
   speeches: unknown;
   committee_meeting_topics: TopicRow[];
@@ -56,7 +55,6 @@ function mapSummary(row: MeetingRow): CommitteeMeetingSummary {
     meetingDate: row.meeting_date,
     title: row.title,
     sourceDocumentId: row.source_document_id,
-    sourceUrl: row.source_url,
     summary: row.summary,
     topics: mapTopics(row.committee_meeting_topics ?? []),
   };
@@ -79,7 +77,6 @@ const LIST_SELECT = `
   meeting_date,
   title,
   source_document_id,
-  source_url,
   summary,
   committee_meeting_topics (*)
 ` as const;

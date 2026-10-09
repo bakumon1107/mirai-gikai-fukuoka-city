@@ -22,6 +22,7 @@ type ItemInput = {
   orderIndex: number;
   title: string;
   summary: string | null;
+  materialUrl?: string | null;
   turns: TurnInput[];
 };
 
@@ -845,6 +846,7 @@ async function main() {
           order_index: item.orderIndex,
           title: item.title,
           summary: item.summary,
+          material_url: item.materialUrl ?? null,
         })
         .select()
         .single();

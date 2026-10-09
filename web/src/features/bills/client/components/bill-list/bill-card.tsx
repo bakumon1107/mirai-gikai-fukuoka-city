@@ -3,6 +3,7 @@ import { RubySafeLineClamp } from "@/components/ruby-safe-line-clamp";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDateJST } from "@/lib/utils/date";
 import type { BillWithContent } from "../../../shared/types";
+import { resolveSubmittedDate } from "../../../shared/utils/bill-dates";
 import { BillStatusBadge } from "./bill-status-badge";
 import { BillTag } from "./bill-tag";
 
@@ -13,6 +14,7 @@ interface BillCardProps {
 export function BillCard({ bill }: BillCardProps) {
   const displayTitle = bill.bill_content?.title;
   const summary = bill.bill_content?.summary;
+  const submittedDate = resolveSubmittedDate(bill);
 
   return (
     <Card className="border border-black hover:bg-muted/50 transition-colors relative overflow-hidden max-w-[634px]">
@@ -56,8 +58,8 @@ export function BillCard({ bill }: BillCardProps) {
               <div className="flex flex-row gap-4">
                 <BillStatusBadge status={bill.status} className="w-fit" />
                 <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-                  {bill.published_at && (
-                    <time>{formatDateJST(bill.published_at)} 提出</time>
+                  {submittedDate && (
+                    <time>{formatDateJST(submittedDate)} 提出</time>
                   )}
                 </div>
               </div>
