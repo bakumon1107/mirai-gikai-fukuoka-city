@@ -17,31 +17,37 @@ export const siteConfig = {
    * 独自のサービス名を使う場合はこの形式に限りません。
    * @see FORK_GUIDELINES.md 1. サービス名称
    */
-  siteName: "みらい議会＠サンプル市",
+  siteName: "みらい議会＠神戸市",
   siteDescription:
-    "サンプル市議会で今どんな議案が検討されているか、わかりやすく伝えるプラットフォームです",
+    "神戸市会で今どんな議案が検討されているか、わかりやすく伝えるプラットフォームです",
   /** 自治体名（例: "サンプル市" / "サンプル県" / "サンプル町"） */
-  cityName: "サンプル市",
-  /** 議会名（例: "サンプル市議会" / "サンプル県議会"） */
-  councilName: "サンプル市議会",
+  cityName: "神戸市",
+  /**
+   * 議会名（例: "サンプル市議会" / "サンプル県議会"）
+   * NOTE: 神戸市の議会は「市議会」ではなく「神戸市会」が正式名称。
+   */
+  councilName: "神戸市会",
   /**
    * 住民の呼称（例: "市民" / "県民" / "区民" / "町民"）
    * UI テキストや AI プロンプトから参照します。
    */
   residentTerm: "市民",
   keywords: [
-    "みらい議会＠サンプル市",
+    "みらい議会＠神戸市",
     "議案",
-    "サンプル市",
-    "市議会",
+    "神戸市",
+    "神戸市会",
+    // 正式名称は「神戸市会」だが、検索語としては「神戸市議会」が多いため併記する
+    "神戸市議会",
     "地方政治",
     "政策",
     "解説",
   ],
-  councilBaseUrl: "https://www.example.lg.jp/",
+  councilBaseUrl: "https://www.city.kobe.lg.jp/shise/municipal/index.html",
   /** 議案・議決結果の一覧ページ */
-  councilBillsDetailUrl: "https://www.example.lg.jp/gikai/giketsu/",
-  twitterHashtag: "みらい議会サンプル市", // # なし
+  councilBillsDetailUrl:
+    "https://www.city.kobe.lg.jp/z/shikaijimukyoku/giann_etc/kekka.html",
+  twitterHashtag: "みらい議会神戸市", // # なし
   /**
    * ★ このサイト自身のソースコード公開先リポジトリ URL
    *
@@ -58,7 +64,14 @@ export const siteConfig = {
    * @see FORK_GUIDELINES.md 6. ソースコード公開先へのリンクの表示
    * @see web/src/config/is-placeholder-url.ts 判定ロジック
    */
-  sourceCodeUrl: "" as string,
+  /*
+   * NOTE: 神戸市版は専用リポジトリを持たず、既存リポジトリの `kobe-city/develop`
+   * ブランチで稼働している。リポジトリのデフォルトブランチは別地域（福岡市版）のため、
+   * 稼働中のバージョンを指すようブランチまで含めた URL にしている。
+   * 神戸市版のリポジトリを独立させたら、その URL に差し替えること。
+   */
+  sourceCodeUrl:
+    "https://github.com/bakumon1107/mirai-gikai-fukuoka-city/tree/kobe-city/develop" as string,
   externalLinks: {
     /** ★ 誤り報告フォーム（本家のフォームを流用せず、自前のものを用意すること） */
     report: "",
@@ -93,11 +106,12 @@ export const siteConfig = {
    */
   operator: {
     /** 運営者名（個人名・団体名） */
-    name: "運営者名" as string,
+    name: "みらい議会＠神戸市 運営（デモ）" as string,
     /** 問い合わせ先 URL（SNS アカウント・フォーム等） */
-    contactUrl: "https://example.com/contact" as string,
+    contactUrl:
+      "https://github.com/bakumon1107/mirai-gikai-fukuoka-city/issues" as string,
     /** 利用規約の準拠法・管轄裁判所（第一審の専属的合意管轄） */
-    jurisdiction: "東京地方裁判所" as string,
+    jurisdiction: "神戸地方裁判所" as string,
     /**
      * 運営者の立場・利益相反の開示文。
      * 空文字列なら表示しません。
@@ -107,7 +121,8 @@ export const siteConfig = {
      * 例: "運営者はサンプル市議会議員（◯◯会派）です。"
      *     "運営者は特定の政党・会派・候補者と関係のない個人です。"
      */
-    disclosure: "" as string,
+    disclosure:
+      "運営者は特定の政党・会派・候補者と関係のない個人です。本サイトはデモ用のため、掲載されている議案は実際の神戸市会の議案ではありません。" as string,
   },
   /**
    * AI機能の有効/無効設定

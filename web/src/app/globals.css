@@ -110,8 +110,8 @@
    * 下記はニュートラルなプレースホルダーのため、fork 時に独自の配色へ変更する。
    * @see FORK_GUIDELINES.md 4. カラーテーマの変更
    */
-  --color-mirai-gradient-start: #9fc0d8;
-  --color-mirai-gradient-end: #cfe1ec;
+  --color-mirai-gradient-start: #9cc6de;
+  --color-mirai-gradient-end: #d8eaf3;
 }
 
 :root {
@@ -129,8 +129,8 @@
    * theme_color も合わせて更新すること。
    * @see FORK_GUIDELINES.md 4. カラーテーマの変更
    */
-  --primary: #4f6d8c;
-  --primary-accent: #37506b;
+  --primary: #1f5c85;
+  --primary-accent: #14425f;
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);

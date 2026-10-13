@@ -3,9 +3,9 @@ name: Integration Tests
 # fork 時は自分のベースブランチ名に変更すること
 on:
   push:
-    branches: [base-local/develop]
+    branches: [kobe-city/develop]
   pull_request:
-    branches: [base-local/develop]
+    branches: [kobe-city/develop]
 
 jobs:
   integration-test:

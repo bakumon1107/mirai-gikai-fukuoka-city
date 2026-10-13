@@ -16,13 +16,13 @@
  */
 export const brandColors = {
   /** globals.css の --primary と一致させる */
-  primary: "#4f6d8c",
+  primary: "#1f5c85",
   /** globals.css の --primary-accent と一致させる */
-  primaryAccent: "#37506b",
+  primaryAccent: "#14425f",
   /** globals.css の --color-mirai-gradient-start と一致させる */
-  gradientStart: "#9fc0d8",
+  gradientStart: "#9cc6de",
   /** globals.css の --color-mirai-gradient-end と一致させる */
-  gradientEnd: "#cfe1ec",
+  gradientEnd: "#d8eaf3",
 } as const;
 
 /** OGP 画像等で使うブランドグラデーション（CSS の linear-gradient 文字列） */
