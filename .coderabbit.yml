@@ -10,6 +10,11 @@ reviews:
   auto_review:
     enabled: true
     drafts: true
+    # CodeRabbit は既定でデフォルトブランチ宛のPRしかレビューしない。
+    # 地域ブランチ（kobe-city/develop）宛のPRもレビュー対象にするため明示する。
+    # NOTE: この設定はPRの「ベースブランチ側」のファイルが読まれる。
+    base_branches:
+      - "kobe-city/develop"
     ignore_title_keywords: []
     labels:
       - "!skip-ai-review"
