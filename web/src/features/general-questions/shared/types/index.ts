@@ -17,9 +17,19 @@ export type SessionQuestionOverview = {
   themeLines: Record<string, string[]>;
 };
 
+/**
+ * 質疑の区分。
+ * - general: 本会議の一般質問
+ * - budget_plenary: 条例予算特別委員会の総会質疑
+ *
+ * 表示側は general に絞り込む。budget_plenary の見せ方は別途検討する。
+ */
+export type QuestionType = "general" | "budget_plenary";
+
 export type GeneralQuestion = {
   id: string;
   council_session_id: string;
+  question_type: QuestionType;
   questioner_name: string;
   questioner_party: string | null;
   questioner_number: number | null;
