@@ -2,3 +2,6 @@ packages:
   - "packages/*"
   - "admin"
   - "web"
+# @opentelemetry/sdk-node 0.206 系は api <1.10.0 を要求するため固定
+overrides:
+  '@opentelemetry/api': 1.9.0
