@@ -58,6 +58,19 @@ export type StatementLog = {
   url?: string;
 };
 
+/**
+ * このページへの反映の記録（更新履歴）。
+ *
+ * StatementLog が「いつ何を言ったか」なのに対し、こちらは「いつ何をこのページに載せたか」。
+ * 新しい発言が載ったのか、整理し直しただけなのかを読み手が区別できるようにするため、
+ * 発言の日付ではなく掲載した日を書く。
+ */
+export type UpdateEntry = {
+  /** 掲載した日。"2026-10-28" 形式 */
+  date: string;
+  text: string;
+};
+
 export type CandidatePosition = {
   stance: Stance;
   /**

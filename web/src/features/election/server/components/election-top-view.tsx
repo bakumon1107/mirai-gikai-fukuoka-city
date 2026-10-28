@@ -4,11 +4,16 @@ import Link from "next/link";
 import { CandidateNumber } from "../../client/components/candidate-number";
 import { DisclaimerBar } from "../../client/components/disclaimer-bar";
 import { SectionHeading } from "../../client/components/section-heading";
+import { UpdateHistoryList } from "../../client/components/update-history-list";
 import { VoteCountdown } from "../../client/components/vote-countdown";
 import { CANDIDATES } from "../../shared/data/candidates";
 import { ISSUES } from "../../shared/data/issues";
 import { ELECTION_SCHEDULE } from "../../shared/data/schedule";
 import { buildSiteLinks } from "../../shared/data/site-links";
+import {
+  CANDIDATE_UPDATES,
+  SITE_UPDATES,
+} from "../../shared/data/update-history";
 import type { ElectionPhase } from "../../shared/types";
 import { getCountdown } from "../../shared/utils/countdown";
 import {
@@ -16,6 +21,8 @@ import {
   getOrderLabel,
 } from "../../shared/utils/election-phase";
 import { countStatedIssues } from "../../shared/utils/stance";
+import { formatStatementDate } from "../../shared/utils/statement-log";
+import { getLatestUpdateDate } from "../../shared/utils/update-history";
 
 /** 冒頭の一覧に最低限並べる行数。表明者が少ないうちは「表明待ち」の行で埋める */
 const HERO_SLOT_COUNT = 4;
@@ -145,6 +152,19 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
               </p>
             )}
           </div>
+
+          <div className="mt-2 rounded-xl bg-white/80 px-4.5 py-3.5">
+            <p className="text-[10px] font-bold tracking-[0.08em] text-primary-deep">
+              このページの更新
+            </p>
+            <p className="mt-0.5 text-[10px] leading-[1.7] text-mirai-text-muted">
+              ページ全体にかかる変更です。{noun}
+              ごとの更新は各{noun}のページに載せています。
+            </p>
+            <div className="mt-1.5">
+              <UpdateHistoryList entries={SITE_UPDATES} />
+            </div>
+          </div>
         </div>
       </section>
 
@@ -168,51 +188,61 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
       </section>
 
       <section className="flex flex-col gap-3 px-4 sm:px-6 pb-8 pt-4">
-        {CANDIDATES.map((candidate) => (
-          <Link
-            key={candidate.id}
-            href={`/election/2026/candidates/${candidate.id}`}
-            className="rounded-xl border border-mirai-border bg-card p-4 transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-[3px] hover:border-primary hover:shadow-election-card-hover"
-          >
-            <div className="flex items-center gap-3">
-              <CandidateNumber no={candidate.no} />
-              <div className="min-w-0 flex-1">
-                <p className="text-[11px] text-mirai-text-muted">
-                  {candidate.kana}
-                </p>
-                <p className="mt-px text-xl font-bold leading-tight tracking-[-0.025em] text-mirai-text">
-                  {candidate.name}
-                </p>
+        {CANDIDATES.map((candidate) => {
+          const latestUpdate = getLatestUpdateDate(
+            CANDIDATE_UPDATES[candidate.id] ?? []
+          );
+          return (
+            <Link
+              key={candidate.id}
+              href={`/election/2026/candidates/${candidate.id}`}
+              className="rounded-xl border border-mirai-border bg-card p-4 transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-[3px] hover:border-primary hover:shadow-election-card-hover"
+            >
+              <div className="flex items-center gap-3">
+                <CandidateNumber no={candidate.no} />
+                <div className="min-w-0 flex-1">
+                  <p className="text-[11px] text-mirai-text-muted">
+                    {candidate.kana}
+                  </p>
+                  <p className="mt-px text-xl font-bold leading-tight tracking-[-0.025em] text-mirai-text">
+                    {candidate.name}
+                  </p>
+                </div>
               </div>
-            </div>
-            <div className="mt-2.5 flex flex-wrap gap-1.5">
-              {candidate.age !== null && (
+              <div className="mt-2.5 flex flex-wrap gap-1.5">
+                {candidate.age !== null && (
+                  <span className="rounded-[5px] bg-mirai-surface-grouped px-1.5 py-0.5 text-[11px] font-medium text-mirai-text-secondary">
+                    {candidate.age}歳
+                  </span>
+                )}
                 <span className="rounded-[5px] bg-mirai-surface-grouped px-1.5 py-0.5 text-[11px] font-medium text-mirai-text-secondary">
-                  {candidate.age}歳
+                  {candidate.title}
                 </span>
-              )}
-              <span className="rounded-[5px] bg-mirai-surface-grouped px-1.5 py-0.5 text-[11px] font-medium text-mirai-text-secondary">
-                {candidate.title}
-              </span>
-              <span className="rounded-[5px] bg-mirai-gradient px-1.5 py-0.5 text-[11px] font-medium text-primary-darkest">
-                {candidate.party}
-              </span>
-            </div>
-            <p className="mt-2.5 text-xs leading-[1.85] text-mirai-text-secondary">
-              {candidate.lead}
-            </p>
-            <div className="mt-3 flex items-center justify-between gap-2 border-t border-mirai-surface-muted pt-2.5">
-              <span className="text-[11px] text-mirai-text-muted">
-                {ISSUES.length}分野のうち {countStatedIssues(candidate)}
-                分野で言及あり
-              </span>
-              <span className="flex items-center gap-1 text-xs font-bold text-primary-accent">
-                詳しく見る
-                <ArrowRight className="size-3.5" />
-              </span>
-            </div>
-          </Link>
-        ))}
+                <span className="rounded-[5px] bg-mirai-gradient px-1.5 py-0.5 text-[11px] font-medium text-primary-darkest">
+                  {candidate.party}
+                </span>
+              </div>
+              <p className="mt-2.5 text-xs leading-[1.85] text-mirai-text-secondary">
+                {candidate.lead}
+              </p>
+              <div className="mt-3 flex items-center justify-between gap-2 border-t border-mirai-surface-muted pt-2.5">
+                <span className="text-[11px] leading-[1.7] text-mirai-text-muted">
+                  {ISSUES.length}分野のうち {countStatedIssues(candidate)}
+                  分野で言及あり
+                  {latestUpdate && (
+                    <span className="block">
+                      最終更新 {formatStatementDate(latestUpdate)}
+                    </span>
+                  )}
+                </span>
+                <span className="flex items-center gap-1 text-xs font-bold text-primary-accent">
+                  詳しく見る
+                  <ArrowRight className="size-3.5" />
+                </span>
+              </div>
+            </Link>
+          );
+        })}
 
         {isBeforeKokuji && (
           <div className="rounded-xl border-[1.5px] border-dashed border-mirai-border bg-mirai-surface px-4.5 py-5 text-center">
