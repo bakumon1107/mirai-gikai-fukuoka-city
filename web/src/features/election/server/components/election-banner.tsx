@@ -51,7 +51,7 @@ export function ElectionBanner() {
             {phase === "before-kokuji" ? "出馬の意向を示した" : "立候補した"}
             {CANDIDATES.length}
             人の公表内容を、{ISSUES.length}
-            つの分野で同じ物差しに並べています。評価や推薦は行いません。
+            の分野で同じ物差しに並べています。評価や推薦は行いません。
           </span>
 
           <span className="mt-4 flex flex-wrap items-center gap-4">

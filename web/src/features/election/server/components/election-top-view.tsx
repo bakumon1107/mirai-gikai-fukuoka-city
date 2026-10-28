@@ -66,7 +66,7 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
           <p className="mt-3.5 max-w-[430px] text-[13px] leading-[1.95] text-mirai-text-secondary">
             現職の高島宗一郎市長は不出馬を表明。出馬の意向を示した人から順に、公表内容を
             {ISSUES.length}
-            つの分野で同じ物差しに並べていきます。評価や推薦は行いません。
+            の分野で同じ物差しに並べていきます。評価や推薦は行いません。
           </p>
 
           <ol className="mt-6 grid grid-cols-2 gap-1.5">
