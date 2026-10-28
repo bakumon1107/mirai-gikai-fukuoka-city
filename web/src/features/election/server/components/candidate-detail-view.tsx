@@ -253,8 +253,13 @@ export function CandidateDetailView({ candidate, phase, tab }: Props) {
         <section className="px-4 sm:px-6 pb-7">
           <h2 className="text-base font-bold text-mirai-text">更新履歴</h2>
           <p className="mt-1.5 text-[11.5px] leading-[1.8] text-mirai-text-muted">
-            このページに反映した日と内容です。発言や公表の日付は、各分野の「発言の記録」に載せています。分野の追加など全員に同時にかかる変更は、ここには書かず
-            <Link href="/election/2026">トップ</Link>
+            このページに反映した日と内容です。発言や公表の日付は、「政策・主張」タブの各分野にある「発言の記録」に載せています。分野の追加など全員に同時にかかる変更は、ここには書かず
+            <Link
+              href="/election/2026"
+              className="font-bold text-primary-accent underline underline-offset-2"
+            >
+              トップ
+            </Link>
             の「このページの更新」に載せています。
           </p>
           <div className="mt-3 rounded-[10px] border border-mirai-border px-3.5 py-2">

@@ -158,7 +158,7 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
               このページの更新
             </p>
             <p className="mt-0.5 text-[10px] leading-[1.7] text-mirai-text-muted">
-              ページ全体にかかる変更です。{noun}
+              {noun}の追加と、全員の掲載内容に同時にかかる変更です。{noun}
               ごとの更新は各{noun}のページに載せています。
             </p>
             <div className="mt-1.5">
