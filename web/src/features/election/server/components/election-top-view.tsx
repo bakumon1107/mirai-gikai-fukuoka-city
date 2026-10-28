@@ -231,7 +231,7 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
                   分野で言及あり
                   {latestUpdate && (
                     <span className="block">
-                      最終更新 {formatStatementDate(latestUpdate)}
+                      個別の更新 {formatStatementDate(latestUpdate)}
                     </span>
                   )}
                 </span>

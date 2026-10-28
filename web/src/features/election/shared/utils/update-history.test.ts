@@ -20,11 +20,16 @@ describe("sortUpdatesNewestFirst", () => {
     ]);
   });
 
-  it("同じ日のものは書いた順を保つ", () => {
-    const entries = [entry("2026-10-28", "a"), entry("2026-10-28", "b")];
+  it("同じ日のものは後に書いたほうを先に出す", () => {
+    const entries = [
+      entry("2026-09-30", "a"),
+      entry("2026-10-28", "b"),
+      entry("2026-10-28", "c"),
+    ];
     expect(sortUpdatesNewestFirst(entries).map((e) => e.text)).toEqual([
-      "a",
+      "c",
       "b",
+      "a",
     ]);
   });
 
@@ -39,6 +44,12 @@ describe("getLatestUpdateDate", () => {
   it("いちばん新しい掲載日を返す", () => {
     expect(
       getLatestUpdateDate([entry("2026-09-04"), entry("2026-10-22")])
+    ).toBe("2026-10-22");
+  });
+
+  it("並び順にかかわらず最大の日付を返す", () => {
+    expect(
+      getLatestUpdateDate([entry("2026-10-22"), entry("2026-09-04")])
     ).toBe("2026-10-22");
   });
 

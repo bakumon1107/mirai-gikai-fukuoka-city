@@ -22,9 +22,9 @@ type Props = {
 function UpdateRows({ entries }: Props) {
   return (
     <ul className="flex flex-col">
-      {entries.map((entry) => (
+      {entries.map((entry, index) => (
         <li
-          key={`${entry.date}-${entry.text}`}
+          key={`${entry.date}-${index}-${entry.text}`}
           className="grid grid-cols-[88px_1fr] gap-2.5 border-b border-mirai-surface-grouped py-2 last:border-b-0"
         >
           <span className="font-lexend text-[10px] leading-[1.9] text-primary-deep">

@@ -32,6 +32,7 @@ type Props = {
 export function CandidateDetailView({ candidate, phase, tab }: Props) {
   const noun = getCandidateNoun(phase);
   const orderLabel = getOrderLabel(phase);
+  const updates = CANDIDATE_UPDATES[candidate.id] ?? [];
 
   return (
     <div className="overflow-hidden rounded-2xl bg-card shadow-lg">
@@ -248,14 +249,16 @@ export function CandidateDetailView({ candidate, phase, tab }: Props) {
         </>
       )}
 
-      {(CANDIDATE_UPDATES[candidate.id]?.length ?? 0) > 0 && (
+      {updates.length > 0 && (
         <section className="px-4 sm:px-6 pb-7">
           <h2 className="text-base font-bold text-mirai-text">更新履歴</h2>
           <p className="mt-1.5 text-[11.5px] leading-[1.8] text-mirai-text-muted">
-            このページに反映した日と内容です。発言や公表の日付は、各分野の「発言の記録」に載せています。
+            このページに反映した日と内容です。発言や公表の日付は、各分野の「発言の記録」に載せています。分野の追加など全員に同時にかかる変更は、ここには書かず
+            <Link href="/election/2026">トップ</Link>
+            の「このページの更新」に載せています。
           </p>
           <div className="mt-3 rounded-[10px] border border-mirai-border px-3.5 py-2">
-            <UpdateHistoryList entries={CANDIDATE_UPDATES[candidate.id]} />
+            <UpdateHistoryList entries={updates} />
           </div>
         </section>
       )}
