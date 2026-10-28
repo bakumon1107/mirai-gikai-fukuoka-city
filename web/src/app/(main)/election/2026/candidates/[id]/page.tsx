@@ -38,7 +38,7 @@ export async function generateMetadata({
   const noun = getCandidateNoun(getCurrentElectionPhase());
   return {
     title: `${candidate.name} | 福岡市長選挙 2026 | みらい議会＠福岡市`,
-    description: `${candidate.name}（${candidate.kana}）の公表内容を${ISSUES.length}つの分野で整理しています。非公式サイトによる整理で、特定の${noun}への投票を呼びかけるものではありません。`,
+    description: `${candidate.name}（${candidate.kana}）の公表内容を${ISSUES.length}の分野で整理しています。非公式サイトによる整理で、特定の${noun}への投票を呼びかけるものではありません。`,
   };
 }
 

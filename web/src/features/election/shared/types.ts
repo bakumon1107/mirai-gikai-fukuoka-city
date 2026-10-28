@@ -4,6 +4,10 @@
  * `sonota` は他の分野に当てはまらない主張の受け皿で、常に最後に置く。
  * この枠がないと、分類できない主張が「言及なし」として消えるか、
  * 近い分野へ無理に押し込まれる。どちらも中立性を損なうため削らないこと。
+ *
+ * `fukushuto`（副首都）と `gaikokujin`（外国人住民・外国人政策）は2026年10月に追加した。
+ * どちらも多くの候補者が触れている一方、それまでは「その他」や経済・財政などに
+ * 人によって入る分野がばらばらで、分野別の比較で横に並ばなかったため。
  */
 export type IssueId =
   | "kosodate"
@@ -12,7 +16,9 @@ export type IssueId =
   | "saikaihatsu"
   | "bosai"
   | "keizai"
+  | "fukushuto"
   | "kanko"
+  | "gaikokujin"
   | "dx"
   | "zaisei"
   | "sonota";
