@@ -1,10 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { CANDIDATES } from "../data/candidates";
-import {
-  CANDIDATE_UPDATES,
-  getCandidateUpdates,
-  SITE_UPDATES,
-} from "../data/update-history";
+import { CANDIDATE_UPDATES, getCandidateUpdates } from "../data/update-history";
 import type { UpdateEntry } from "../types";
 import { getLatestUpdateDate, sortUpdatesNewestFirst } from "./update-history";
 
@@ -64,10 +60,7 @@ describe("getLatestUpdateDate", () => {
 
 describe("更新履歴のデータ", () => {
   const DATE_FORMAT = /^\d{4}-\d{2}-\d{2}$/;
-  const allEntries = [
-    ...SITE_UPDATES,
-    ...Object.values(CANDIDATE_UPDATES).flat(),
-  ];
+  const allEntries = Object.values(CANDIDATE_UPDATES).flat();
 
   it("全候補者に履歴が1件以上ある", () => {
     for (const candidate of CANDIDATES) {
@@ -75,6 +68,16 @@ describe("更新履歴のデータ", () => {
         getCandidateUpdates(candidate.id).length,
         candidate.id
       ).toBeGreaterThan(0);
+    }
+  });
+
+  it("全員にかかった10月28日の分野の追加が、全員の欄にある", () => {
+    for (const candidate of CANDIDATES) {
+      const hasIt = getCandidateUpdates(candidate.id).some(
+        (update) =>
+          update.date === "2026-10-28" && update.text.includes("12分野に")
+      );
+      expect(hasIt, candidate.id).toBe(true);
     }
   });
 
@@ -97,8 +100,7 @@ describe("更新履歴のデータ", () => {
   });
 
   it("古い順に追記されている", () => {
-    const lists = [SITE_UPDATES, ...Object.values(CANDIDATE_UPDATES)];
-    for (const list of lists) {
+    for (const list of Object.values(CANDIDATE_UPDATES)) {
       const dates = list.map((update) => update.date);
       expect(dates).toEqual([...dates].sort());
     }

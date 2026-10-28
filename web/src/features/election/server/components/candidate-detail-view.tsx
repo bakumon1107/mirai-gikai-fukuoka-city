@@ -257,14 +257,7 @@ export function CandidateDetailView({ candidate, phase, tab }: Props) {
             {candidate.takashimaAssessment
               ? "高島市政への評価と各分野"
               : "各分野"}
-            にある「発言の記録」に載せています。分野の追加など全員に同時にかかる変更は、ここには書かず
-            <Link
-              href="/election/2026"
-              className="font-bold text-primary-deep underline underline-offset-2 hover:text-primary-darkest"
-            >
-              トップ
-            </Link>
-            の「このページの更新」に載せています。
+            にある「発言の記録」に載せています。
           </p>
           <div className="mt-3 rounded-[10px] border border-mirai-border px-3.5 py-2">
             <UpdateHistoryList entries={updates} />

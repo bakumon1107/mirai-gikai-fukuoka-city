@@ -4,13 +4,11 @@ import Link from "next/link";
 import { CandidateNumber } from "../../client/components/candidate-number";
 import { DisclaimerBar } from "../../client/components/disclaimer-bar";
 import { SectionHeading } from "../../client/components/section-heading";
-import { UpdateHistoryList } from "../../client/components/update-history-list";
 import { VoteCountdown } from "../../client/components/vote-countdown";
 import { CANDIDATES } from "../../shared/data/candidates";
 import { ISSUES } from "../../shared/data/issues";
 import { ELECTION_SCHEDULE } from "../../shared/data/schedule";
 import { buildSiteLinks } from "../../shared/data/site-links";
-import { SITE_UPDATES } from "../../shared/data/update-history";
 import type { ElectionPhase } from "../../shared/types";
 import { getCountdown } from "../../shared/utils/countdown";
 import {
@@ -146,19 +144,6 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
                 {ELECTION_SCHEDULE.voteClosesNote}
               </p>
             )}
-          </div>
-
-          <div className="mt-2 rounded-xl bg-white/80 px-4.5 py-3.5">
-            <p className="text-[10px] font-bold tracking-[0.08em] text-primary-deep">
-              このページの更新
-            </p>
-            <p className="mt-0.5 text-[10px] leading-[1.7] text-mirai-text-muted">
-              {noun}の追加と、全員の掲載内容に同時にかかる変更です。{noun}
-              ごとの更新は各{noun}のページに載せています。
-            </p>
-            <div className="mt-1.5">
-              <UpdateHistoryList entries={SITE_UPDATES} />
-            </div>
           </div>
         </div>
       </section>
