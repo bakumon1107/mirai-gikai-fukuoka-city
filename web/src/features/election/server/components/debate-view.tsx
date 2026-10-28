@@ -271,13 +271,14 @@ function ProposerBlock({
   if (statements.length === 0) {
     return null;
   }
+  const sorted = sortByCandidateOrder(statements, CANDIDATE_ORDER);
   return (
     <div className="rounded-lg bg-mirai-surface px-3.5 py-1">
       <p className="pt-2.5 text-[10px] font-bold tracking-[0.08em] text-primary-deep">
         {label}
       </p>
       <ul>
-        {statements.map((statement) => (
+        {sorted.map((statement) => (
           <StatementRow
             key={`${statement.candidateId}-${statement.time}`}
             debate={debate}
