@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { CANDIDATES } from "../data/candidates";
-import { CANDIDATE_UPDATES, SITE_UPDATES } from "../data/update-history";
+import {
+  CANDIDATE_UPDATES,
+  getCandidateUpdates,
+  SITE_UPDATES,
+} from "../data/update-history";
 import type { UpdateEntry } from "../types";
 import { getLatestUpdateDate, sortUpdatesNewestFirst } from "./update-history";
 
@@ -68,10 +72,14 @@ describe("更新履歴のデータ", () => {
   it("全候補者に履歴が1件以上ある", () => {
     for (const candidate of CANDIDATES) {
       expect(
-        CANDIDATE_UPDATES[candidate.id]?.length ?? 0,
+        getCandidateUpdates(candidate.id).length,
         candidate.id
       ).toBeGreaterThan(0);
     }
+  });
+
+  it("登録のないIDには空の履歴を返す", () => {
+    expect(getCandidateUpdates("no-such-candidate")).toEqual([]);
   });
 
   it("履歴のキーはすべて実在する候補者のID", () => {
@@ -99,6 +107,8 @@ describe("更新履歴のデータ", () => {
   // 新しい発言を載せたのに履歴を書き忘れると、カードの「個別の更新」が古いまま残る。
   // 発言の日付は掲載より前なので、履歴の最新日は発言ログの最新日以上になるはず
   // （"2026-10" のような月までの日付も、文字列比較で同じ月の日付より前に来る）。
+  // これは最低限の歯止めで、書き忘れをすべて拾えるわけではない。履歴の最新日より古い日付の
+  // 発言を後から載せた場合や、経歴・主張・SNSの変更は検知できないので、反映のたびに履歴を足すこと。
   it("履歴の最新日は、その人の発言ログの最新日より前にならない", () => {
     for (const candidate of CANDIDATES) {
       const logDates = [
@@ -109,9 +119,12 @@ describe("更新履歴のデータ", () => {
           (statement) => statement.date
         ),
       ];
-      const newestLog = [...logDates].sort().at(-1) ?? "";
+      const newestLog = logDates.reduce(
+        (newest, date) => (date > newest ? date : newest),
+        ""
+      );
       const latestUpdate = getLatestUpdateDate(
-        CANDIDATE_UPDATES[candidate.id] ?? []
+        getCandidateUpdates(candidate.id)
       );
       expect(
         (latestUpdate ?? "") >= newestLog,
