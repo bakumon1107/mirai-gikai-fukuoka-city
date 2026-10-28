@@ -9,7 +9,9 @@ import { DisclaimerBar } from "../../client/components/disclaimer-bar";
 import { PositionBody } from "../../client/components/position-body";
 import { SnsChannels } from "../../client/components/sns-channels";
 import { StancePill } from "../../client/components/stance-pill";
+import { UpdateHistoryList } from "../../client/components/update-history-list";
 import { ISSUES } from "../../shared/data/issues";
+import { getCandidateUpdates } from "../../shared/data/update-history";
 import type {
   Candidate,
   CandidateTab,
@@ -30,6 +32,7 @@ type Props = {
 export function CandidateDetailView({ candidate, phase, tab }: Props) {
   const noun = getCandidateNoun(phase);
   const orderLabel = getOrderLabel(phase);
+  const updates = getCandidateUpdates(candidate.id);
 
   return (
     <div className="overflow-hidden rounded-2xl bg-card shadow-lg">
@@ -244,6 +247,22 @@ export function CandidateDetailView({ candidate, phase, tab }: Props) {
             </div>
           </section>
         </>
+      )}
+
+      {updates.length > 0 && (
+        <section className="px-4 sm:px-6 pb-7">
+          <h2 className="text-base font-bold text-mirai-text">更新履歴</h2>
+          <p className="mt-1.5 text-[11.5px] leading-[1.8] text-mirai-text-muted">
+            このページに反映した日と内容です。発言や公表の日付は、「政策・主張」タブの
+            {candidate.takashimaAssessment
+              ? "高島市政への評価と各分野"
+              : "各分野"}
+            にある「発言の記録」に載せています。
+          </p>
+          <div className="mt-3 rounded-[10px] border border-mirai-border px-3.5 py-2">
+            <UpdateHistoryList entries={updates} />
+          </div>
+        </section>
       )}
 
       <section className="flex flex-col gap-2.5 px-4 sm:px-6 pb-10 sm:flex-row">
