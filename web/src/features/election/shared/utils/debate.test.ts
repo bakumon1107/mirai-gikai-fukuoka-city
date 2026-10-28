@@ -33,11 +33,20 @@ const DEBATE: Debate = {
       {
         candidateId: "a",
         time: "00:02:10",
+        flipKeep: "続",
+        flipChange: "変",
         keep: "続ける点",
         change: "変える点",
         followUp: { time: "00:03:00", text: "追加の答え" },
       },
-      { candidateId: "b", time: "00:02:40", keep: "K", change: "C" },
+      {
+        candidateId: "b",
+        time: "00:02:40",
+        flipKeep: "FK",
+        flipChange: "FC",
+        keep: "K",
+        change: "C",
+      },
     ],
   },
   questions: [
@@ -115,9 +124,31 @@ describe("collectCandidateStatements", () => {
       ["メッセージ", "00:20:10"],
     ]);
     expect(result[0].statement.text).toBe(
-      "継続する点：続ける点／変更する点：変える点"
+      "継続すること「続」：続ける点／変更すること「変」：変える点"
     );
     expect(result[3].section).toBe("問い01 問いの題（追加）");
+  });
+
+  it("フリップ以上の説明がなければフリップだけを載せる", () => {
+    const debate: Debate = {
+      ...DEBATE,
+      takashima: {
+        ...DEBATE.takashima,
+        answers: [
+          {
+            candidateId: "a",
+            time: "00:02:10",
+            flipKeep: "続",
+            flipChange: "変",
+            keep: "",
+            change: "変える点",
+          },
+        ],
+      },
+    };
+    expect(collectCandidateStatements(debate, "a")[0].statement.text).toBe(
+      "継続すること「続」／変更すること「変」：変える点"
+    );
   });
 
   it("提起した人の問題提起とまとめも拾う", () => {

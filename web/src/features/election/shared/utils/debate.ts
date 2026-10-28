@@ -75,7 +75,7 @@ export function collectCandidateStatements(
       statement: {
         candidateId,
         time: takashima.time,
-        text: `継続する点：${takashima.keep}／変更する点：${takashima.change}`,
+        text: `継続すること「${takashima.flipKeep}」${withExplanation(takashima.keep)}／変更すること「${takashima.flipChange}」${withExplanation(takashima.change)}`,
       },
     });
     if (takashima.followUp) {
@@ -99,6 +99,10 @@ export function collectCandidateStatements(
 
   pick("メッセージ", "メッセージ", debate.messages.answers);
   return result;
+}
+
+function withExplanation(text: string): string {
+  return text ? `：${text}` : "";
 }
 
 /** 討論会のデータに含まれる候補者IDをすべて集める（データの検証用） */

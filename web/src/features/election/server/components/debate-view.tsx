@@ -490,7 +490,7 @@ function TakashimaSection({ debate }: { debate: Debate }) {
       <SectionHeading
         eyebrow="02 — ON THE TAKASHIMA ADMINISTRATION"
         title="高島市政の評価"
-        description="各自がフリップに「継続する点」と「変更する点」を書き、続けて司会の質問に答えました。"
+        description="各自がフリップに「継続すること」と「変更すること」を書いて説明し、続けて司会の質問に答えました。フリップは書かれたとおりに、説明は要約で載せています。"
       />
       <p className="mt-3 text-[12.5px] leading-[1.9] text-mirai-text-secondary">
         {debate.takashima.overview.lead}
@@ -517,19 +517,29 @@ function TakashimaSection({ debate }: { debate: Debate }) {
             <dl className="mt-3 grid gap-2 sm:grid-cols-2">
               <div className="rounded-lg bg-mirai-surface px-3 py-2.5">
                 <dt className="text-[10px] font-bold text-primary-deep">
-                  継続する点
+                  継続すること
                 </dt>
-                <dd className="mt-1 text-xs leading-[1.8] text-mirai-text-secondary">
-                  {answer.keep}
+                <dd className="mt-1 text-[14px] font-bold leading-[1.6] text-mirai-text">
+                  {answer.flipKeep}
                 </dd>
+                {answer.keep && (
+                  <dd className="mt-1 text-[11.5px] leading-[1.75] text-mirai-text-subtle">
+                    {answer.keep}
+                  </dd>
+                )}
               </div>
               <div className="rounded-lg bg-mirai-surface px-3 py-2.5">
                 <dt className="text-[10px] font-bold text-primary-deep">
-                  変更する点
+                  変更すること
                 </dt>
-                <dd className="mt-1 text-xs leading-[1.8] text-mirai-text-secondary">
-                  {answer.change}
+                <dd className="mt-1 text-[14px] font-bold leading-[1.6] text-mirai-text">
+                  {answer.flipChange}
                 </dd>
+                {answer.change && (
+                  <dd className="mt-1 text-[11.5px] leading-[1.75] text-mirai-text-subtle">
+                    {answer.change}
+                  </dd>
+                )}
               </div>
             </dl>
             {answer.followUp && (

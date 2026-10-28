@@ -219,7 +219,13 @@ export type DebateStatement = {
 export type DebateTakashimaAnswer = {
   candidateId: string;
   time: string;
+  /** フリップに書いた「継続すること」。書かれたとおりに載せる */
+  flipKeep: string;
+  /** フリップに書いた「変更すること」。書かれたとおりに載せる */
+  flipChange: string;
+  /** 継続することについての口頭の説明（要約）。フリップ以上の説明がなければ空文字 */
   keep: string;
+  /** 変更することについての口頭の説明（要約）。フリップ以上の説明がなければ空文字 */
   change: string;
   /** 司会の追加質問への答え。確認できない場合は undefined */
   followUp?: { time: string; text: string; note?: string };
