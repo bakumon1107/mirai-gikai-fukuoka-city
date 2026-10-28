@@ -16,7 +16,7 @@ import { sortUpdatesNewestFirst } from "../../shared/utils/update-history";
 const VISIBLE_COUNT = 3;
 
 type Props = {
-  entries: UpdateEntry[];
+  entries: readonly UpdateEntry[];
 };
 
 function UpdateRows({ entries }: Props) {

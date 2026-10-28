@@ -253,7 +253,11 @@ export function CandidateDetailView({ candidate, phase, tab }: Props) {
         <section className="px-4 sm:px-6 pb-7">
           <h2 className="text-base font-bold text-mirai-text">更新履歴</h2>
           <p className="mt-1.5 text-[11.5px] leading-[1.8] text-mirai-text-muted">
-            このページに反映した日と内容です。発言や公表の日付は、「政策・主張」タブの「発言の記録」に載せています。分野の追加など全員に同時にかかる変更は、ここには書かず
+            このページに反映した日と内容です。発言や公表の日付は、「政策・主張」タブの
+            {candidate.takashimaAssessment
+              ? "高島市政への評価と各分野"
+              : "各分野"}
+            にある「発言の記録」に載せています。分野の追加など全員に同時にかかる変更は、ここには書かず
             <Link
               href="/election/2026"
               className="font-bold text-primary-deep underline underline-offset-2 hover:text-primary-darkest"

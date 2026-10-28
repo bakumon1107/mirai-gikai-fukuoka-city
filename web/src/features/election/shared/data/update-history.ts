@@ -5,6 +5,7 @@ import type { UpdateEntry } from "../types";
  *
  * 2026年10月28日より前の分は、リポジトリのマージ履歴から起こした。
  * 候補者の欄には、その人について新しい一次情報を載せたときと、内容を直したときを書く。
+ * 一部の人だけにかかる変更（点検して何人かを更新した、など）は、その人たちの欄にだけ書く。
  * 分野の追加など全員に同時にかかる変更は SITE_UPDATES にだけ書き、
  * 候補者ごとの欄には重ねて書かない（全員の最終更新が同じ日にそろい、差が見えなくなるため）。
  * 書くのは候補者に関わる変更だけ（候補者の追加、掲載内容の追加・訂正、分野の組み替えなど）。
@@ -13,7 +14,7 @@ import type { UpdateEntry } from "../types";
  */
 
 /** サイト全体にかかる変更。トップのカウントダウンの下に出す */
-export const SITE_UPDATES: UpdateEntry[] = [
+export const SITE_UPDATES: readonly UpdateEntry[] = [
   {
     date: "2026-08-28",
     text: "特設ページを公開。出馬を表明した3人（渡辺氏・西脇氏・荒牧氏）を掲載",
@@ -29,17 +30,15 @@ export const SITE_UPDATES: UpdateEntry[] = [
   { date: "2026-09-30", text: "吉富氏を追加（13人目の表明）" },
   { date: "2026-10-16", text: "稲富氏を追加（14人目の表明）" },
   {
-    date: "2026-10-22",
-    text: "「未表明」の分野が残っていた人について公表資料と照らして点検し直し、10の分野を更新した（更新した人の欄にも記載）",
-  },
-  {
     date: "2026-10-28",
     text: "分野に「副首都」「外国人住民・外国人政策」を加えて12分野にし、それまで「その他」や経済・防災などに入っていた記述を移した",
   },
 ];
 
 /** 候補者ごとの変更。キーは Candidate.id */
-export const CANDIDATE_UPDATES: Record<string, UpdateEntry[]> = {
+export const CANDIDATE_UPDATES: Readonly<
+  Record<string, readonly UpdateEntry[]>
+> = {
   "watanabe-hisaya": [
     { date: "2026-08-28", text: "掲載を開始" },
     {
@@ -82,7 +81,7 @@ export const CANDIDATE_UPDATES: Record<string, UpdateEntry[]> = {
     },
     {
       date: "2026-10-22",
-      text: "選挙用サイトのマニフェスト（全49ページ）を反映し、未表明だった分野を見直した",
+      text: "選挙用サイトのマニフェスト（全49ページ）を反映。再開発・防災・観光・財政・その他の5分野が「未表明」から「表明済み」に",
     },
     {
       date: "2026-10-28",
@@ -113,7 +112,7 @@ export const CANDIDATE_UPDATES: Record<string, UpdateEntry[]> = {
     { date: "2026-10-07", text: "政策集を反映" },
     {
       date: "2026-10-22",
-      text: "政策集をもとに、再開発・行政運営・財政の分野を見直した",
+      text: "政策集の内容を、再開発・行政運営・財政の分野に追加",
     },
     {
       date: "2026-10-28",
@@ -144,7 +143,7 @@ export const CANDIDATE_UPDATES: Record<string, UpdateEntry[]> = {
     { date: "2026-10-04", text: "本人Xの連載2本を反映" },
     {
       date: "2026-10-22",
-      text: "政策発表の記者会見を反映し、未表明だった分野を見直した",
+      text: "政策発表の記者会見を反映。行政運営・その他の2分野が「未表明」から「表明済み」に",
     },
   ],
   "nagasawa-kanta": [
@@ -153,7 +152,7 @@ export const CANDIDATE_UPDATES: Record<string, UpdateEntry[]> = {
     { date: "2026-10-03", text: "公式サイトの政策ごとの詳細ページを反映" },
     {
       date: "2026-10-22",
-      text: "市政運営方針一覧（15分野の立場・よく聞かれる15の問い）を反映し、未表明だった分野を見直した",
+      text: "市政運営方針一覧（15分野の立場・よく聞かれる15の問い）を反映。交通・観光の2分野が「未表明」から「表明済み」に",
     },
     {
       date: "2026-10-28",
@@ -165,7 +164,7 @@ export const CANDIDATE_UPDATES: Record<string, UpdateEntry[]> = {
     { date: "2026-09-20", text: "公式サイトの内容を反映" },
     {
       date: "2026-10-22",
-      text: "政策発表の記者会見と政策集（8つの分野）を反映",
+      text: "政策発表の記者会見と政策集（8つの分野）を反映。行政運営の分野が「未表明」から「表明済み」に",
     },
     {
       date: "2026-10-28",
@@ -181,7 +180,7 @@ export const CANDIDATE_UPDATES: Record<string, UpdateEntry[]> = {
     { date: "2026-10-04", text: "公式サイトの開設を反映" },
     {
       date: "2026-10-22",
-      text: "政策ダイジェストと政策発表の記者会見を反映",
+      text: "政策ダイジェストと政策発表の記者会見を反映。防災・観光・財政の3分野が「未表明」から「表明済み」に",
     },
     {
       date: "2026-10-28",
@@ -202,7 +201,10 @@ export const CANDIDATE_UPDATES: Record<string, UpdateEntry[]> = {
       date: "2026-09-30",
       text: "発言ログを記者会見での言い回しに合わせて直した",
     },
-    { date: "2026-10-22", text: "八つの約束をもとに財政の分野を見直した" },
+    {
+      date: "2026-10-22",
+      text: "八つの約束の財源の考え方を反映。財政の分野が「未表明」から「表明済み」に",
+    },
     {
       date: "2026-10-28",
       text: "出馬表明の記者会見での発言（政策協定、国家戦略特区）を反映",
@@ -218,7 +220,9 @@ export const CANDIDATE_UPDATES: Record<string, UpdateEntry[]> = {
   ],
 };
 
-/** 候補者の更新履歴の写し。登録がなければ空配列 */
-export function getCandidateUpdates(candidateId: string): UpdateEntry[] {
-  return [...(CANDIDATE_UPDATES[candidateId] ?? [])];
+/** 候補者の更新履歴。登録がなければ空配列 */
+export function getCandidateUpdates(
+  candidateId: string
+): readonly UpdateEntry[] {
+  return CANDIDATE_UPDATES[candidateId] ?? [];
 }
