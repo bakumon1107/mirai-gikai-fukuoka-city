@@ -20,6 +20,10 @@ const ISSUES_EXPANDED: UpdateEntry = {
   text: "分野に「副首都」「外国人住民・外国人政策」が加わり12分野に。これまでの記述のうち該当するものをこの2分野に移した",
 };
 
+/** 2026年10月29日、ReHacQ九州の討論会（10月28日）の発言を反映。出演した13人の欄に書く */
+const REHACQ_DEBATE =
+  "ReHacQ九州のネット討論会（10月28日）での発言を、高島市政への評価と各分野に反映";
+
 /** キーは Candidate.id */
 export const CANDIDATE_UPDATES: Readonly<
   Record<string, readonly UpdateEntry[]>
@@ -35,6 +39,10 @@ export const CANDIDATE_UPDATES: Readonly<
     {
       date: "2026-10-28",
       text: "本人YouTubeの動画（9月25日「外国人問題について」）を反映",
+    },
+    {
+      date: "2026-10-29",
+      text: `${REHACQ_DEBATE}。福祉・観光の2分野が「未表明」から「表明済み」に`,
     },
   ],
   "nishiwaki-hiroki": [
@@ -55,6 +63,7 @@ export const CANDIDATE_UPDATES: Readonly<
       date: "2026-10-28",
       text: "本人ブログの記事（想定Q&A、外国人・治安、交通渋滞、再選挙）を反映",
     },
+    { date: "2026-10-29", text: REHACQ_DEBATE },
   ],
   "aramaki-akira": [
     { date: "2026-08-28", text: "掲載を開始" },
@@ -75,6 +84,10 @@ export const CANDIDATE_UPDATES: Readonly<
       date: "2026-10-28",
       text: "マニフェスト第2章（若者に起きていること）を「その他」に反映",
     },
+    {
+      date: "2026-10-29",
+      text: `${REHACQ_DEBATE}。副首都の分野が「未表明」から「表明済み」に`,
+    },
   ],
   "niimura-masaru": [
     { date: "2026-09-04", text: "掲載を開始" },
@@ -89,6 +102,7 @@ export const CANDIDATE_UPDATES: Readonly<
       date: "2026-10-28",
       text: "政策集「ANSWER100」の「地域と外国人居住者の生活トラブル」の項目を反映",
     },
+    { date: "2026-10-29", text: REHACQ_DEBATE },
   ],
   "shirabe-takashi": [
     { date: "2026-09-12", text: "掲載を開始" },
@@ -108,10 +122,18 @@ export const CANDIDATE_UPDATES: Readonly<
       date: "2026-10-28",
       text: "本人YouTubeの動画（第12話・第13話）を副首都の分野に反映",
     },
+    {
+      date: "2026-10-29",
+      text: `${REHACQ_DEBATE}。外国人住民・外国人政策の分野が「未表明」から「表明済み」に`,
+    },
   ],
   "inoue-kiyoshi": [
     { date: "2026-09-19", text: "掲載を開始" },
     ISSUES_EXPANDED,
+    {
+      date: "2026-10-29",
+      text: `${REHACQ_DEBATE}。外国人住民・外国人政策の分野が「未表明」から「表明済み」に`,
+    },
   ],
   "mori-kentaro": [
     { date: "2026-09-19", text: "掲載を開始" },
@@ -130,6 +152,10 @@ export const CANDIDATE_UPDATES: Readonly<
       date: "2026-10-28",
       text: "本人サイトの活動報告（10月21日・22日）を反映",
     },
+    {
+      date: "2026-10-29",
+      text: `${REHACQ_DEBATE}。再開発・観光の2分野が「未表明」から「表明済み」に`,
+    },
   ],
   "abe-hideki": [
     { date: "2026-09-19", text: "掲載を開始" },
@@ -140,6 +166,7 @@ export const CANDIDATE_UPDATES: Readonly<
       text: "政策発表の記者会見を反映。行政運営・その他の2分野が「未表明」から「表明済み」に",
     },
     ISSUES_EXPANDED,
+    { date: "2026-10-29", text: REHACQ_DEBATE },
   ],
   "nagasawa-kanta": [
     { date: "2026-09-19", text: "掲載を開始" },
@@ -153,6 +180,10 @@ export const CANDIDATE_UPDATES: Readonly<
     {
       date: "2026-10-28",
       text: "課題が7つから8つに組み替わったのに合わせて主張を更新し、見える化ページ（外国人住民）を反映",
+    },
+    {
+      date: "2026-10-29",
+      text: `${REHACQ_DEBATE}。討論会の最後に出馬の取りやめも検討していると述べたことを「その他」に記載`,
     },
   ],
   "sasaki-ayano": [
@@ -171,6 +202,7 @@ export const CANDIDATE_UPDATES: Readonly<
       date: "2026-10-28",
       text: "政策発表の記者会見での副首都・外国人住民についての発言を反映",
     },
+    { date: "2026-10-29", text: REHACQ_DEBATE },
   ],
   "jinno-genki": [
     { date: "2026-09-27", text: "掲載を開始" },
@@ -184,6 +216,7 @@ export const CANDIDATE_UPDATES: Readonly<
       date: "2026-10-28",
       text: "政策ダイジェストの「ひとりでも、つながっている」（外国人相談窓口の拡充など）を反映",
     },
+    { date: "2026-10-29", text: REHACQ_DEBATE },
   ],
   "katayama-sumiko": [
     { date: "2026-09-28", text: "掲載を開始" },
@@ -193,6 +226,7 @@ export const CANDIDATE_UPDATES: Readonly<
       date: "2026-10-28",
       text: "政策集の政策7「人権を守る」の記述（外国籍住民、特別永住者の地方参政権など）を反映",
     },
+    { date: "2026-10-29", text: REHACQ_DEBATE },
   ],
   "yoshitomi-keiko": [
     { date: "2026-09-30", text: "掲載を開始" },
@@ -218,6 +252,7 @@ export const CANDIDATE_UPDATES: Readonly<
     },
     ISSUES_EXPANDED,
     { date: "2026-10-28", text: "政策集「ともにつくる、福岡」を反映" },
+    { date: "2026-10-29", text: REHACQ_DEBATE },
   ],
 };
 
