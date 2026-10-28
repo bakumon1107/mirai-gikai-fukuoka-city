@@ -3734,7 +3734,7 @@ export const CANDIDATES: Candidate[] = [
             place: "本人サイト",
             source: SASAKI_POLICY_SOURCE,
             text: "10月28日の時点で、政策集のWebページの防災の見出しが「168万人の命と暮らしを守りきる」から「167万人の命と暮らしを守りきる」に改められ、1つ目の施策の見出しも「警固断層をはじめとする大地震に備える」になっていた（10月21日の時点では168万人）。あわせて、8つの分野の政策を1冊にまとめた政策集のPDF版（76ページ）が公開されているが、PDF版の見出しは168万人のままになっている。",
-            url: SASAKI_POLICY_URL,
+            url: SASAKI_POLICY_BOSAI_URL,
           },
           {
             date: "2026-10-20",
