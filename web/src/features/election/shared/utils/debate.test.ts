@@ -187,6 +187,13 @@ describe("討論会データの整合性", () => {
       }
     });
 
+    it(`${debate.id}: 高島市政の評価は全員、フリップの下に説明がある`, () => {
+      for (const answer of debate.takashima.answers) {
+        expect(answer.keep, answer.candidateId).not.toBe("");
+        expect(answer.change, answer.candidateId).not.toBe("");
+      }
+    });
+
     it(`${debate.id}: 高島市政の評価は出演者1人につき1件`, () => {
       const ids = debate.takashima.answers.map((answer) => answer.candidateId);
       expect(new Set(ids).size).toBe(ids.length);
