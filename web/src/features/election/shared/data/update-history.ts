@@ -18,16 +18,16 @@ export const SITE_UPDATES: UpdateEntry[] = [
     date: "2026-08-28",
     text: "特設ページを公開。出馬を表明した3人（渡辺氏・西脇氏・荒牧氏）を掲載",
   },
-  { date: "2026-09-04", text: "新村氏を追加（表明順04）" },
-  { date: "2026-09-12", text: "調氏を追加（表明順05）" },
+  { date: "2026-09-04", text: "新村氏を追加（4人目の表明）" },
+  { date: "2026-09-12", text: "調氏を追加（5人目の表明）" },
   {
     date: "2026-09-19",
-    text: "井上氏・森氏・阿部氏・永澤氏・佐々木氏を追加（表明順06〜10）",
+    text: "井上氏・森氏・阿部氏・永澤氏・佐々木氏を追加（6〜10人目の表明）",
   },
-  { date: "2026-09-27", text: "神野氏を追加（表明順11）" },
-  { date: "2026-09-28", text: "片山氏を追加（表明順12）" },
-  { date: "2026-09-30", text: "吉富氏を追加（表明順13）" },
-  { date: "2026-10-16", text: "稲富氏を追加（表明順14）" },
+  { date: "2026-09-27", text: "神野氏を追加（11人目の表明）" },
+  { date: "2026-09-28", text: "片山氏を追加（12人目の表明）" },
+  { date: "2026-09-30", text: "吉富氏を追加（13人目の表明）" },
+  { date: "2026-10-16", text: "稲富氏を追加（14人目の表明）" },
   {
     date: "2026-10-22",
     text: "全員の「未表明」の分野を、公表資料と照らして点検し直した",
@@ -37,6 +37,11 @@ export const SITE_UPDATES: UpdateEntry[] = [
     text: "分野に「副首都」「外国人住民・外国人政策」を加えて12分野にし、それまで「その他」や経済・防災などに入っていた記述を移した",
   },
 ];
+
+/** 候補者の更新履歴。登録がなければ空配列 */
+export function getCandidateUpdates(candidateId: string): UpdateEntry[] {
+  return CANDIDATE_UPDATES[candidateId] ?? [];
+}
 
 /** 候補者ごとの変更。キーは Candidate.id */
 export const CANDIDATE_UPDATES: Record<string, UpdateEntry[]> = {
@@ -97,6 +102,10 @@ export const CANDIDATE_UPDATES: Record<string, UpdateEntry[]> = {
     },
     { date: "2026-09-19", text: "市議の辞職（9月16日）を経歴に追加" },
     { date: "2026-10-16", text: "政策集「ANSWER100」を反映" },
+    {
+      date: "2026-10-28",
+      text: "政策集「ANSWER100」の「地域と外国人居住者の生活トラブル」の項目を反映",
+    },
   ],
   "shirabe-takashi": [
     { date: "2026-09-12", text: "掲載を開始" },
@@ -179,10 +188,18 @@ export const CANDIDATE_UPDATES: Record<string, UpdateEntry[]> = {
       date: "2026-10-22",
       text: "政策ダイジェストと政策発表の記者会見を反映",
     },
+    {
+      date: "2026-10-28",
+      text: "政策ダイジェストの「ひとりでも、つながっている」（外国人相談窓口の拡充など）を反映",
+    },
   ],
   "katayama-sumiko": [
     { date: "2026-09-28", text: "掲載を開始" },
     { date: "2026-10-07", text: "政策集を反映" },
+    {
+      date: "2026-10-28",
+      text: "政策集の政策7「人権を守る」の記述（外国籍住民、特別永住者の地方参政権など）を反映",
+    },
   ],
   "yoshitomi-keiko": [
     { date: "2026-09-30", text: "掲載を開始" },

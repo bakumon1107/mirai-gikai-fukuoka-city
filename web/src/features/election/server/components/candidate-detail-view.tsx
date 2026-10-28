@@ -11,7 +11,7 @@ import { SnsChannels } from "../../client/components/sns-channels";
 import { StancePill } from "../../client/components/stance-pill";
 import { UpdateHistoryList } from "../../client/components/update-history-list";
 import { ISSUES } from "../../shared/data/issues";
-import { CANDIDATE_UPDATES } from "../../shared/data/update-history";
+import { getCandidateUpdates } from "../../shared/data/update-history";
 import type {
   Candidate,
   CandidateTab,
@@ -32,7 +32,7 @@ type Props = {
 export function CandidateDetailView({ candidate, phase, tab }: Props) {
   const noun = getCandidateNoun(phase);
   const orderLabel = getOrderLabel(phase);
-  const updates = CANDIDATE_UPDATES[candidate.id] ?? [];
+  const updates = getCandidateUpdates(candidate.id);
 
   return (
     <div className="overflow-hidden rounded-2xl bg-card shadow-lg">

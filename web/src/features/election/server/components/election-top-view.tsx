@@ -11,7 +11,7 @@ import { ISSUES } from "../../shared/data/issues";
 import { ELECTION_SCHEDULE } from "../../shared/data/schedule";
 import { buildSiteLinks } from "../../shared/data/site-links";
 import {
-  CANDIDATE_UPDATES,
+  getCandidateUpdates,
   SITE_UPDATES,
 } from "../../shared/data/update-history";
 import type { ElectionPhase } from "../../shared/types";
@@ -190,7 +190,7 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
       <section className="flex flex-col gap-3 px-4 sm:px-6 pb-8 pt-4">
         {CANDIDATES.map((candidate) => {
           const latestUpdate = getLatestUpdateDate(
-            CANDIDATE_UPDATES[candidate.id] ?? []
+            getCandidateUpdates(candidate.id)
           );
           return (
             <Link

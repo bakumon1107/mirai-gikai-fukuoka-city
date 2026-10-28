@@ -95,4 +95,28 @@ describe("更新履歴のデータ", () => {
       expect(dates).toEqual([...dates].sort());
     }
   });
+
+  // 新しい発言を載せたのに履歴を書き忘れると、カードの「個別の更新」が古いまま残る。
+  // 発言の日付は掲載より前なので、履歴の最新日は発言ログの最新日以上になるはず
+  // （"2026-10" のような月までの日付も、文字列比較で同じ月の日付より前に来る）。
+  it("履歴の最新日は、その人の発言ログの最新日より前にならない", () => {
+    for (const candidate of CANDIDATES) {
+      const logDates = [
+        ...Object.values(candidate.positions).flatMap((position) =>
+          position.log.map((statement) => statement.date)
+        ),
+        ...(candidate.takashimaAssessment?.log ?? []).map(
+          (statement) => statement.date
+        ),
+      ];
+      const newestLog = [...logDates].sort().at(-1) ?? "";
+      const latestUpdate = getLatestUpdateDate(
+        CANDIDATE_UPDATES[candidate.id] ?? []
+      );
+      expect(
+        (latestUpdate ?? "") >= newestLog,
+        `${candidate.id}: 履歴 ${latestUpdate} / 発言 ${newestLog}`
+      ).toBe(true);
+    }
+  });
 });
