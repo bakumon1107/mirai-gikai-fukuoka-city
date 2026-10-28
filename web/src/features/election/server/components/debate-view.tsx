@@ -17,7 +17,6 @@ import { CANDIDATES } from "../../shared/data/candidates";
 import type {
   Candidate,
   Debate,
-  DebateOverview,
   DebateStatement,
   ElectionPhase,
 } from "../../shared/types";
@@ -122,9 +121,6 @@ export function DebateView({ debate, phase, selectedCandidateId }: Props) {
               問いへの回答は任意でした。回答が載っていない人がいても、答えなかったことを意味するものではありません。
             </li>
             <li>本人が出典を示さずに挙げた数字には、その旨を添えています。</li>
-            <li>
-              「ざっくりまとめ」は、発言の要約をもとにこちらで方向ごとに整理したものです。名前の並びや人数で優劣を示すものではありません。
-            </li>
           </ul>
         </div>
       </section>
@@ -442,44 +438,6 @@ function TocItem({
   );
 }
 
-/**
- * ざっくりまとめ。方向ごとのラベルと、その方向で発言した人の名前を並べる。
- * 名前は表明順にそろえる（まとめ側の並びで順番に意味を持たせない）。
- */
-function OverviewPoints({ overview }: { overview: DebateOverview }) {
-  return (
-    <div className="rounded-lg bg-mirai-light-gradient px-3.5 py-3">
-      <p className="text-[10px] font-bold tracking-[0.08em] text-primary-deep">
-        ざっくりまとめ
-      </p>
-      <ul className="mt-1.5 flex flex-col">
-        {overview.points.map((point) => (
-          <li
-            key={point.label}
-            className="grid grid-cols-1 gap-0.5 border-b border-white py-2 last:border-b-0 sm:grid-cols-[minmax(0,13em)_1fr] sm:gap-3"
-          >
-            <span className="text-[11.5px] font-bold leading-[1.6] text-mirai-text">
-              {point.label}
-            </span>
-            <span className="text-[11.5px] leading-[1.6] text-mirai-text-subtle">
-              {sortCandidateIds(point.candidateIds)
-                .map(candidateName)
-                .join("・")}
-            </span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-function sortCandidateIds(ids: readonly string[]): string[] {
-  return sortByCandidateOrder(
-    ids.map((candidateId) => ({ candidateId })),
-    CANDIDATE_ORDER
-  ).map((item) => item.candidateId);
-}
-
 function TakashimaSection({ debate }: { debate: Debate }) {
   const answers = sortByCandidateOrder(
     debate.takashima.answers,
@@ -492,13 +450,7 @@ function TakashimaSection({ debate }: { debate: Debate }) {
         title="高島市政の評価"
         description="各自がフリップに「継続すること」と「変更すること」を書いて説明し、続けて司会の質問に答えました。フリップは書かれたとおりに、説明は要約で載せています。"
       />
-      <p className="mt-3 text-[12.5px] leading-[1.9] text-mirai-text-secondary">
-        {debate.takashima.overview.lead}
-      </p>
-      <div className="mt-3">
-        <OverviewPoints overview={debate.takashima.overview} />
-      </div>
-      <div className="mt-3 flex justify-end">
+      <div className="mt-2 flex justify-end">
         <VideoTimeLink
           videoUrl={debate.videoUrl}
           time={debate.takashima.time}
@@ -572,7 +524,7 @@ function QuestionsSection({ debate }: { debate: Debate }) {
       <SectionHeading
         eyebrow="03 — QUESTIONS"
         title="出演者どうしの問い"
-        description={`出演者が順に、ほかの出演者へ問いを投げました（${debate.questions.length}問）。回答は任意で、最後に問いを出した人がまとめています。各問いの下の文は、回答をこちらで方向ごとにまとめたものです。問いを開くと、方向ごとの名前と一人ひとりの回答が読めます。`}
+        description={`出演者が順に、ほかの出演者へ問いを投げました（${debate.questions.length}問）。回答は任意で、最後に問いを出した人がまとめています。問いを開くと回答が読めます。`}
       />
       <div className="mt-4 flex flex-col gap-2.5">
         {debate.questions.map((question) => (
@@ -592,9 +544,6 @@ function QuestionsSection({ debate }: { debate: Debate }) {
                 <span className="mt-0.5 block text-[10.5px] text-mirai-text-muted">
                   提起：{question.proposerIds.map(candidateName).join("・")}
                 </span>
-                <span className="mt-1.5 block text-[11.5px] leading-[1.75] text-mirai-text-secondary">
-                  {question.overview.lead}
-                </span>
               </span>
               <ChevronDown className="size-4 shrink-0 text-primary transition-transform duration-200 group-open:rotate-180" />
             </summary>
@@ -608,7 +557,6 @@ function QuestionsSection({ debate }: { debate: Debate }) {
                   time={question.time}
                 />
               </div>
-              <OverviewPoints overview={question.overview} />
               <ProposerBlock
                 debate={debate}
                 label="問題提起"
