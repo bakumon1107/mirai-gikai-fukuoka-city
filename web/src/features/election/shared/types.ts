@@ -225,6 +225,19 @@ export type DebateTakashimaAnswer = {
   followUp?: { time: string; text: string; note?: string };
 };
 
+/**
+ * 問い（コーナー）ごとの「ざっくりまとめ」。
+ *
+ * 回答を読む前に、どんな方向の答えが出たかをつかむためのもの。こちらの整理であり、
+ * 発言の要約にもとづいて方向ごとに名前を並べる。優劣・多数派の強調・評価は書かない。
+ * 名前を挙げるのは、そのコーナーで発言が確認できた人に限る（テストで検証する）。
+ */
+export type DebateOverview = {
+  /** 全体の傾向を1〜2文で */
+  lead: string;
+  points: { label: string; candidateIds: string[] }[];
+};
+
 /** 問いに続いて司会が全員に投げた追加の問い */
 export type DebateFollowUpQuestion = {
   title: string;
@@ -245,6 +258,7 @@ export type DebateQuestion = {
   time: string;
   /** 問いの前提の説明（司会による言い換えなど）。無ければ undefined */
   lead?: string;
+  overview: DebateOverview;
   /** 提起した人の問題提起の発言。字幕で確認できたものだけ */
   proposals: DebateStatement[];
   answers: DebateStatement[];
@@ -288,6 +302,7 @@ export type Debate = {
   moderatorPolicy: { time: string; text: string } | null;
   takashima: {
     time: string;
+    overview: DebateOverview;
     answers: DebateTakashimaAnswer[];
   };
   questions: DebateQuestion[];

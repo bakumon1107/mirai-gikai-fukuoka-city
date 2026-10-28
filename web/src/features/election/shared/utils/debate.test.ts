@@ -28,6 +28,7 @@ const DEBATE: Debate = {
   moderatorPolicy: null,
   takashima: {
     time: "00:02:00",
+    overview: { lead: "", points: [] },
     answers: [
       {
         candidateId: "a",
@@ -45,6 +46,7 @@ const DEBATE: Debate = {
       title: "問いの題",
       proposerIds: ["b"],
       time: "00:10:00",
+      overview: { lead: "", points: [] },
       proposals: [{ candidateId: "b", time: "00:10:10", text: "提起" }],
       answers: [
         { candidateId: "a", time: "00:11:00", text: "回答" },
@@ -157,6 +159,32 @@ describe("討論会データの整合性", () => {
     it(`${debate.id}: 高島市政の評価は出演者1人につき1件`, () => {
       const ids = debate.takashima.answers.map((answer) => answer.candidateId);
       expect(new Set(ids).size).toBe(ids.length);
+    });
+
+    it(`${debate.id}: まとめに名前を挙げるのは、そのコーナーで発言した人だけ`, () => {
+      const takashimaSpeakers = debate.takashima.answers.map(
+        (answer) => answer.candidateId
+      );
+      for (const point of debate.takashima.overview.points) {
+        for (const id of point.candidateIds) {
+          expect(takashimaSpeakers).toContain(id);
+        }
+      }
+      for (const question of debate.questions) {
+        const speakers = [
+          ...question.proposals,
+          ...question.answers,
+          ...question.closings,
+        ].map((statement) => statement.candidateId);
+        for (const point of question.overview.points) {
+          expect(point.candidateIds.length).toBeGreaterThan(0);
+          for (const id of point.candidateIds) {
+            expect(speakers, `問い${question.no}「${point.label}」`).toContain(
+              id
+            );
+          }
+        }
+      }
     });
 
     it(`${debate.id}: 問いの提起者が問題提起・まとめの話者と一致する`, () => {

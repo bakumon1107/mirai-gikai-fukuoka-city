@@ -1,4 +1,4 @@
-import type { Debate, DebateStatement } from "../types";
+import type { Debate, DebateOverview, DebateStatement } from "../types";
 
 /**
  * 討論会の整理。
@@ -42,6 +42,17 @@ function s(
     : { candidateId: IDS[key], time, text };
 }
 
+/** ざっくりまとめ。名前は表明順にそろえて表示するので、ここでの順は問わない */
+function overview(lead: string, points: [string, Key[]][]): DebateOverview {
+  return {
+    lead,
+    points: points.map(([label, keys]) => ({
+      label,
+      candidateIds: keys.map((key) => IDS[key]),
+    })),
+  };
+}
+
 const NUMBER_NOTE = "数字は本人の発言で、出典は示されていません。";
 
 const REHACQ_KYUSHU_20261028: Debate = {
@@ -80,6 +91,27 @@ const REHACQ_KYUSHU_20261028: Debate = {
   },
   takashima: {
     time: "00:28:45",
+    overview: overview(
+      "継続する点では天神ビッグバン・規制緩和、スタートアップ支援、副首都構想、子育て支援を挙げる人が重なった。変更する点は、交通・都市インフラ、財政運営や投資の配分、成長の恩恵の行き渡らせ方など、人によって分かれた。",
+      [
+        ["継続：天神ビッグバン・規制緩和", ["inoue", "abe", "nagasawa"]],
+        ["継続：スタートアップ支援", ["aramaki", "abe"]],
+        ["継続：副首都構想", ["watanabe", "jinno"]],
+        ["継続：子育て支援・給食の無償化", ["sasaki", "katayama"]],
+        ["変更：交通・道路・都市インフラ", ["niimura", "abe", "sasaki"]],
+        [
+          "変更：財政運営・投資の配分・税収の増やし方",
+          ["watanabe", "aramaki", "inoue"],
+        ],
+        ["変更：成長の恩恵を暮らしへ", ["katayama", "inatomi"]],
+        ["変更：施策の検証の仕方", ["nishiwaki"]],
+        [
+          "変更：まちづくりの単位・文化芸術・教育",
+          ["shirabe", "nagasawa", "jinno"],
+        ],
+        ["変更：ワンヘルス推進宣言・移民政策", ["mori"]],
+      ]
+    ),
     answers: [
       {
         candidateId: IDS.watanabe,
@@ -219,6 +251,18 @@ const REHACQ_KYUSHU_20261028: Debate = {
     {
       no: "01",
       title: "福岡県議会の問題をどう考えるか",
+      overview: overview(
+        "県だけの問題ではないとする声が複数あり、対策は透明化・見える化、議会と行政の関係の見直し、選挙や任期のあり方に分かれた。",
+        [
+          ["県だけの問題ではない", ["watanabe", "inoue", "katayama"]],
+          ["透明化・見える化・市民の目", ["nagasawa", "sasaki", "jinno"]],
+          ["議会・行政・市民の関係を見直す", ["mori", "abe", "inatomi"]],
+          ["選挙・任期のあり方から変える", ["nishiwaki", "inoue"]],
+          ["当事者の家族として断ち切る", ["niimura"]],
+          ["人の認識の構造から変える", ["aramaki"]],
+          ["市議会には県のような関係はない", ["shirabe"]],
+        ]
+      ),
       proposerIds: [IDS.jinno, IDS.inoue],
       time: "00:49:37",
       proposals: [
@@ -292,6 +336,20 @@ const REHACQ_KYUSHU_20261028: Debate = {
     {
       no: "02",
       title: "ジェンダー・人権・平和",
+      overview: overview(
+        "女性の登用や子育ての負担、意識への働きかけ、子どもの権利条例など、具体的な施策が挙がった。森氏はジェンダーの不平等は「ない」との立場を示した。",
+        [
+          ["女性の登用・キャリア支援", ["niimura", "sasaki", "katayama"]],
+          ["子育ての負担・政治参加の機会", ["abe", "inatomi"]],
+          [
+            "研修・アンケートで意識に働きかける",
+            ["aramaki", "inoue", "nagasawa"],
+          ],
+          ["子どもの権利条例", ["watanabe", "katayama"]],
+          ["戦争をしない・飢えさせない", ["shirabe"]],
+          ["不平等はないとし、減税を", ["mori"]],
+        ]
+      ),
       proposerIds: [IDS.katayama],
       time: "01:02:06",
       proposals: [],
@@ -352,6 +410,34 @@ const REHACQ_KYUSHU_20261028: Debate = {
     {
       no: "03",
       title: "家賃の高騰",
+      overview: overview(
+        "家賃補助を含め市が住まいに関わる案と、補助や給付ではなく減税・需給に委ねる案に分かれた。公営住宅や空き家の活用は、立場をまたいで挙がった。",
+        [
+          [
+            "家賃補助・住まいへの支援",
+            ["niimura", "sasaki", "jinno", "katayama", "inatomi"],
+          ],
+          [
+            "公営住宅・空き家の活用",
+            [
+              "nishiwaki",
+              "aramaki",
+              "shirabe",
+              "nagasawa",
+              "sasaki",
+              "jinno",
+              "katayama",
+            ],
+          ],
+          ["供給を増やす（容積率緩和など）", ["niimura", "shirabe"]],
+          [
+            "補助・給付には否定的",
+            ["watanabe", "nishiwaki", "inoue", "nagasawa"],
+          ],
+          ["減税・所得を上げる", ["nishiwaki", "aramaki", "mori", "abe"]],
+          ["短期売買の調査と抑制", ["niimura"]],
+        ]
+      ),
       proposerIds: [IDS.niimura],
       time: "01:10:06",
       proposals: [],
@@ -429,6 +515,27 @@ const REHACQ_KYUSHU_20261028: Debate = {
     {
       no: "04",
       title: "歴史・文化を感じるまちづくり",
+      overview: overview(
+        "城や通り、資料館など具体的な場所の整備を挙げる人が多く、学びとして伝える方法や、祭りや工芸の担い手の支援も挙がった。",
+        [
+          [
+            "場所・施設の整備や保存",
+            [
+              "nishiwaki",
+              "niimura",
+              "shirabe",
+              "inoue",
+              "mori",
+              "jinno",
+              "katayama",
+              "inatomi",
+            ],
+          ],
+          ["学び・伝え方", ["aramaki", "niimura", "nagasawa", "sasaki"]],
+          ["祭り・伝統工芸の担い手", ["abe", "sasaki"]],
+          ["音楽・食の文化", ["watanabe", "jinno"]],
+        ]
+      ),
       proposerIds: [IDS.sasaki],
       time: "01:19:46",
       proposals: [],
@@ -474,6 +581,23 @@ const REHACQ_KYUSHU_20261028: Debate = {
     {
       no: "05",
       title: "観光・テーマパーク",
+      overview: overview(
+        "ウォーターフロントの活用を挙げる人が多く、テーマパークの新設よりも、今ある場所や施設をどう使うかに話が広がった。森氏は観光は行き過ぎているとした。",
+        [
+          [
+            "ウォーターフロント・海辺の活用",
+            ["niimura", "abe", "sasaki", "inatomi"],
+          ],
+          [
+            "テーマパーク的な施設を求める・香椎花園の閉園を惜しむ",
+            ["watanabe", "shirabe", "inoue"],
+          ],
+          ["食をテーマに", ["niimura", "katayama"]],
+          ["既存の施設を転用する", ["nishiwaki", "nagasawa"]],
+          ["スタジアム・まち歩き", ["aramaki", "jinno"]],
+          ["市民のための観光地を", ["mori", "sasaki"]],
+        ]
+      ),
       proposerIds: [IDS.nishiwaki],
       time: "01:30:16",
       proposals: [],
@@ -539,6 +663,17 @@ const REHACQ_KYUSHU_20261028: Debate = {
     {
       no: "06",
       title: "課題解決の財源をどう確保するか",
+      overview: overview(
+        "企業や産業で税収を増やす、支出やコストを見直す、借り方・財政運営を変える、減税で経済を回す、の方向に分かれた。",
+        [
+          ["企業・産業で税収を増やす", ["niimura", "sasaki", "jinno"]],
+          ["支出・コストを見直す", ["mori", "abe", "nagasawa"]],
+          ["借り方・財政運営を変える", ["watanabe", "shirabe", "inatomi"]],
+          ["減税で経済を回す", ["inoue"]],
+          ["自治体は企業とは違う", ["katayama"]],
+          ["教育が新しい産業を生む", ["aramaki"]],
+        ]
+      ),
       proposerIds: [IDS.aramaki],
       time: "01:43:05",
       proposals: [],
@@ -591,6 +726,20 @@ const REHACQ_KYUSHU_20261028: Debate = {
     {
       no: "07",
       title: "不登校",
+      overview: overview(
+        "相談できる大人や専門職を増やす案が多く、学校以外の学び場への支援、教員の負担軽減、地域とのつながりも挙がった。",
+        [
+          [
+            "専門職・相談員・教員を増やす",
+            ["watanabe", "niimura", "inoue", "katayama", "inatomi"],
+          ],
+          ["学校以外の学び場を支える", ["sasaki", "jinno", "inatomi"]],
+          ["教員の負担を減らす", ["watanabe", "mori"]],
+          ["地域とつながる", ["abe", "nagasawa"]],
+          ["一人ひとりを伸ばす", ["nishiwaki", "aramaki"]],
+          ["国の給食無償化で浮く財源を充てる", ["shirabe"]],
+        ]
+      ),
       proposerIds: [IDS.nagasawa],
       time: "01:53:14",
       proposals: [],
@@ -695,6 +844,21 @@ const REHACQ_KYUSHU_20261028: Debate = {
     {
       no: "08",
       title: "天神ビッグバンをどう完成させるか",
+      overview: overview(
+        "「完成」を、周辺や副都心への波及、市民や地元企業への還元で測る意見が多く、やり方や意図の検証を求める声も挙がった。",
+        [
+          ["周辺・副都心へ広げる", ["niimura", "inoue", "inatomi"]],
+          [
+            "市民・地元企業に還元する",
+            ["aramaki", "shirabe", "nagasawa", "sasaki", "jinno"],
+          ],
+          [
+            "やり方や意図を検証する",
+            ["watanabe", "nishiwaki", "mori", "katayama"],
+          ],
+          ["耐震化の点で必要だった", ["abe"]],
+        ]
+      ),
       proposerIds: [IDS.shirabe],
       time: "02:10:58",
       proposals: [],
@@ -740,6 +904,27 @@ const REHACQ_KYUSHU_20261028: Debate = {
     {
       no: "09",
       title: "副首都についての見解",
+      overview: overview(
+        "推進・誘致に前向きな人が多かった一方、まず市民の意向や足元の備えを、今は反対、判断保留、別の形を示す人もいた。",
+        [
+          [
+            "推進・誘致する",
+            [
+              "aramaki",
+              "niimura",
+              "shirabe",
+              "abe",
+              "sasaki",
+              "jinno",
+              "inatomi",
+            ],
+          ],
+          ["まず市民の意向・足元の備えを", ["inoue", "nagasawa"]],
+          ["今の段階では反対", ["mori"]],
+          ["判断は保留", ["katayama"]],
+          ["別の形を示す", ["watanabe", "nishiwaki"]],
+        ]
+      ),
       proposerIds: [IDS.inatomi],
       time: "02:21:32",
       proposals: [],
@@ -829,6 +1014,18 @@ const REHACQ_KYUSHU_20261028: Debate = {
     {
       no: "10",
       title: "このまま外国人を増やすのか",
+      overview: overview(
+        "イエスかノーかを求められたが、ルールの徹底や窓口の設置など運用面で答える人が多かった。市長に増減の権限はないとの指摘もあった。",
+        [
+          ["拡大に歯止め・ノー", ["nishiwaki", "inoue", "mori", "nagasawa"]],
+          ["共生を進める", ["aramaki", "shirabe", "katayama"]],
+          [
+            "ルール・窓口・体制を整える",
+            ["watanabe", "niimura", "inoue", "abe", "jinno", "inatomi"],
+          ],
+          ["市長の権限ではない", ["aramaki", "sasaki"]],
+        ]
+      ),
       proposerIds: [IDS.mori],
       time: "02:38:37",
       lead: "司会の求めで、「このまま拡大を続けていいか、イエスかノーか」という問いになった。",
@@ -896,6 +1093,19 @@ const REHACQ_KYUSHU_20261028: Debate = {
     {
       no: "11",
       title: "交通渋滞",
+      overview: overview(
+        "交差点やバイパスなど道路への投資、地下鉄など公共交通の拡充、技術による最適化、需要の分散に分かれた。",
+        [
+          [
+            "道路・交差点に投資する",
+            ["watanabe", "niimura", "shirabe", "sasaki", "jinno"],
+          ],
+          ["地下鉄・公共交通を広げる", ["nishiwaki", "mori", "abe", "inatomi"]],
+          ["お金をかけない・地域ごとの対策", ["inoue", "katayama"]],
+          ["技術で最適化する", ["aramaki", "mori"]],
+          ["需要を分散させる", ["aramaki", "nagasawa"]],
+        ]
+      ),
       proposerIds: [IDS.abe],
       time: "02:52:40",
       proposals: [],
@@ -961,6 +1171,17 @@ const REHACQ_KYUSHU_20261028: Debate = {
     {
       no: "12",
       title: "増え続ける人口をどう考えるか",
+      overview: overview(
+        "人口が増えること自体より、どの年齢層が増えるか、誰が住み続けられるか、計画や合意があるかに目を向ける答えが多かった。",
+        [
+          ["増え方の中身・年齢層を見る", ["aramaki", "niimura", "abe"]],
+          ["出生率・少子化対策", ["aramaki", "inoue", "jinno"]],
+          ["住み続けられる環境", ["katayama", "inatomi"]],
+          ["計画・市民の合意が必要", ["watanabe", "sasaki"]],
+          ["増え続ける前提に立たない", ["nishiwaki", "shirabe", "nagasawa"]],
+          ["日本人が増える環境を", ["mori"]],
+        ]
+      ),
       proposerIds: [IDS.watanabe],
       time: "03:02:41",
       proposals: [],
