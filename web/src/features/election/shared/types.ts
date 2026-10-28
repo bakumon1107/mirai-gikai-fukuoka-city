@@ -195,3 +195,101 @@ export type ElectionSchedule = {
 
 /** 選挙の進行段階。呼称と並び順ラベルの切り替えに使う。 */
 export type ElectionPhase = "before-kokuji" | "campaigning" | "after-vote";
+
+/**
+ * 討論会での1回分の発言。
+ *
+ * 要約はこちらの言い換えなので、必ず動画の再生位置（time）を持たせ、
+ * 読み手が元の発言をその位置から確かめられるようにする。
+ */
+export type DebateStatement = {
+  /** Candidate.id */
+  candidateId: string;
+  /** 動画の再生位置。"01:23:45" 形式（withVideoTimestamp で URL に付ける） */
+  time: string;
+  text: string;
+  /**
+   * 補足。本人が出典を示さずに挙げた数字など、読み手に断っておくことを書く。
+   * こちらの評価は書かない。
+   */
+  note?: string;
+};
+
+/** 高島市政の評価のコーナーでの、1人分のフリップと追加質問への答え */
+export type DebateTakashimaAnswer = {
+  candidateId: string;
+  time: string;
+  keep: string;
+  change: string;
+  /** 司会の追加質問への答え。確認できない場合は undefined */
+  followUp?: { time: string; text: string; note?: string };
+};
+
+/** 問いに続いて司会が全員に投げた追加の問い */
+export type DebateFollowUpQuestion = {
+  title: string;
+  time: string;
+  answers: DebateStatement[];
+};
+
+/**
+ * 参加者が他の参加者に投げた問い（問題提起）と、それへの回答。
+ * 回答は任意だったので、answers に載らない参加者がいても「無回答」として扱わない。
+ */
+export type DebateQuestion = {
+  /** 表示用の連番（"01" 形式）。討論会で提起された順 */
+  no: string;
+  title: string;
+  /** 提起した人の Candidate.id（共同提起があるので配列） */
+  proposerIds: string[];
+  time: string;
+  /** 問いの前提の説明（司会による言い換えなど）。無ければ undefined */
+  lead?: string;
+  /** 提起した人の問題提起の発言。字幕で確認できたものだけ */
+  proposals: DebateStatement[];
+  answers: DebateStatement[];
+  /** 提起した人のまとめ */
+  closings: DebateStatement[];
+  followUps: DebateFollowUpQuestion[];
+};
+
+export type DebateSegment = {
+  label: string;
+  /** 1人あたりの持ち時間など */
+  detail: string;
+  time: string;
+};
+
+export type Debate = {
+  /** URL に使う ID */
+  id: string;
+  title: string;
+  /** 一覧・パンくずで使う短い名前 */
+  shortTitle: string;
+  /** 配信日。"2026-10-28" */
+  date: string;
+  dateLabel: string;
+  channel: string;
+  videoTitle: string;
+  videoUrl: string;
+  duration: string;
+  venue: string;
+  moderator: string;
+  /** 出演者の Candidate.id（並びは表示時に表明順へそろえる） */
+  participantIds: string[];
+  /**
+   * 開催時点で表明していたが出演しなかった人の Candidate.id。
+   * 開催後に表明した人まで「出演なし」と出ないよう、全候補者との差分ではなく明示する。
+   * 不参加の理由（司会の説明など）は、本人の確認が取れないので載せない。
+   */
+  notAppearingIds: string[];
+  segments: DebateSegment[];
+  /** 司会が示した進行の方針 */
+  moderatorPolicy: { time: string; text: string } | null;
+  takashima: {
+    time: string;
+    answers: DebateTakashimaAnswer[];
+  };
+  questions: DebateQuestion[];
+  messages: { time: string; answers: DebateStatement[] };
+};

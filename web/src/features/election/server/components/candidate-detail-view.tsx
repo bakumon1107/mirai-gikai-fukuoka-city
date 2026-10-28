@@ -1,5 +1,5 @@
 import "server-only";
-import { ArrowLeft, ArrowUpRight, Scale } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, ChevronRight, Scale } from "lucide-react";
 import Link from "next/link";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import { PositionBody } from "../../client/components/position-body";
 import { SnsChannels } from "../../client/components/sns-channels";
 import { StancePill } from "../../client/components/stance-pill";
 import { UpdateHistoryList } from "../../client/components/update-history-list";
+import { DEBATES } from "../../shared/data/debates";
 import { ISSUES } from "../../shared/data/issues";
 import { getCandidateUpdates } from "../../shared/data/update-history";
 import type {
@@ -18,6 +19,7 @@ import type {
   ElectionPhase,
 } from "../../shared/types";
 import { CANDIDATE_TABS } from "../../shared/utils/candidate-tab";
+import { collectCandidateStatements } from "../../shared/utils/debate";
 import {
   getCandidateNoun,
   getOrderLabel,
@@ -33,6 +35,10 @@ export function CandidateDetailView({ candidate, phase, tab }: Props) {
   const noun = getCandidateNoun(phase);
   const orderLabel = getOrderLabel(phase);
   const updates = getCandidateUpdates(candidate.id);
+  // 出演した討論会だけを出す。出演しなかった討論会はここでは触れない
+  const debates = DEBATES.filter((debate) =>
+    debate.participantIds.includes(candidate.id)
+  );
 
   return (
     <div className="overflow-hidden rounded-2xl bg-card shadow-lg">
@@ -202,6 +208,38 @@ export function CandidateDetailView({ candidate, phase, tab }: Props) {
               </div>
             </div>
           </section>
+
+          {debates.length > 0 && (
+            <section className="px-4 sm:px-6 pb-7">
+              <h2 className="text-base font-bold text-mirai-text">
+                討論会での発言
+              </h2>
+              <div className="mt-3 flex flex-col gap-2">
+                {debates.map((debate) => (
+                  <Link
+                    key={debate.id}
+                    href={`/election/2026/debates/${debate.id}?candidate=${candidate.id}`}
+                    className="flex items-center gap-3 rounded-[10px] border border-mirai-border p-3.5 transition-colors hover:border-primary"
+                  >
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-[13px] font-bold leading-[1.5] text-mirai-text">
+                        {debate.title}
+                      </span>
+                      <span className="mt-0.5 block text-[11px] text-mirai-text-subtle">
+                        {debate.dateLabel}・発言
+                        {
+                          collectCandidateStatements(debate, candidate.id)
+                            .length
+                        }
+                        件を討論会の順に読む
+                      </span>
+                    </span>
+                    <ChevronRight className="size-3.5 shrink-0 text-primary" />
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )}
 
           <section className="px-4 sm:px-6 pb-7">
             <h2 className="text-base font-bold text-mirai-text">

@@ -6,6 +6,7 @@ import { DisclaimerBar } from "../../client/components/disclaimer-bar";
 import { SectionHeading } from "../../client/components/section-heading";
 import { VoteCountdown } from "../../client/components/vote-countdown";
 import { CANDIDATES } from "../../shared/data/candidates";
+import { DEBATES } from "../../shared/data/debates";
 import { ISSUES } from "../../shared/data/issues";
 import { ELECTION_SCHEDULE } from "../../shared/data/schedule";
 import { buildSiteLinks } from "../../shared/data/site-links";
@@ -255,6 +256,36 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
         </div>
       </section>
 
+      {DEBATES.length > 0 && (
+        <section id="debates" className="scroll-mt-4 px-4 sm:px-6 pb-8">
+          <SectionHeading
+            eyebrow="03 — DEBATES"
+            title="討論会を読む"
+            description={`公開の討論会での発言を、問いごとに並べて整理しています。各発言は動画の再生位置から確かめられます。`}
+          />
+          <div className="mt-4 flex flex-col gap-2">
+            {DEBATES.map((debate) => (
+              <Link
+                key={debate.id}
+                href={`/election/2026/debates/${debate.id}`}
+                className="flex items-center gap-3 rounded-[10px] border border-mirai-border bg-card p-3.5 transition-[border-color,box-shadow] hover:border-primary hover:shadow-election-link-hover"
+              >
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[13.5px] font-bold leading-[1.5] text-mirai-text">
+                    {debate.title}
+                  </span>
+                  <span className="mt-0.5 block text-[11px] leading-[1.7] text-mirai-text-subtle">
+                    {debate.dateLabel}・出演{debate.participantIds.length}人・
+                    {debate.questions.length}の問い
+                  </span>
+                </span>
+                <ChevronRight className="size-3.5 shrink-0 text-primary" />
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
       <section className="mx-6 mb-8 overflow-hidden rounded-xl border border-mirai-border">
         <div className="border-b border-mirai-border bg-mirai-surface px-4.5 py-4">
           <h2 className="text-[15px] font-bold text-mirai-text">期日前投票</h2>
@@ -299,7 +330,7 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
 
       <section className="px-4 sm:px-6 pb-10">
         <SectionHeading
-          eyebrow="03 — CONTEXT"
+          eyebrow="04 — CONTEXT"
           title="争点の背景を、市議会の記録から読む"
           description="交通・再開発・財政などの論点は、選挙より前から市議会で審議されています。公約の言葉と、実際に何が決まってきたかを合わせて確認できます。"
         />
