@@ -29,15 +29,14 @@ export const SITE_UPDATES: UpdateEntry[] = [
   { date: "2026-09-30", text: "吉富氏を追加（13人目の表明）" },
   { date: "2026-10-16", text: "稲富氏を追加（14人目の表明）" },
   {
+    date: "2026-10-22",
+    text: "「未表明」の分野が残っていた人について公表資料と照らして点検し直し、10の分野を更新した（更新した人の欄にも記載）",
+  },
+  {
     date: "2026-10-28",
     text: "分野に「副首都」「外国人住民・外国人政策」を加えて12分野にし、それまで「その他」や経済・防災などに入っていた記述を移した",
   },
 ];
-
-/** 候補者の更新履歴。登録がなければ空配列 */
-export function getCandidateUpdates(candidateId: string): UpdateEntry[] {
-  return CANDIDATE_UPDATES[candidateId] ?? [];
-}
 
 /** 候補者ごとの変更。キーは Candidate.id */
 export const CANDIDATE_UPDATES: Record<string, UpdateEntry[]> = {
@@ -218,3 +217,8 @@ export const CANDIDATE_UPDATES: Record<string, UpdateEntry[]> = {
     { date: "2026-10-28", text: "政策集「ともにつくる、福岡」を反映" },
   ],
 };
+
+/** 候補者の更新履歴の写し。登録がなければ空配列 */
+export function getCandidateUpdates(candidateId: string): UpdateEntry[] {
+  return [...(CANDIDATE_UPDATES[candidateId] ?? [])];
+}

@@ -111,18 +111,13 @@ describe("更新履歴のデータ", () => {
   // 発言を後から載せた場合や、経歴・主張・SNSの変更は検知できないので、反映のたびに履歴を足すこと。
   it("履歴の最新日は、その人の発言ログの最新日より前にならない", () => {
     for (const candidate of CANDIDATES) {
-      const logDates = [
-        ...Object.values(candidate.positions).flatMap((position) =>
-          position.log.map((statement) => statement.date)
+      const logs = [
+        ...Object.values(candidate.positions).flatMap(
+          (position) => position.log
         ),
-        ...(candidate.takashimaAssessment?.log ?? []).map(
-          (statement) => statement.date
-        ),
+        ...(candidate.takashimaAssessment?.log ?? []),
       ];
-      const newestLog = logDates.reduce(
-        (newest, date) => (date > newest ? date : newest),
-        ""
-      );
+      const newestLog = getLatestUpdateDate(logs) ?? "";
       const latestUpdate = getLatestUpdateDate(
         getCandidateUpdates(candidate.id)
       );
