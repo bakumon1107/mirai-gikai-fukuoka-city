@@ -121,6 +121,9 @@ export function DebateView({ debate, phase, selectedCandidateId }: Props) {
               問いへの回答は任意でした。回答が載っていない人がいても、答えなかったことを意味するものではありません。
             </li>
             <li>本人が出典を示さずに挙げた数字には、その旨を添えています。</li>
+            <li>
+              「ざっくりまとめ」は、どんな方向の意見が出たかをこちらでまとめたものです。候補者の名前は挙げず、人数や優劣も示していません。
+            </li>
           </ul>
         </div>
       </section>
@@ -438,6 +441,20 @@ function TocItem({
   );
 }
 
+/** ざっくりまとめ。名前は挙げず、どんな方向の意見が出たかだけを書く */
+function SummaryBox({ summary }: { summary: string }) {
+  return (
+    <div className="rounded-lg bg-mirai-light-gradient px-3.5 py-3">
+      <p className="text-[10px] font-bold tracking-[0.08em] text-primary-deep">
+        ざっくりまとめ
+      </p>
+      <p className="mt-1 text-[12px] leading-[1.85] text-mirai-text-secondary">
+        {summary}
+      </p>
+    </div>
+  );
+}
+
 function TakashimaSection({ debate }: { debate: Debate }) {
   const answers = sortByCandidateOrder(
     debate.takashima.answers,
@@ -450,6 +467,9 @@ function TakashimaSection({ debate }: { debate: Debate }) {
         title="高島市政の評価"
         description="各自がフリップに「継続すること」と「変更すること」を書いて説明し、続けて司会の質問に答えました。フリップは書かれたとおりに、説明は要約で載せています。"
       />
+      <div className="mt-3">
+        <SummaryBox summary={debate.takashima.summary} />
+      </div>
       <div className="mt-2 flex justify-end">
         <VideoTimeLink
           videoUrl={debate.videoUrl}
@@ -548,6 +568,7 @@ function QuestionsSection({ debate }: { debate: Debate }) {
               <ChevronDown className="size-4 shrink-0 text-primary transition-transform duration-200 group-open:rotate-180" />
             </summary>
             <div className="flex flex-col gap-3 border-t border-mirai-surface-muted px-3.5 pb-4 pt-3">
+              <SummaryBox summary={question.summary} />
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <p className="text-[11px] leading-[1.7] text-mirai-text-subtle">
                   {question.lead ?? "問いの始まり"}

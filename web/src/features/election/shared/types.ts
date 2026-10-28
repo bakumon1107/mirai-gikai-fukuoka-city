@@ -251,6 +251,12 @@ export type DebateQuestion = {
   time: string;
   /** 問いの前提の説明（司会による言い換えなど）。無ければ undefined */
   lead?: string;
+  /**
+   * ざっくりまとめ。回答を読む前に、どんな方向の意見が出たかをつかむための1〜2文。
+   * こちらの整理なので、候補者の名前は挙げない。人数や多数派の強調、優劣も書かない
+   * （名前を方向ごとに振り分けると、くくり方にこちらの解釈が入るため）。
+   */
+  summary: string;
   /** 提起した人の問題提起の発言。字幕で確認できたものだけ */
   proposals: DebateStatement[];
   answers: DebateStatement[];
@@ -294,6 +300,8 @@ export type Debate = {
   moderatorPolicy: { time: string; text: string } | null;
   takashima: {
     time: string;
+    /** ざっくりまとめ。DebateQuestion.summary と同じ書き方 */
+    summary: string;
     answers: DebateTakashimaAnswer[];
   };
   questions: DebateQuestion[];

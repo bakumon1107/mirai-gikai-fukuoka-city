@@ -28,6 +28,7 @@ const DEBATE: Debate = {
   moderatorPolicy: null,
   takashima: {
     time: "00:02:00",
+    summary: "まとめ",
     answers: [
       {
         candidateId: "a",
@@ -54,6 +55,7 @@ const DEBATE: Debate = {
       title: "問いの題",
       proposerIds: ["b"],
       time: "00:10:00",
+      summary: "問いのまとめ",
       proposals: [{ candidateId: "b", time: "00:10:10", text: "提起" }],
       answers: [
         { candidateId: "a", time: "00:11:00", text: "回答" },
@@ -195,6 +197,24 @@ describe("討論会データの整合性", () => {
     it(`${debate.id}: 高島市政の評価は出演者1人につき1件`, () => {
       const ids = debate.takashima.answers.map((answer) => answer.candidateId);
       expect(new Set(ids).size).toBe(ids.length);
+    });
+
+    // ざっくりまとめはこちらの整理なので、候補者を名指ししない（くくり方に解釈が入るため）
+    it(`${debate.id}: ざっくりまとめは空でなく、候補者の名前を挙げていない`, () => {
+      const summaries = [
+        debate.takashima.summary,
+        ...debate.questions.map((question) => question.summary),
+      ];
+      const names = CANDIDATES.flatMap((candidate) => {
+        const [surname] = candidate.name.split(" ");
+        return [candidate.name, `${surname}氏`];
+      });
+      for (const summary of summaries) {
+        expect(summary.trim()).not.toBe("");
+        for (const name of names) {
+          expect(summary, name).not.toContain(name);
+        }
+      }
     });
 
     it(`${debate.id}: 問いの提起者が問題提起・まとめの話者と一致する`, () => {
