@@ -349,7 +349,7 @@ function InterviewsSection({ debate }: { debate: Debate }) {
     return null;
   }
   return (
-    <section id="interviews" className="scroll-mt-4 px-4 sm:px-6 pb-8">
+    <section id="interviews" className="scroll-mt-24 px-4 sm:px-6 pb-8">
       <SectionHeading
         eyebrow="05 — INTERVIEWS"
         title="事前インタビュー"

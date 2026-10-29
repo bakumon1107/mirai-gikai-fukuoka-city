@@ -55,12 +55,12 @@ export function CandidateDetailView({ candidate, phase, tab }: Props) {
   const noun = getCandidateNoun(phase);
   const orderLabel = getOrderLabel(phase);
   const updates = getCandidateUpdates(candidate.id);
-  // 出演した討論会だけを出す。出演しなかった討論会はここでは触れない
   const interview = findInterviewLink(
     CANDIDATE_INTERVIEWS,
     INTERVIEW_SERIES,
     candidate.id
   );
+  // 出演した討論会だけを出す。出演しなかった討論会はここでは触れない
   const debates = DEBATES.filter((debate) =>
     debate.participantIds.includes(candidate.id)
   );

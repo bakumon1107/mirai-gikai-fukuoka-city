@@ -125,6 +125,16 @@ describe("実データ", () => {
     }
   });
 
+  // 動画へのリンクと再生リストへのリンクで、人によって案内の仕方が分かれないようにする
+  it("シリーズの出演者は全員、個々の動画が載っている", () => {
+    for (const id of INTERVIEW_SERIES.candidateIds) {
+      expect(
+        findInterviewLink(CANDIDATE_INTERVIEWS, INTERVIEW_SERIES, id)?.kind,
+        id
+      ).toBe("video");
+    }
+  });
+
   it("同じ動画を二重に載せない", () => {
     const urls = CANDIDATE_INTERVIEWS.map((interview) => interview.url);
     expect(new Set(urls).size).toBe(urls.length);
