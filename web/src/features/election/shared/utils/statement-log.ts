@@ -8,7 +8,9 @@ import type { StatementLog } from "../types";
  * ゼロ埋めされた同一書式のプレフィックスなので辞書順の降順で正しく並ぶ
  * （"2026-08-26" > "2026-08" となり、日まで判明している方が先に来る）。
  */
-export function sortStatementsNewestFirst(log: StatementLog[]): StatementLog[] {
+export function sortStatementsNewestFirst<T extends StatementLog>(
+  log: readonly T[]
+): T[] {
   return [...log].sort((a, b) => b.date.localeCompare(a.date));
 }
 

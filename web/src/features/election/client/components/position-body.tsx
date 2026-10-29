@@ -1,10 +1,10 @@
-import type { StatementLog } from "../../shared/types";
+import type { StatementLogView } from "../../shared/types";
 import { StatementLogList } from "./statement-log-list";
 
 type Props = {
   summary: string;
   updated: string;
-  log: StatementLog[];
+  log: StatementLogView[];
 };
 
 /**
