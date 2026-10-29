@@ -2,7 +2,7 @@ import "server-only";
 import { ArrowRight, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { Container } from "@/components/layouts/container";
-import { CANDIDATES } from "../../shared/data/candidates";
+import { ACTIVE_CANDIDATES } from "../../shared/data/candidates";
 import { DEBATES } from "../../shared/data/debates";
 import { ISSUES } from "../../shared/data/issues";
 import { ELECTION_SCHEDULE } from "../../shared/data/schedule";
@@ -57,7 +57,7 @@ export function ElectionBanner() {
             </span>
             <span className="mt-2.5 block max-w-[400px] text-xs leading-[1.85] text-mirai-text-secondary">
               {phase === "before-kokuji" ? "出馬の意向を示した" : "立候補した"}
-              {CANDIDATES.length}
+              {ACTIVE_CANDIDATES.length}
               人の公表内容を、{ISSUES.length}
               の分野で同じ物差しに並べています。評価や推薦は行いません。
             </span>

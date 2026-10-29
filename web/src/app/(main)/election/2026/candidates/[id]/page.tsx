@@ -6,7 +6,7 @@ import {
   getCandidatePageData,
   getCurrentElectionPhase,
 } from "@/features/election/server/loaders/get-election-page-data";
-import { CANDIDATES } from "@/features/election/shared/data/candidates";
+import { ACTIVE_CANDIDATES } from "@/features/election/shared/data/candidates";
 import { ISSUES } from "@/features/election/shared/data/issues";
 import { getCandidateNoun } from "@/features/election/shared/utils/election-phase";
 
@@ -22,7 +22,7 @@ type Props = {
 export const revalidate = 3600;
 
 export function generateStaticParams() {
-  return CANDIDATES.map((candidate) => ({ id: candidate.id }));
+  return ACTIVE_CANDIDATES.map((candidate) => ({ id: candidate.id }));
 }
 
 export async function generateMetadata({

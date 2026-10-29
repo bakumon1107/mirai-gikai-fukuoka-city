@@ -1,5 +1,6 @@
 import type { Candidate } from "../types";
 import { withVideoTimestamp } from "../utils/video-timestamp";
+import { filterActiveCandidates } from "../utils/withdrawal";
 
 /**
  * ReHacQ九州の討論会（2026年10月28日、3時間32分の生配信）。13人が出演、吉富氏は不参加。
@@ -348,6 +349,8 @@ const ABE_YOMIURI_URL =
 const NAGASAWA_SITE_URL = "https://kantanagasawa.com/";
 const NAGASAWA_SITE_SOURCE = "本人サイト（ながさわかんた後援会）";
 const NAGASAWA_REVIEW_URL = "https://kantanagasawa.com/review.html";
+/** 2026年10月29日の立候補取りやめのお知らせ */
+const NAGASAWA_SEIMEI_URL = "https://kantanagasawa.com/seimei.html";
 /** 2026年10月までに追加された政策ごとの詳細ページ */
 const NAGASAWA_KAZENOTANI_URL = "https://kantanagasawa.com/kazenotani.html";
 const NAGASAWA_AI_URL = "https://kantanagasawa.com/ai.html";
@@ -4201,6 +4204,11 @@ export const CANDIDATES: Candidate[] = [
     age: 33,
     title: "NPO法人代表理事",
     party: "無所属",
+    withdrawal: {
+      date: "2026-10-29",
+      source: "本人サイトのお知らせ",
+      url: NAGASAWA_SEIMEI_URL,
+    },
     lead: "「元気なうちに、備える。」を掲げ、市内7区の小学校を、災害時にもエネルギーと水を自給できる「風の谷」にするとしている。供託金240万円を寄附と自己資金で集め、10月31日までに用意できなければ立候補を見送ると表明している。",
     bioSource: `${NAGASAWA_SITE_SOURCE}／${NAGASAWA_KAIKEN_SOURCE}`,
     bio: [
@@ -7203,3 +7211,9 @@ export const CANDIDATES: Candidate[] = [
     },
   },
 ];
+
+/**
+ * 立候補を取りやめた人を除いた一覧。人数・争点の比較・個人ページはこちらを使う。
+ * 表明順の番号と討論会での発言は記録として残すため、CANDIDATES からは消さない。
+ */
+export const ACTIVE_CANDIDATES = filterActiveCandidates(CANDIDATES);

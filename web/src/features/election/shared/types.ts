@@ -176,6 +176,19 @@ export type Candidate = {
   sns: SnsChannel[];
   /** 全 IssueId のキーを必ず持つ。情報がない分野は「未表明」として並べる。 */
   positions: Record<IssueId, CandidatePosition>;
+  /**
+   * 立候補を取りやめた場合のみ持つ。個人ページと争点の比較からは外し、
+   * 表明順の番号と討論会での発言は記録として残す。
+   */
+  withdrawal?: CandidateWithdrawal;
+};
+
+export type CandidateWithdrawal = {
+  /** 取りやめを表明した日。"YYYY-MM-DD" 形式 */
+  date: string;
+  /** 取りやめを確認した出典の表記（例: 「本人サイトのお知らせ」） */
+  source: string;
+  url: string;
 };
 
 /** 立候補予定者ページのタブ。URLの ?tab= に反映する */

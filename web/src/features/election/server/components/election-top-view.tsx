@@ -11,12 +11,16 @@ import { CandidateNumber } from "../../client/components/candidate-number";
 import { DisclaimerBar } from "../../client/components/disclaimer-bar";
 import { SectionHeading } from "../../client/components/section-heading";
 import { VoteCountdown } from "../../client/components/vote-countdown";
-import { CANDIDATES } from "../../shared/data/candidates";
+import { ACTIVE_CANDIDATES, CANDIDATES } from "../../shared/data/candidates";
 import { DEBATES } from "../../shared/data/debates";
 import { ISSUES } from "../../shared/data/issues";
 import { ELECTION_SCHEDULE } from "../../shared/data/schedule";
 import { buildSiteLinks } from "../../shared/data/site-links";
-import type { ElectionPhase } from "../../shared/types";
+import type {
+  Candidate,
+  CandidateWithdrawal,
+  ElectionPhase,
+} from "../../shared/types";
 import { getCountdown } from "../../shared/utils/countdown";
 import {
   debatePath,
@@ -29,6 +33,10 @@ import {
   getOrderLabel,
 } from "../../shared/utils/election-phase";
 import { countStatedIssues } from "../../shared/utils/stance";
+import {
+  formatWithdrawalLabel,
+  isWithdrawn,
+} from "../../shared/utils/withdrawal";
 
 /** 冒頭の一覧に最低限並べる行数。表明者が少ないうちは「表明待ち」の行で埋める */
 const HERO_SLOT_COUNT = 4;
@@ -87,20 +95,34 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
           <ol className="mt-6 grid grid-cols-2 gap-1.5">
             {CANDIDATES.map((candidate) => (
               <li key={candidate.id}>
-                <Link
-                  href={`/election/2026/candidates/${candidate.id}`}
-                  className="flex items-center gap-2 rounded-lg bg-white/75 px-2 py-1.5 transition-colors duration-200 hover:bg-white"
-                >
-                  <CandidateNumber no={candidate.no} size="sm" />
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate text-[13px] font-bold leading-[1.35] text-mirai-text">
-                      {candidate.name}
-                    </span>
-                    <span className="hidden truncate text-[10px] leading-[1.4] text-primary-deep sm:block">
-                      {candidate.title}
+                {isWithdrawn(candidate) ? (
+                  <span className="flex items-center gap-2 rounded-lg bg-white/40 px-2 py-1.5">
+                    <CandidateNumber no={candidate.no} size="sm" muted />
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-[13px] font-bold leading-[1.35] text-mirai-text-muted">
+                        {candidate.name}
+                      </span>
+                      <span className="block truncate text-[10px] leading-[1.4] text-mirai-text-muted">
+                        立候補を取りやめ
+                      </span>
                     </span>
                   </span>
-                </Link>
+                ) : (
+                  <Link
+                    href={`/election/2026/candidates/${candidate.id}`}
+                    className="flex items-center gap-2 rounded-lg bg-white/75 px-2 py-1.5 transition-colors duration-200 hover:bg-white"
+                  >
+                    <CandidateNumber no={candidate.no} size="sm" />
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-[13px] font-bold leading-[1.35] text-mirai-text">
+                        {candidate.name}
+                      </span>
+                      <span className="hidden truncate text-[10px] leading-[1.4] text-primary-deep sm:block">
+                        {candidate.title}
+                      </span>
+                    </span>
+                  </Link>
+                )}
               </li>
             ))}
             {pendingSlotIds.map((slotId) => (
@@ -148,7 +170,7 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
                 {isBeforeKokuji ? "出馬表明" : "立候補届出"}
               </p>
               <p className="mt-0.5 text-[15px] font-bold leading-tight text-mirai-text">
-                {CANDIDATES.length}人{" "}
+                {ACTIVE_CANDIDATES.length}人{" "}
                 <span className="text-[11px] font-medium text-mirai-text-subtle">
                   {orderLabel}
                 </span>
@@ -207,51 +229,59 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
       </section>
 
       <section className="flex flex-col gap-3 px-4 sm:px-6 pb-8 pt-4">
-        {CANDIDATES.map((candidate) => (
-          <Link
-            key={candidate.id}
-            href={`/election/2026/candidates/${candidate.id}`}
-            className="rounded-xl border border-mirai-border bg-card p-4 transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-[3px] hover:border-primary hover:shadow-election-card-hover"
-          >
-            <div className="flex items-center gap-3">
-              <CandidateNumber no={candidate.no} />
-              <div className="min-w-0 flex-1">
-                <p className="text-[11px] text-mirai-text-muted">
-                  {candidate.kana}
-                </p>
-                <p className="mt-px text-xl font-bold leading-tight tracking-[-0.025em] text-mirai-text">
-                  {candidate.name}
-                </p>
+        {CANDIDATES.map((candidate) =>
+          candidate.withdrawal ? (
+            <WithdrawnCandidateCard
+              key={candidate.id}
+              candidate={candidate}
+              withdrawal={candidate.withdrawal}
+            />
+          ) : (
+            <Link
+              key={candidate.id}
+              href={`/election/2026/candidates/${candidate.id}`}
+              className="rounded-xl border border-mirai-border bg-card p-4 transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-[3px] hover:border-primary hover:shadow-election-card-hover"
+            >
+              <div className="flex items-center gap-3">
+                <CandidateNumber no={candidate.no} />
+                <div className="min-w-0 flex-1">
+                  <p className="text-[11px] text-mirai-text-muted">
+                    {candidate.kana}
+                  </p>
+                  <p className="mt-px text-xl font-bold leading-tight tracking-[-0.025em] text-mirai-text">
+                    {candidate.name}
+                  </p>
+                </div>
               </div>
-            </div>
-            <div className="mt-2.5 flex flex-wrap gap-1.5">
-              {candidate.age !== null && (
+              <div className="mt-2.5 flex flex-wrap gap-1.5">
+                {candidate.age !== null && (
+                  <span className="rounded-[5px] bg-mirai-surface-grouped px-1.5 py-0.5 text-[11px] font-medium text-mirai-text-secondary">
+                    {candidate.age}歳
+                  </span>
+                )}
                 <span className="rounded-[5px] bg-mirai-surface-grouped px-1.5 py-0.5 text-[11px] font-medium text-mirai-text-secondary">
-                  {candidate.age}歳
+                  {candidate.title}
                 </span>
-              )}
-              <span className="rounded-[5px] bg-mirai-surface-grouped px-1.5 py-0.5 text-[11px] font-medium text-mirai-text-secondary">
-                {candidate.title}
-              </span>
-              <span className="rounded-[5px] bg-mirai-gradient px-1.5 py-0.5 text-[11px] font-medium text-primary-darkest">
-                {candidate.party}
-              </span>
-            </div>
-            <p className="mt-2.5 text-xs leading-[1.85] text-mirai-text-secondary">
-              {candidate.lead}
-            </p>
-            <div className="mt-3 flex items-center justify-between gap-2 border-t border-mirai-surface-muted pt-2.5">
-              <span className="text-[11px] text-mirai-text-muted">
-                {ISSUES.length}分野のうち {countStatedIssues(candidate)}
-                分野で言及あり
-              </span>
-              <span className="flex items-center gap-1 text-xs font-bold text-primary-accent">
-                詳しく見る
-                <ArrowRight className="size-3.5" />
-              </span>
-            </div>
-          </Link>
-        ))}
+                <span className="rounded-[5px] bg-mirai-gradient px-1.5 py-0.5 text-[11px] font-medium text-primary-darkest">
+                  {candidate.party}
+                </span>
+              </div>
+              <p className="mt-2.5 text-xs leading-[1.85] text-mirai-text-secondary">
+                {candidate.lead}
+              </p>
+              <div className="mt-3 flex items-center justify-between gap-2 border-t border-mirai-surface-muted pt-2.5">
+                <span className="text-[11px] text-mirai-text-muted">
+                  {ISSUES.length}分野のうち {countStatedIssues(candidate)}
+                  分野で言及あり
+                </span>
+                <span className="flex items-center gap-1 text-xs font-bold text-primary-accent">
+                  詳しく見る
+                  <ArrowRight className="size-3.5" />
+                </span>
+              </div>
+            </Link>
+          )
+        )}
 
         {isBeforeKokuji && (
           <div className="rounded-xl border-[1.5px] border-dashed border-mirai-border bg-mirai-surface px-4.5 py-5 text-center">
@@ -424,6 +454,45 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
           ))}
         </div>
       </section>
+    </div>
+  );
+}
+
+/**
+ * 立候補を取りやめた人のカード。表明順の番号は残し、個人ページへのリンクと
+ * 公約の要約は出さない。取りやめを確認した出典だけ示す。
+ */
+function WithdrawnCandidateCard({
+  candidate,
+  withdrawal,
+}: {
+  candidate: Candidate;
+  withdrawal: CandidateWithdrawal;
+}) {
+  return (
+    <div className="rounded-xl border border-mirai-border bg-mirai-surface p-4">
+      <div className="flex items-center gap-3">
+        <CandidateNumber no={candidate.no} muted />
+        <div className="min-w-0 flex-1">
+          <p className="text-[11px] text-mirai-text-muted">{candidate.kana}</p>
+          <p className="mt-px text-xl font-bold leading-tight tracking-[-0.025em] text-mirai-text-muted">
+            {candidate.name}
+          </p>
+        </div>
+      </div>
+      <p className="mt-2.5 text-xs leading-[1.85] text-mirai-text-subtle">
+        {formatWithdrawalLabel(withdrawal)}
+        ました。個人ページの掲載は終了しています。
+      </p>
+      <a
+        href={withdrawal.url}
+        target="_blank"
+        rel="noreferrer"
+        className="mt-2 inline-flex items-center gap-1 text-[11px] font-bold text-primary-accent"
+      >
+        出典：{withdrawal.source}
+        <ArrowUpRight className="size-3" />
+      </a>
     </div>
   );
 }

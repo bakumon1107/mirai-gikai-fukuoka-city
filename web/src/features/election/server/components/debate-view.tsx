@@ -43,6 +43,10 @@ import {
   findInterviewLink,
   formatInterviewLinkLabel,
 } from "../../shared/utils/interviews";
+import {
+  formatWithdrawalLabel,
+  isWithdrawn,
+} from "../../shared/utils/withdrawal";
 
 type Props = {
   debate: Debate;
@@ -225,12 +229,30 @@ function FilterPill({
 
 function SpeakerLabel({ candidateId }: { candidateId: string }) {
   const candidate = CANDIDATE_BY_ID.get(candidateId);
+  const withdrawn = candidate ? isWithdrawn(candidate) : false;
   return (
     <span className="flex min-w-0 items-center gap-2">
-      {candidate && <CandidateNumber no={candidate.no} size="sm" />}
-      <span className="truncate text-[12.5px] font-bold text-mirai-text">
+      {candidate && (
+        <CandidateNumber no={candidate.no} size="sm" muted={withdrawn} />
+      )}
+      <span
+        className={cn(
+          "truncate text-[12.5px] font-bold",
+          withdrawn ? "text-mirai-text-muted" : "text-mirai-text"
+        )}
+      >
         {candidateName(candidateId)}
       </span>
+      {withdrawn && <WithdrawnBadge />}
+    </span>
+  );
+}
+
+/** 討論会のあとで立候補を取りやめた人の名前に添える */
+function WithdrawnBadge() {
+  return (
+    <span className="shrink-0 rounded-sm border border-mirai-border bg-mirai-surface-grouped px-1.5 py-0.5 text-[9.5px] font-bold text-mirai-text-muted">
+      立候補取りやめ
     </span>
   );
 }
@@ -433,6 +455,18 @@ function Overview({
     rows.push({
       label: "出演なし",
       value: absentees.map((candidate) => candidate.name).join("、"),
+    });
+  }
+  // 立候補を取りやめた人も、発言は記録として残す
+  const withdrawn = participants.flatMap((candidate) =>
+    candidate.withdrawal
+      ? [`${candidate.name}（${formatWithdrawalLabel(candidate.withdrawal)}）`]
+      : []
+  );
+  if (withdrawn.length > 0) {
+    rows.push({
+      label: "取りやめ",
+      value: `${withdrawn.join("、")}。発言は討論会の記録として残しています。`,
     });
   }
 
@@ -772,6 +806,7 @@ function CandidateStatements({
   candidate: Candidate;
 }) {
   const items = collectCandidateStatements(debate, candidate.id);
+  const withdrawn = isWithdrawn(candidate);
   const interview = findInterviewLink(
     CANDIDATE_INTERVIEWS,
     INTERVIEW_SERIES,
@@ -780,7 +815,7 @@ function CandidateStatements({
   return (
     <section className="px-4 sm:px-6 pb-8 pt-7">
       <div className="flex items-center gap-3">
-        <CandidateNumber no={candidate.no} />
+        <CandidateNumber no={candidate.no} muted={withdrawn} />
         <div className="min-w-0 flex-1">
           <p className="text-[11px] text-mirai-text-muted">
             この討論会での発言（{items.length}件・討論会の順）
@@ -790,6 +825,21 @@ function CandidateStatements({
           </h2>
         </div>
       </div>
+      {candidate.withdrawal && (
+        <p className="mt-3 rounded-lg bg-mirai-surface-grouped px-3.5 py-2.5 text-[11.5px] leading-[1.7] text-mirai-text-subtle">
+          {formatWithdrawalLabel(candidate.withdrawal)}
+          ました（
+          <a
+            href={candidate.withdrawal.url}
+            target="_blank"
+            rel="noreferrer"
+            className="font-bold text-primary-accent"
+          >
+            {candidate.withdrawal.source}
+          </a>
+          ）。個人ページの掲載は終了し、討論会での発言だけ記録として残しています。
+        </p>
+      )}
       {interview && (
         <a
           href={interview.href}
@@ -831,13 +881,15 @@ function CandidateStatements({
         問いへの回答は任意でした。ここに載っていない問いがあっても、答えなかったことを意味するものではありません。
       </p>
       <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5">
-        <Link
-          href={`/election/2026/candidates/${candidate.id}?tab=policies`}
-          className="flex items-center gap-1 text-[11px] font-bold text-primary-accent"
-        >
-          {candidate.name}のページ（政策・主張）
-          <ChevronRight className="size-3" />
-        </Link>
+        {!withdrawn && (
+          <Link
+            href={`/election/2026/candidates/${candidate.id}?tab=policies`}
+            className="flex items-center gap-1 text-[11px] font-bold text-primary-accent"
+          >
+            {candidate.name}のページ（政策・主張）
+            <ChevronRight className="size-3" />
+          </Link>
+        )}
         <Link
           href={debatePath(debate.id)}
           scroll={false}
