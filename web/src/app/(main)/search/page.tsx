@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import { Container } from "@/components/layouts/container";
 import { SearchForm } from "@/features/search/client/components/search-form";
 import { SearchResultTabs } from "@/features/search/client/components/search-result-tabs";

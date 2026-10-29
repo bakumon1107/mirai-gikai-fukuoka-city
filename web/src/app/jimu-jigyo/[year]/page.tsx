@@ -3,9 +3,9 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { JimuJigyoListPage } from "@/features/jimu-jigyo/server/components/jimu-jigyo-list-page";
 import {
+  YEAR_METADATA,
   getYearLabel,
   isValidYear,
-  YEAR_METADATA,
 } from "@/features/jimu-jigyo/server/loaders/load-jimu-jigyo-list";
 
 type Props = {

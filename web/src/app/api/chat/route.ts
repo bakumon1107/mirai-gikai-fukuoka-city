@@ -1,9 +1,9 @@
 import { simulateReadableStream, type UIMessage } from "ai";
+import { getChatSupabaseUser } from "@/features/chat/server/utils/supabase-server";
 import {
   type ChatMessageMetadata,
   handleChatRequest,
 } from "@/features/chat/server/services/handle-chat-request";
-import { getChatSupabaseUser } from "@/features/chat/server/utils/supabase-server";
 import { ChatError, ChatErrorCode } from "@/features/chat/shared/types/errors";
 import { registerNodeTelemetry } from "@/lib/telemetry/register";
 

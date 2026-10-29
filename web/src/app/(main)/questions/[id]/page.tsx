@@ -4,11 +4,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/layouts/container";
 import { siteConfig } from "@/config/site.config";
-import { getCouncilSessionById } from "@/features/council-sessions/server/loaders/get-council-session-by-id";
+import { RawTranscriptView } from "@/features/general-questions/server/components/raw-transcript-view";
 import { QuestionChatView } from "@/features/general-questions/client/components/question-chat-view";
 import { QuestionViewToggle } from "@/features/general-questions/client/components/question-view-toggle";
-import { RawTranscriptView } from "@/features/general-questions/server/components/raw-transcript-view";
 import { getGeneralQuestionById } from "@/features/general-questions/server/loaders/get-general-question-by-id";
+import { getCouncilSessionById } from "@/features/council-sessions/server/loaders/get-council-session-by-id";
 
 type Props = {
   params: Promise<{ id: string }>;

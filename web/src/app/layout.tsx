@@ -2,8 +2,8 @@ import "./globals.css";
 import type { Metadata, Viewport } from "next";
 import { Lexend_Giga, Noto_Sans_JP } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
-import type { ReactNode } from "react";
 import { siteConfig } from "@/config/site.config";
+import type { ReactNode } from "react";
 import { env } from "@/lib/env";
 
 const notoSansJP = Noto_Sans_JP({
