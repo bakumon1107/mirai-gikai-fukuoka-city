@@ -326,3 +326,29 @@ export type Debate = {
   questions: DebateQuestion[];
   messages: { time: string; answers: DebateStatement[] };
 };
+
+/**
+ * 候補者が出演したインタビュー動画。リンクのみで、中身の要約は持たない。
+ * 討論会ページと候補者ページから案内する。
+ */
+export type CandidateInterview = {
+  /** Candidate.id */
+  candidateId: string;
+  /** 動画のタイトル（公開されているとおり） */
+  title: string;
+  url: string;
+  /** 配信日。"2026-10-13" */
+  date: string;
+  channel: string;
+};
+
+/**
+ * インタビューのシリーズ（再生リスト）。個々の動画のURLが分からない人は、ここへのリンクで案内する。
+ */
+export type InterviewSeries = {
+  title: string;
+  channel: string;
+  playlistUrl: string;
+  /** シリーズに出演している人の Candidate.id */
+  candidateIds: string[];
+};

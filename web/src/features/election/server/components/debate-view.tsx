@@ -4,6 +4,7 @@ import {
   ArrowUpRight,
   ChevronDown,
   ChevronRight,
+  Video,
 } from "lucide-react";
 import Link from "next/link";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
@@ -15,6 +16,10 @@ import { OpenDetailsOnHash } from "../../client/components/open-details-on-hash"
 import { SectionHeading } from "../../client/components/section-heading";
 import { VideoTimeLink } from "../../client/components/video-time-link";
 import { CANDIDATES } from "../../shared/data/candidates";
+import {
+  CANDIDATE_INTERVIEWS,
+  INTERVIEW_SERIES,
+} from "../../shared/data/interviews";
 import type {
   Candidate,
   Debate,
@@ -33,6 +38,11 @@ import {
   getCandidateNoun,
   getOrderLabel,
 } from "../../shared/utils/election-phase";
+import {
+  buildInterviewLinks,
+  findInterviewLink,
+  formatInterviewLinkLabel,
+} from "../../shared/utils/interviews";
 
 type Props = {
   debate: Debate;
@@ -171,6 +181,7 @@ export function DebateView({ debate, phase, selectedCandidateId }: Props) {
           <QuestionsSection debate={debate} />
           <MessagesSection debate={debate} />
           <MethodSection />
+          <InterviewsSection debate={debate} />
         </>
       )}
 
@@ -312,6 +323,93 @@ function AnswerList({
   );
 }
 
+/**
+ * 事前インタビュー（ReHac9「なんで立候補するんですか？」）。
+ * 出演者のうちシリーズに出ている人を表明順に並べる。個々の動画が分からない人も再生リストで案内し、
+ * リンクの有無で差が出ないようにする。中身の要約はせず、リンクのみ。
+ */
+function interviewLinksFor(debate: Debate) {
+  const participantOrder = CANDIDATE_ORDER.filter((id) =>
+    debate.participantIds.includes(id)
+  );
+  return buildInterviewLinks(
+    CANDIDATE_INTERVIEWS,
+    INTERVIEW_SERIES,
+    participantOrder
+  );
+}
+
+/**
+ * ページの一番下に置く。討論会そのものの整理を先に読めるようにし、
+ * 前半（概要）には、この欄があることに気づくための1行だけを置く。
+ */
+function InterviewsSection({ debate }: { debate: Debate }) {
+  const links = interviewLinksFor(debate);
+  if (links.length === 0) {
+    return null;
+  }
+  return (
+    <section id="interviews" className="scroll-mt-24 px-4 sm:px-6 pb-8">
+      <SectionHeading
+        eyebrow="05 — INTERVIEWS"
+        title="事前インタビュー"
+        description="討論会の前に、同じチャンネルで一人ずつ「なんで立候補するんですか？」と聞いたインタビューが配信されています。こちらでは要約せず、動画へのリンクのみ載せています。"
+      />
+      <ul className="mt-4 grid gap-1.5 sm:grid-cols-2">
+        {links.map((link) => (
+          <li key={link.candidateId}>
+            <a
+              href={link.href}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-2 rounded-lg border border-mirai-border bg-card px-2.5 py-2 text-mirai-text no-underline transition-colors hover:border-primary"
+            >
+              <SpeakerLabel candidateId={link.candidateId} />
+              <span className="ml-auto flex shrink-0 items-center gap-0.5 text-[10px] text-mirai-text-muted">
+                {formatInterviewLinkLabel(link)}
+                <ArrowUpRight className="size-3" />
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      <a
+        href={INTERVIEW_SERIES.playlistUrl}
+        target="_blank"
+        rel="noreferrer"
+        className="mt-2 inline-flex items-center gap-1 text-[11px] font-bold text-primary-accent"
+      >
+        再生リスト「{INTERVIEW_SERIES.title}」（{INTERVIEW_SERIES.channel}）
+        <ArrowUpRight className="size-3" />
+      </a>
+    </section>
+  );
+}
+
+/** 概要に置く、ページ下の事前インタビューへの1行の案内 */
+function InterviewsPointer({ debate }: { debate: Debate }) {
+  const count = interviewLinksFor(debate).length;
+  if (count === 0) {
+    return null;
+  }
+  return (
+    <a
+      href="#interviews"
+      className="mt-4 flex items-center gap-2.5 rounded-lg border border-mirai-border bg-mirai-surface px-3.5 py-2.5 text-mirai-text no-underline transition-colors hover:border-primary"
+    >
+      <Video className="size-4 shrink-0 text-primary-deep" />
+      <span className="min-w-0 flex-1 text-[11.5px] leading-[1.7]">
+        <span className="font-bold">事前インタビューもあります。</span>
+        <span className="text-mirai-text-subtle">
+          出演{count}
+          人それぞれの「なんで立候補するんですか？」を、ページの最後にまとめています。
+        </span>
+      </span>
+      <ChevronDown className="size-3.5 shrink-0 text-primary" />
+    </a>
+  );
+}
+
 function Overview({
   debate,
   participants,
@@ -356,6 +454,8 @@ function Overview({
           </div>
         ))}
       </dl>
+
+      <InterviewsPointer debate={debate} />
 
       <h3 className="mt-6 text-[13.5px] font-bold text-mirai-text">進行</h3>
       <ol className="mt-2.5 flex flex-col gap-2">
@@ -402,6 +502,9 @@ function Overview({
           />
         ))}
         <TocItem href="#messages" no="—" label="最後のメッセージ" />
+        {interviewLinksFor(debate).length > 0 && (
+          <TocItem href="#interviews" no="—" label="事前インタビュー" />
+        )}
       </ul>
     </section>
   );
@@ -669,6 +772,11 @@ function CandidateStatements({
   candidate: Candidate;
 }) {
   const items = collectCandidateStatements(debate, candidate.id);
+  const interview = findInterviewLink(
+    CANDIDATE_INTERVIEWS,
+    INTERVIEW_SERIES,
+    candidate.id
+  );
   return (
     <section className="px-4 sm:px-6 pb-8 pt-7">
       <div className="flex items-center gap-3">
@@ -682,6 +790,18 @@ function CandidateStatements({
           </h2>
         </div>
       </div>
+      {interview && (
+        <a
+          href={interview.href}
+          target="_blank"
+          rel="noreferrer"
+          className="mt-3 inline-flex items-center gap-1 text-[11px] font-bold text-primary-accent"
+        >
+          事前インタビュー「なんで立候補するんですか？」（
+          {formatInterviewLinkLabel(interview)}）
+          <ArrowUpRight className="size-3" />
+        </a>
+      )}
       <ol className="mt-4 flex flex-col gap-2">
         {items.map((item) => (
           <li
