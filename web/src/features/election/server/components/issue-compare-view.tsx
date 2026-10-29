@@ -7,7 +7,7 @@ import { CandidateNumber } from "../../client/components/candidate-number";
 import { DisclaimerBar } from "../../client/components/disclaimer-bar";
 import { PositionBody } from "../../client/components/position-body";
 import { StancePill } from "../../client/components/stance-pill";
-import { CANDIDATES } from "../../shared/data/candidates";
+import { ACTIVE_CANDIDATES } from "../../shared/data/candidates";
 import { DEBATES } from "../../shared/data/debates";
 import { ISSUES } from "../../shared/data/issues";
 import { ELECTION_SCHEDULE } from "../../shared/data/schedule";
@@ -123,7 +123,7 @@ export function IssueCompareView({ issue, phase, questionsSlug }: Props) {
       </section>
 
       <section className="flex flex-col gap-2.5 px-4 sm:px-6 pb-7">
-        {CANDIDATES.map((candidate) => {
+        {ACTIVE_CANDIDATES.map((candidate) => {
           const position = candidate.positions[issue.id];
           return (
             <div

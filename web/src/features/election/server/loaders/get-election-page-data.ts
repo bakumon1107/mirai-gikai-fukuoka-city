@@ -1,6 +1,6 @@
 import "server-only";
 import { getLatestSessionWithQuestions } from "@/features/general-questions/server/loaders/get-latest-session-with-questions";
-import { CANDIDATES } from "../../shared/data/candidates";
+import { ACTIVE_CANDIDATES } from "../../shared/data/candidates";
 import { DEBATES } from "../../shared/data/debates";
 import { ISSUES } from "../../shared/data/issues";
 import { ELECTION_SCHEDULE } from "../../shared/data/schedule";
@@ -39,12 +39,15 @@ export async function getElectionTopPageData(): Promise<ElectionTopPageData> {
   };
 }
 
-/** 該当する立候補予定者がいない場合は null（呼び出し側で notFound する） */
+/**
+ * 該当する立候補予定者がいない場合は null（呼び出し側で notFound する）。
+ * 立候補を取りやめた人の個人ページは掲載を終えたため、同じく null を返す。
+ */
 export function getCandidatePageData(
   id: string,
   tab?: string
 ): CandidatePageData | null {
-  const candidate = CANDIDATES.find((item) => item.id === id);
+  const candidate = ACTIVE_CANDIDATES.find((item) => item.id === id);
   if (!candidate) {
     return null;
   }

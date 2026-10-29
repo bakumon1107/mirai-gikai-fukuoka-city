@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
+import { Container } from "@/components/layouts/container";
 import {
   LegalList,
   LegalPageLayout,
   LegalParagraph,
   LegalSectionTitle,
 } from "@/components/layouts/legal-page-layout";
-import { Container } from "@/components/layouts/container";
 import { siteConfig } from "@/config/site.config";
 
 export const metadata: Metadata = {
