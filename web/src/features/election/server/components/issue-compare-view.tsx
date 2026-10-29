@@ -1,5 +1,5 @@
 import "server-only";
-import { ArrowUpRight, ChevronRight } from "lucide-react";
+import { ArrowUpRight, ChevronRight, Mic } from "lucide-react";
 import Link from "next/link";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { cn } from "@/lib/utils";
@@ -8,10 +8,18 @@ import { DisclaimerBar } from "../../client/components/disclaimer-bar";
 import { PositionBody } from "../../client/components/position-body";
 import { StancePill } from "../../client/components/stance-pill";
 import { CANDIDATES } from "../../shared/data/candidates";
+import { DEBATES } from "../../shared/data/debates";
 import { ISSUES } from "../../shared/data/issues";
 import { ELECTION_SCHEDULE } from "../../shared/data/schedule";
 import { buildSiteLinks } from "../../shared/data/site-links";
 import type { ElectionPhase, Issue } from "../../shared/types";
+import {
+  attachDebateLinks,
+  debatePath,
+  debateQuestionAnchor,
+  findDebateQuestionsForIssue,
+  formatDebateMonthDay,
+} from "../../shared/utils/debate-routes";
 import {
   getCandidateNoun,
   getOrderLabel,
@@ -27,6 +35,8 @@ export function IssueCompareView({ issue, phase, questionsSlug }: Props) {
   const noun = getCandidateNoun(phase);
   const orderLabel = getOrderLabel(phase);
   const siteLinks = buildSiteLinks(questionsSlug);
+  // 全員を同じ扱いで並べるページなので、問いを出した人の名前はここでは出さない（討論会ページで示す）
+  const debateQuestions = findDebateQuestionsForIssue(DEBATES, issue.id);
 
   return (
     <div className="overflow-hidden rounded-2xl bg-card shadow-lg">
@@ -81,6 +91,35 @@ export function IssueCompareView({ issue, phase, questionsSlug }: Props) {
             {issue.background}
           </p>
         </div>
+
+        {debateQuestions.length > 0 && (
+          <div className="mt-3 flex flex-col gap-2">
+            {debateQuestions.map(({ debate, question, speakerCount }) => (
+              <Link
+                key={`${debate.id}-${question.no}`}
+                href={`${debatePath(debate.id)}#${debateQuestionAnchor(question)}`}
+                className="flex items-center gap-3 rounded-xl border border-mirai-border bg-card px-4 py-3.5 transition-colors hover:border-primary"
+              >
+                <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-mirai-light-gradient text-primary-deep">
+                  <Mic className="size-4" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[10px] font-bold tracking-[0.08em] text-primary-deep">
+                    討論会でこの分野が問われました
+                  </span>
+                  <span className="mt-0.5 block text-[13px] font-bold leading-[1.5] text-mirai-text">
+                    問い{question.no}「{question.title}」
+                  </span>
+                  <span className="block text-[10.5px] text-mirai-text-subtle">
+                    {debate.shortTitle}（{formatDebateMonthDay(debate.date)}
+                    ）・{speakerCount}人が発言
+                  </span>
+                </span>
+                <ChevronRight className="size-3.5 shrink-0 text-primary" />
+              </Link>
+            ))}
+          </div>
+        )}
       </section>
 
       <section className="flex flex-col gap-2.5 px-4 sm:px-6 pb-7">
@@ -107,7 +146,7 @@ export function IssueCompareView({ issue, phase, questionsSlug }: Props) {
                 <PositionBody
                   summary={position.summary}
                   updated={position.updated}
-                  log={position.log}
+                  log={attachDebateLinks(DEBATES, position.log)}
                 />
               </div>
               <div className="mt-2.5 flex justify-end">

@@ -1,6 +1,7 @@
 "use client";
 
-import { ChevronDown, ExternalLink } from "lucide-react";
+import { ChevronDown, ChevronRight, ExternalLink } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import {
   Collapsible,
@@ -8,14 +9,14 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
-import type { StatementLog } from "../../shared/types";
+import type { StatementLogView } from "../../shared/types";
 import {
   formatStatementDate,
   sortStatementsNewestFirst,
 } from "../../shared/utils/statement-log";
 
 type Props = {
-  log: StatementLog[];
+  log: StatementLogView[];
 };
 
 /**
@@ -78,6 +79,15 @@ export function StatementLogList({ log }: Props) {
               <p className="mt-1.5 text-xs leading-[1.85] text-mirai-text-secondary">
                 {statement.text}
               </p>
+              {statement.related && (
+                <Link
+                  href={statement.related.href}
+                  className="mt-2 inline-flex items-center gap-1 rounded-md bg-card px-2.5 py-1.5 text-[11px] font-bold text-primary-accent transition-colors hover:text-primary-deep"
+                >
+                  {statement.related.label}
+                  <ChevronRight className="size-3" />
+                </Link>
+              )}
             </li>
           ))}
         </ul>

@@ -54,6 +54,7 @@ const DEBATE: Debate = {
       no: "01",
       title: "問いの題",
       proposerIds: ["b"],
+      issueIds: ["kotsu"],
       time: "00:10:00",
       summary: "問いのまとめ",
       proposals: [{ candidateId: "b", time: "00:10:10", text: "提起" }],

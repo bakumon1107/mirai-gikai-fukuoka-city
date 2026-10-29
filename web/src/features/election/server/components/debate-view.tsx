@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { CandidateNumber } from "../../client/components/candidate-number";
 import { DisclaimerBar } from "../../client/components/disclaimer-bar";
+import { OpenDetailsOnHash } from "../../client/components/open-details-on-hash";
 import { SectionHeading } from "../../client/components/section-heading";
 import { VideoTimeLink } from "../../client/components/video-time-link";
 import { CANDIDATES } from "../../shared/data/candidates";
@@ -24,6 +25,7 @@ import {
   collectCandidateStatements,
   sortByCandidateOrder,
 } from "../../shared/utils/debate";
+import { debateQuestionAnchor } from "../../shared/utils/debate-routes";
 import {
   getCandidateNoun,
   getOrderLabel,
@@ -65,6 +67,7 @@ export function DebateView({ debate, phase, selectedCandidateId }: Props) {
 
   return (
     <div className="overflow-hidden rounded-2xl bg-card shadow-lg">
+      <OpenDetailsOnHash />
       <div className="border-b border-mirai-border bg-mirai-surface px-4 sm:px-6 py-3.5">
         <Breadcrumb
           items={[
@@ -394,7 +397,7 @@ function Overview({
         {debate.questions.map((question) => (
           <TocItem
             key={question.no}
-            href={`#q-${question.no}`}
+            href={`#${debateQuestionAnchor(question)}`}
             no={question.no}
             label={question.title}
             sub={`提起：${question.proposerIds.map(candidateName).join("・")}`}
@@ -462,7 +465,7 @@ function TakashimaSection({ debate }: { debate: Debate }) {
     CANDIDATE_ORDER
   );
   return (
-    <section id="takashima" className="scroll-mt-4 px-4 sm:px-6 pb-8">
+    <section id="takashima" className="scroll-mt-24 px-4 sm:px-6 pb-8">
       <SectionHeading
         eyebrow="02 — ON THE TAKASHIMA ADMINISTRATION"
         title="高島市政の評価"
@@ -551,8 +554,8 @@ function QuestionsSection({ debate }: { debate: Debate }) {
         {debate.questions.map((question) => (
           <details
             key={question.no}
-            id={`q-${question.no}`}
-            className="group scroll-mt-4 overflow-hidden rounded-xl border border-mirai-border"
+            id={debateQuestionAnchor(question)}
+            className="group scroll-mt-24 overflow-hidden rounded-xl border border-mirai-border"
           >
             <summary className="flex cursor-pointer list-none items-center gap-3 bg-card px-4 py-3.5 transition-colors hover:bg-mirai-surface [&::-webkit-details-marker]:hidden">
               <span className="w-[22px] shrink-0 font-lexend text-[10px] font-bold text-primary">
@@ -625,7 +628,7 @@ function QuestionsSection({ debate }: { debate: Debate }) {
 
 function MessagesSection({ debate }: { debate: Debate }) {
   return (
-    <section id="messages" className="scroll-mt-4 px-4 sm:px-6 pb-8">
+    <section id="messages" className="scroll-mt-24 px-4 sm:px-6 pb-8">
       <SectionHeading
         eyebrow="04 — MESSAGES"
         title="最後のメッセージ"

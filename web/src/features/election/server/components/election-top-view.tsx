@@ -1,5 +1,11 @@
 import "server-only";
-import { ArrowRight, ArrowUpRight, ChevronRight, Plus } from "lucide-react";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  ChevronRight,
+  Mic,
+  Plus,
+} from "lucide-react";
 import Link from "next/link";
 import { CandidateNumber } from "../../client/components/candidate-number";
 import { DisclaimerBar } from "../../client/components/disclaimer-bar";
@@ -12,6 +18,12 @@ import { ELECTION_SCHEDULE } from "../../shared/data/schedule";
 import { buildSiteLinks } from "../../shared/data/site-links";
 import type { ElectionPhase } from "../../shared/types";
 import { getCountdown } from "../../shared/utils/countdown";
+import {
+  debatePath,
+  debateQuestionAnchor,
+  findNewDebate,
+  formatDebateMonthDay,
+} from "../../shared/utils/debate-routes";
 import {
   getCandidateNoun,
   getOrderLabel,
@@ -36,6 +48,8 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
   ).days;
   // 告示で立候補の届出が締め切られるため、以降は「表明待ち」の行を出さない
   const isBeforeKokuji = phase === "before-kokuji";
+  // 配信から一定期間の討論会は、ヒーローの中でも新着として案内する
+  const newDebate = findNewDebate(DEBATES, new Date());
   // 表明待ちの行は、冒頭の一覧が合計4行になるよう候補者数に応じて増減させる（4人以上なら出ない）
   const pendingSlotIds = isBeforeKokuji
     ? Array.from(
@@ -146,6 +160,30 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
               </p>
             )}
           </div>
+          {newDebate && (
+            <Link
+              href={debatePath(newDebate.id)}
+              className="mt-3 flex items-center gap-3 rounded-xl bg-white px-4 py-3 transition-shadow hover:shadow-election-link-hover"
+            >
+              <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-mirai-light-gradient text-primary-deep">
+                <Mic className="size-4" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="flex items-center gap-1.5">
+                  <span className="rounded-[4px] bg-primary-accent px-1.5 py-0.5 text-[9.5px] font-bold tracking-[0.08em] text-white">
+                    NEW
+                  </span>
+                  <span className="text-[10.5px] font-bold text-primary-deep">
+                    {formatDebateMonthDay(newDebate.date)} 配信
+                  </span>
+                </span>
+                <span className="mt-0.5 block text-[13px] font-bold leading-[1.5] text-mirai-text">
+                  {newDebate.title}を読む
+                </span>
+              </span>
+              <ChevronRight className="size-3.5 shrink-0 text-primary" />
+            </Link>
+          )}
         </div>
       </section>
 
@@ -228,9 +266,71 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
         )}
       </section>
 
+      {DEBATES.length > 0 && (
+        <section id="debates" className="scroll-mt-24 px-4 sm:px-6 pb-8">
+          <SectionHeading
+            eyebrow="02 — DEBATES"
+            title="討論会を読む"
+            description="公開の討論会での発言を、問いごとに並べて整理しています。各発言は動画の再生位置から確かめられます。"
+          />
+          <div className="mt-4 flex flex-col gap-3">
+            {DEBATES.map((debate) => (
+              <div
+                key={debate.id}
+                className="overflow-hidden rounded-xl border border-mirai-border"
+              >
+                <Link
+                  href={debatePath(debate.id)}
+                  className="flex items-center gap-3 bg-mirai-light-gradient px-4 py-3.5 transition-colors hover:bg-mirai-surface"
+                >
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-[14px] font-bold leading-[1.5] text-mirai-text">
+                      {debate.title}
+                    </span>
+                    <span className="mt-0.5 block text-[11px] text-mirai-text-subtle">
+                      {debate.dateLabel}・出演{debate.participantIds.length}
+                      人・{debate.questions.length}の問い
+                    </span>
+                  </span>
+                  <span className="flex shrink-0 items-center gap-1 text-[11.5px] font-bold text-primary-accent">
+                    全体を読む
+                    <ChevronRight className="size-3.5" />
+                  </span>
+                </Link>
+                <div className="border-t border-mirai-surface-muted bg-card px-4 py-3.5">
+                  <p className="text-[10.5px] font-bold text-mirai-text-muted">
+                    問いから読む
+                  </p>
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    <Link
+                      href={`${debatePath(debate.id)}#takashima`}
+                      className="inline-flex items-center rounded-full border border-mirai-border bg-card px-2.5 py-1 text-[11px] text-mirai-text-secondary transition-colors hover:border-primary"
+                    >
+                      高島市政の評価
+                    </Link>
+                    {debate.questions.map((question) => (
+                      <Link
+                        key={question.no}
+                        href={`${debatePath(debate.id)}#${debateQuestionAnchor(question)}`}
+                        className="inline-flex items-center gap-1 rounded-full border border-mirai-border bg-card px-2.5 py-1 text-[11px] text-mirai-text-secondary transition-colors hover:border-primary"
+                      >
+                        <span className="font-lexend text-[9px] font-bold text-primary">
+                          {question.no}
+                        </span>
+                        {question.title}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       <section className="px-4 sm:px-6 pb-8">
         <SectionHeading
-          eyebrow="02 — ISSUES"
+          eyebrow="03 — ISSUES"
           title="争点で比べる"
           description={`分野を選ぶと、全${noun}の立場を横並びで確認できます。`}
         />
@@ -255,36 +355,6 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
           ))}
         </div>
       </section>
-
-      {DEBATES.length > 0 && (
-        <section id="debates" className="scroll-mt-4 px-4 sm:px-6 pb-8">
-          <SectionHeading
-            eyebrow="03 — DEBATES"
-            title="討論会を読む"
-            description={`公開の討論会での発言を、問いごとに並べて整理しています。各発言は動画の再生位置から確かめられます。`}
-          />
-          <div className="mt-4 flex flex-col gap-2">
-            {DEBATES.map((debate) => (
-              <Link
-                key={debate.id}
-                href={`/election/2026/debates/${debate.id}`}
-                className="flex items-center gap-3 rounded-[10px] border border-mirai-border bg-card p-3.5 transition-[border-color,box-shadow] hover:border-primary hover:shadow-election-link-hover"
-              >
-                <span className="min-w-0 flex-1">
-                  <span className="block text-[13.5px] font-bold leading-[1.5] text-mirai-text">
-                    {debate.title}
-                  </span>
-                  <span className="mt-0.5 block text-[11px] leading-[1.7] text-mirai-text-subtle">
-                    {debate.dateLabel}・出演{debate.participantIds.length}人・
-                    {debate.questions.length}の問い
-                  </span>
-                </span>
-                <ChevronRight className="size-3.5 shrink-0 text-primary" />
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
 
       <section className="mx-6 mb-8 overflow-hidden rounded-xl border border-mirai-border">
         <div className="border-b border-mirai-border bg-mirai-surface px-4.5 py-4">

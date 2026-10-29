@@ -58,6 +58,20 @@ export type StatementLog = {
   url?: string;
 };
 
+/** 発言の記録から、ほかのページの関連する場面へ案内するリンク */
+export type RelatedLink = {
+  href: string;
+  label: string;
+};
+
+/**
+ * 表示用の発言の記録。討論会での発言なら、討論会ページの同じ場面へのリンクを持つ。
+ * データ（StatementLog）には持たせず、表示の直前にサーバー側で付ける。
+ */
+export type StatementLogView = StatementLog & {
+  related?: RelatedLink;
+};
+
 /**
  * このページへの反映の記録（更新履歴）。
  *
@@ -249,6 +263,11 @@ export type DebateQuestion = {
   /** 提起した人の Candidate.id（共同提起があるので配列） */
   proposerIds: string[];
   time: string;
+  /**
+   * 争点ページに「討論会でこの分野が問われました」と出す分野。
+   * 問いの題材から決めるこちらの対応づけで、回答の中身では決めない。1つ以上
+   */
+  issueIds: IssueId[];
   /** 問いの前提の説明（司会による言い換えなど）。無ければ undefined */
   lead?: string;
   /**
