@@ -31,13 +31,15 @@ describe("filterActiveCandidates", () => {
 
 describe("formatWithdrawalLabel", () => {
   it("月日を日本語で表す", () => {
-    expect(formatWithdrawalLabel({ withdrawal: WITHDRAWAL })).toBe(
+    expect(formatWithdrawalLabel(WITHDRAWAL)).toBe(
       "10月29日に立候補を取りやめ"
     );
   });
 
-  it("取りやめていなければ null", () => {
-    expect(formatWithdrawalLabel({})).toBeNull();
+  it("日付の形式が崩れていればそのまま出す", () => {
+    expect(formatWithdrawalLabel({ ...WITHDRAWAL, date: "10/29" })).toBe(
+      "10/29に立候補を取りやめ"
+    );
   });
 });
 

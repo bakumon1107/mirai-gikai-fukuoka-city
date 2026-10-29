@@ -16,7 +16,11 @@ import { DEBATES } from "../../shared/data/debates";
 import { ISSUES } from "../../shared/data/issues";
 import { ELECTION_SCHEDULE } from "../../shared/data/schedule";
 import { buildSiteLinks } from "../../shared/data/site-links";
-import type { Candidate, ElectionPhase } from "../../shared/types";
+import type {
+  Candidate,
+  CandidateWithdrawal,
+  ElectionPhase,
+} from "../../shared/types";
 import { getCountdown } from "../../shared/utils/countdown";
 import {
   debatePath,
@@ -226,8 +230,12 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
 
       <section className="flex flex-col gap-3 px-4 sm:px-6 pb-8 pt-4">
         {CANDIDATES.map((candidate) =>
-          isWithdrawn(candidate) ? (
-            <WithdrawnCandidateCard key={candidate.id} candidate={candidate} />
+          candidate.withdrawal ? (
+            <WithdrawnCandidateCard
+              key={candidate.id}
+              candidate={candidate}
+              withdrawal={candidate.withdrawal}
+            />
           ) : (
             <Link
               key={candidate.id}
@@ -454,7 +462,13 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
  * 立候補を取りやめた人のカード。表明順の番号は残し、個人ページへのリンクと
  * 公約の要約は出さない。取りやめを確認した出典だけ示す。
  */
-function WithdrawnCandidateCard({ candidate }: { candidate: Candidate }) {
+function WithdrawnCandidateCard({
+  candidate,
+  withdrawal,
+}: {
+  candidate: Candidate;
+  withdrawal: CandidateWithdrawal;
+}) {
   return (
     <div className="rounded-xl border border-mirai-border bg-mirai-surface p-4">
       <div className="flex items-center gap-3">
@@ -467,20 +481,18 @@ function WithdrawnCandidateCard({ candidate }: { candidate: Candidate }) {
         </div>
       </div>
       <p className="mt-2.5 text-xs leading-[1.85] text-mirai-text-subtle">
-        {formatWithdrawalLabel(candidate)}
+        {formatWithdrawalLabel(withdrawal)}
         ました。個人ページの掲載は終了しています。
       </p>
-      {candidate.withdrawal && (
-        <a
-          href={candidate.withdrawal.url}
-          target="_blank"
-          rel="noreferrer"
-          className="mt-2 inline-flex items-center gap-1 text-[11px] font-bold text-primary-accent"
-        >
-          出典：{candidate.withdrawal.source}
-          <ArrowUpRight className="size-3" />
-        </a>
-      )}
+      <a
+        href={withdrawal.url}
+        target="_blank"
+        rel="noreferrer"
+        className="mt-2 inline-flex items-center gap-1 text-[11px] font-bold text-primary-accent"
+      >
+        出典：{withdrawal.source}
+        <ArrowUpRight className="size-3" />
+      </a>
     </div>
   );
 }

@@ -457,17 +457,16 @@ function Overview({
       value: absentees.map((candidate) => candidate.name).join("、"),
     });
   }
-  // 討論会のあとで取りやめた人も、発言は記録として残す
-  const withdrawn = participants.filter(isWithdrawn);
+  // 立候補を取りやめた人も、発言は記録として残す
+  const withdrawn = participants.flatMap((candidate) =>
+    candidate.withdrawal
+      ? [`${candidate.name}（${formatWithdrawalLabel(candidate.withdrawal)}）`]
+      : []
+  );
   if (withdrawn.length > 0) {
     rows.push({
       label: "取りやめ",
-      value: `${withdrawn
-        .map(
-          (candidate) =>
-            `${candidate.name}（${formatWithdrawalLabel(candidate)}）`
-        )
-        .join("、")}。発言は討論会の記録として残しています。`,
+      value: `${withdrawn.join("、")}。発言は討論会の記録として残しています。`,
     });
   }
 
@@ -828,7 +827,7 @@ function CandidateStatements({
       </div>
       {candidate.withdrawal && (
         <p className="mt-3 rounded-lg bg-mirai-surface-grouped px-3.5 py-2.5 text-[11.5px] leading-[1.7] text-mirai-text-subtle">
-          討論会のあと、{formatWithdrawalLabel(candidate)}
+          {formatWithdrawalLabel(candidate.withdrawal)}
           ました（
           <a
             href={candidate.withdrawal.url}
