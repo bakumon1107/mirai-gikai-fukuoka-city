@@ -25,7 +25,10 @@ import {
   collectCandidateStatements,
   sortByCandidateOrder,
 } from "../../shared/utils/debate";
-import { debateQuestionAnchor } from "../../shared/utils/debate-routes";
+import {
+  debatePath,
+  debateQuestionAnchor,
+} from "../../shared/utils/debate-routes";
 import {
   getCandidateNoun,
   getOrderLabel,
@@ -45,11 +48,6 @@ const CANDIDATE_BY_ID = new Map(
 
 function candidateName(id: string): string {
   return CANDIDATE_BY_ID.get(id)?.name ?? id;
-}
-
-function debatePath(debate: Debate, candidateId?: string): string {
-  const base = `/election/2026/debates/${debate.id}`;
-  return candidateId ? `${base}?candidate=${candidateId}` : base;
 }
 
 export function DebateView({ debate, phase, selectedCandidateId }: Props) {
@@ -145,14 +143,14 @@ export function DebateView({ debate, phase, selectedCandidateId }: Props) {
         </p>
         <div className="mt-2 flex flex-wrap gap-1.5">
           <FilterPill
-            href={debatePath(debate)}
+            href={debatePath(debate.id)}
             isActive={selected === null}
             label="全員"
           />
           {participants.map((candidate) => (
             <FilterPill
               key={candidate.id}
-              href={debatePath(debate, candidate.id)}
+              href={debatePath(debate.id, candidate.id)}
               isActive={selected?.id === candidate.id}
               label={candidate.name}
             />
@@ -721,7 +719,7 @@ function CandidateStatements({
           <ChevronRight className="size-3" />
         </Link>
         <Link
-          href={debatePath(debate)}
+          href={debatePath(debate.id)}
           scroll={false}
           className="flex items-center gap-1 text-[11px] font-bold text-primary-accent"
         >

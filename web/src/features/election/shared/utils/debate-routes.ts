@@ -14,8 +14,10 @@ import type {
 /** 新着として案内する日数。配信日を1日目として数える */
 export const DEBATE_NEW_DAYS = 14;
 
-export function debatePath(debateId: string): string {
-  return `/election/2026/debates/${debateId}`;
+/** 討論会ページの URL。candidateId を渡すと、その出演者の発言だけを並べる表示（?candidate=）にする */
+export function debatePath(debateId: string, candidateId?: string): string {
+  const base = `/election/2026/debates/${debateId}`;
+  return candidateId ? `${base}?candidate=${candidateId}` : base;
 }
 
 /** 問いの位置。討論会ページ側の id と一致させる */

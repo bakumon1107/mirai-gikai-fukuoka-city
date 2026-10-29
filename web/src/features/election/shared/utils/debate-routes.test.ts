@@ -5,6 +5,7 @@ import { ISSUES } from "../data/issues";
 import type { Debate } from "../types";
 import {
   attachDebateLinks,
+  debatePath,
   findDebateQuestionsForIssue,
   findDebateSectionLink,
   findNewDebate,
@@ -64,6 +65,13 @@ function makeDebate(overrides: Partial<Debate> = {}): Debate {
     ...overrides,
   };
 }
+
+describe("debatePath", () => {
+  it("出演者を渡すと、その人の発言だけを並べる表示にする", () => {
+    expect(debatePath("d1")).toBe("/election/2026/debates/d1");
+    expect(debatePath("d1", "a")).toBe("/election/2026/debates/d1?candidate=a");
+  });
+});
 
 describe("formatDebateMonthDay", () => {
   it("月/日 にする", () => {

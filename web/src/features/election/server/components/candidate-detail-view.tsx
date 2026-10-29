@@ -108,7 +108,7 @@ export function CandidateDetailView({ candidate, phase, tab }: Props) {
             {debates.map((debate) => (
               <Link
                 key={debate.id}
-                href={`${debatePath(debate.id)}?candidate=${candidate.id}`}
+                href={debatePath(debate.id, candidate.id)}
                 className="flex items-center gap-3 rounded-xl border border-mirai-border bg-mirai-light-gradient px-3.5 py-3 transition-colors hover:border-primary"
               >
                 <span className="grid size-8 shrink-0 place-items-center rounded-md bg-card text-primary-deep">
