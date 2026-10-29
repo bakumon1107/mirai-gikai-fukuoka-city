@@ -5,6 +5,7 @@ import {
   ChevronRight,
   Mic,
   Scale,
+  Video,
 } from "lucide-react";
 import Link from "next/link";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
@@ -17,6 +18,10 @@ import { SnsChannels } from "../../client/components/sns-channels";
 import { StancePill } from "../../client/components/stance-pill";
 import { UpdateHistoryList } from "../../client/components/update-history-list";
 import { DEBATES } from "../../shared/data/debates";
+import {
+  CANDIDATE_INTERVIEWS,
+  INTERVIEW_SERIES,
+} from "../../shared/data/interviews";
 import { ISSUES } from "../../shared/data/issues";
 import { getCandidateUpdates } from "../../shared/data/update-history";
 import type {
@@ -35,6 +40,10 @@ import {
   getCandidateNoun,
   getOrderLabel,
 } from "../../shared/utils/election-phase";
+import {
+  findInterviewLink,
+  formatInterviewLinkLabel,
+} from "../../shared/utils/interviews";
 
 type Props = {
   candidate: Candidate;
@@ -47,6 +56,11 @@ export function CandidateDetailView({ candidate, phase, tab }: Props) {
   const orderLabel = getOrderLabel(phase);
   const updates = getCandidateUpdates(candidate.id);
   // 出演した討論会だけを出す。出演しなかった討論会はここでは触れない
+  const interview = findInterviewLink(
+    CANDIDATE_INTERVIEWS,
+    INTERVIEW_SERIES,
+    candidate.id
+  );
   const debates = DEBATES.filter((debate) =>
     debate.participantIds.includes(candidate.id)
   );
@@ -129,6 +143,28 @@ export function CandidateDetailView({ candidate, phase, tab }: Props) {
               </Link>
             ))}
           </div>
+        )}
+        {interview && (
+          <a
+            href={interview.href}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-2 flex items-center gap-3 rounded-xl border border-mirai-border bg-card px-3.5 py-3 text-mirai-text no-underline transition-colors hover:border-primary"
+          >
+            <span className="grid size-8 shrink-0 place-items-center rounded-md bg-mirai-light-gradient text-primary-deep">
+              <Video className="size-3.5" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-[12.5px] font-bold leading-[1.5]">
+                インタビュー「なんで立候補するんですか？」
+              </span>
+              <span className="block text-[10.5px] text-mirai-text-subtle">
+                {INTERVIEW_SERIES.channel}・
+                {formatInterviewLinkLabel(interview)}
+              </span>
+            </span>
+            <ArrowUpRight className="size-3.5 shrink-0 text-primary" />
+          </a>
         )}
       </section>
 
