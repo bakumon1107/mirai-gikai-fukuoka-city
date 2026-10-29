@@ -4,6 +4,7 @@ import {
   ArrowUpRight,
   ChevronDown,
   ChevronRight,
+  Video,
 } from "lucide-react";
 import Link from "next/link";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
@@ -180,6 +181,7 @@ export function DebateView({ debate, phase, selectedCandidateId }: Props) {
           <QuestionsSection debate={debate} />
           <MessagesSection debate={debate} />
           <MethodSection />
+          <InterviewsSection debate={debate} />
         </>
       )}
 
@@ -326,27 +328,34 @@ function AnswerList({
  * 出演者のうちシリーズに出ている人を表明順に並べる。個々の動画が分からない人も再生リストで案内し、
  * リンクの有無で差が出ないようにする。中身の要約はせず、リンクのみ。
  */
-function InterviewList({ debate }: { debate: Debate }) {
+function interviewLinksFor(debate: Debate) {
   const participantOrder = CANDIDATE_ORDER.filter((id) =>
     debate.participantIds.includes(id)
   );
-  const links = buildInterviewLinks(
+  return buildInterviewLinks(
     CANDIDATE_INTERVIEWS,
     INTERVIEW_SERIES,
     participantOrder
   );
+}
+
+/**
+ * ページの一番下に置く。討論会そのものの整理を先に読めるようにし、
+ * 前半（概要）には、この欄があることに気づくための1行だけを置く。
+ */
+function InterviewsSection({ debate }: { debate: Debate }) {
+  const links = interviewLinksFor(debate);
   if (links.length === 0) {
     return null;
   }
   return (
-    <div className="mt-6">
-      <h3 className="text-[13.5px] font-bold text-mirai-text">
-        事前インタビュー
-      </h3>
-      <p className="mt-1 text-[11.5px] leading-[1.8] text-mirai-text-subtle">
-        討論会の前に、同じチャンネルで一人ずつ「なんで立候補するんですか？」と聞いたインタビューが配信されています。こちらでは要約せず、動画へのリンクのみ載せています。
-      </p>
-      <ul className="mt-2.5 grid gap-1.5 sm:grid-cols-2">
+    <section id="interviews" className="scroll-mt-4 px-4 sm:px-6 pb-8">
+      <SectionHeading
+        eyebrow="05 — INTERVIEWS"
+        title="事前インタビュー"
+        description="討論会の前に、同じチャンネルで一人ずつ「なんで立候補するんですか？」と聞いたインタビューが配信されています。こちらでは要約せず、動画へのリンクのみ載せています。"
+      />
+      <ul className="mt-4 grid gap-1.5 sm:grid-cols-2">
         {links.map((link) => (
           <li key={link.candidateId}>
             <a
@@ -373,7 +382,31 @@ function InterviewList({ debate }: { debate: Debate }) {
         再生リスト「{INTERVIEW_SERIES.title}」（{INTERVIEW_SERIES.channel}）
         <ArrowUpRight className="size-3" />
       </a>
-    </div>
+    </section>
+  );
+}
+
+/** 概要に置く、ページ下の事前インタビューへの1行の案内 */
+function InterviewsPointer({ debate }: { debate: Debate }) {
+  const count = interviewLinksFor(debate).length;
+  if (count === 0) {
+    return null;
+  }
+  return (
+    <a
+      href="#interviews"
+      className="mt-4 flex items-center gap-2.5 rounded-lg border border-mirai-border bg-mirai-surface px-3.5 py-2.5 text-mirai-text no-underline transition-colors hover:border-primary"
+    >
+      <Video className="size-4 shrink-0 text-primary-deep" />
+      <span className="min-w-0 flex-1 text-[11.5px] leading-[1.7]">
+        <span className="font-bold">事前インタビューもあります。</span>
+        <span className="text-mirai-text-subtle">
+          出演{count}
+          人それぞれの「なんで立候補するんですか？」を、ページの最後にまとめています。
+        </span>
+      </span>
+      <ChevronDown className="size-3.5 shrink-0 text-primary" />
+    </a>
   );
 }
 
@@ -422,7 +455,7 @@ function Overview({
         ))}
       </dl>
 
-      <InterviewList debate={debate} />
+      <InterviewsPointer debate={debate} />
 
       <h3 className="mt-6 text-[13.5px] font-bold text-mirai-text">進行</h3>
       <ol className="mt-2.5 flex flex-col gap-2">
@@ -469,6 +502,9 @@ function Overview({
           />
         ))}
         <TocItem href="#messages" no="—" label="最後のメッセージ" />
+        {interviewLinksFor(debate).length > 0 && (
+          <TocItem href="#interviews" no="—" label="事前インタビュー" />
+        )}
       </ul>
     </section>
   );
