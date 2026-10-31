@@ -17,7 +17,8 @@ type ItemRow = {
   title: string;
   summary: string | null;
   material_url: string | null;
-  press_conference_turns: TurnRow[];
+  // 一覧用の取得（LIST_SELECT）では含めない
+  press_conference_turns?: TurnRow[];
 };
 
 type PressConferenceRow = {
@@ -68,13 +69,23 @@ const NESTED_SELECT = `
   )
 ` as const;
 
+/**
+ * 一覧・バナー用。項目タイトルまでで、発言（turns）は取得しない
+ * （全会見の発言を含めると数百KBになり、トップページ表示のたびに転送される）
+ */
+const LIST_SELECT = `
+  *,
+  press_conference_items (*)
+` as const;
+
+/** 発言（turns）は含まない（items[].turns は空配列） */
 export async function findPublishedPressConferences(): Promise<
   PressConference[]
 > {
   const supabase = createAdminClient();
   const { data, error } = await supabase
     .from("press_conferences")
-    .select(NESTED_SELECT)
+    .select(LIST_SELECT)
     .eq("status", "published")
     .order("held_at", { ascending: false });
 
@@ -101,27 +112,6 @@ export async function findPublishedPressConferenceBySlug(
   if (error) {
     throw new Error(
       `Failed to fetch press conference by slug: ${error.message}`
-    );
-  }
-
-  return data
-    ? mapToPressConference(data as unknown as PressConferenceRow)
-    : null;
-}
-
-export async function findLatestPublishedPressConference(): Promise<PressConference | null> {
-  const supabase = createAdminClient();
-  const { data, error } = await supabase
-    .from("press_conferences")
-    .select(NESTED_SELECT)
-    .eq("status", "published")
-    .order("held_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-
-  if (error) {
-    throw new Error(
-      `Failed to fetch latest press conference: ${error.message}`
     );
   }
 

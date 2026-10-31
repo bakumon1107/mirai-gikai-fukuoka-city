@@ -76,7 +76,13 @@ export async function findLatestSessionSlugWithPublishedQuestions(): Promise<
     .select("council_session_id")
     .eq("publish_status", "published");
 
-  if (qErr || !rows?.length) return null;
+  // エラーは throw する（null を返すと「該当なし」として loader でキャッシュされてしまう）
+  if (qErr) {
+    throw new Error(
+      `Failed to fetch published general questions: ${qErr.message}`
+    );
+  }
+  if (!rows?.length) return null;
 
   const ids = [
     ...new Set(
@@ -90,9 +96,13 @@ export async function findLatestSessionSlugWithPublishedQuestions(): Promise<
     .in("id", ids)
     .order("start_date", { ascending: false })
     .limit(1)
-    .single();
+    .maybeSingle();
 
-  if (sErr) return null;
+  if (sErr) {
+    throw new Error(
+      `Failed to fetch latest session with questions: ${sErr.message}`
+    );
+  }
   return session?.slug ?? null;
 }
 
