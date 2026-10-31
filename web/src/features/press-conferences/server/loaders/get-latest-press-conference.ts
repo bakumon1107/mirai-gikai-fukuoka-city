@@ -1,21 +1,12 @@
 import "server-only";
-import { unstable_cache } from "next/cache";
-import { CACHE_TAGS } from "@/lib/cache-tags";
 import type { PressConference } from "../../shared/types";
-import { findLatestPublishedPressConference } from "../repositories/press-conference-repository";
+import { getPressConferences } from "./get-press-conferences";
 
-/** バナー用。発言（turns）は含まない */
+/**
+ * バナー用。発言（turns）は含まない。
+ * 一覧（held_at 降順）の先頭を使い、一覧と同じキャッシュを共有する
+ */
 export async function getLatestPressConference(): Promise<PressConference | null> {
-  return _getCached();
+  const pressConferences = await getPressConferences();
+  return pressConferences[0] ?? null;
 }
-
-const _getCached = unstable_cache(
-  async (): Promise<PressConference | null> => {
-    return findLatestPublishedPressConference();
-  },
-  ["latest-press-conference"],
-  {
-    revalidate: 600,
-    tags: [CACHE_TAGS.PRESS_CONFERENCES],
-  }
-);

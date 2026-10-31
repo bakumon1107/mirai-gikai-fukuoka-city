@@ -119,25 +119,3 @@ export async function findPublishedPressConferenceBySlug(
     ? mapToPressConference(data as unknown as PressConferenceRow)
     : null;
 }
-
-/** 発言（turns）は含まない（items[].turns は空配列） */
-export async function findLatestPublishedPressConference(): Promise<PressConference | null> {
-  const supabase = createAdminClient();
-  const { data, error } = await supabase
-    .from("press_conferences")
-    .select(LIST_SELECT)
-    .eq("status", "published")
-    .order("held_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-
-  if (error) {
-    throw new Error(
-      `Failed to fetch latest press conference: ${error.message}`
-    );
-  }
-
-  return data
-    ? mapToPressConference(data as unknown as PressConferenceRow)
-    : null;
-}
