@@ -16,10 +16,11 @@ import {
   getCandidateNoun,
   getElectionPhase,
 } from "../../shared/utils/election-phase";
+import { isElectionPageHidden } from "../../shared/utils/visibility";
 
 /**
  * TOPページに置く特設ページへの導線。
- * 投開票日を過ぎたら非表示にする（結果ページを用意するまでの暫定運用）。
+ * 特設ページの非公開日時（hiddenAt）を過ぎたら非表示にする。
  *
  * 配信から一定期間の討論会があれば、バナーの下に新着の行を付けて討論会ページへ直接案内する。
  * バナー本体がひとつのリンクなので、新着の行は入れ子にせず別のリンクにする。
@@ -27,7 +28,7 @@ import {
 export function ElectionBanner() {
   const now = new Date();
   const phase = getElectionPhase(now, ELECTION_SCHEDULE);
-  if (phase === "after-vote") {
+  if (phase === "after-vote" || isElectionPageHidden(now, ELECTION_SCHEDULE)) {
     return null;
   }
 

@@ -5,6 +5,11 @@ import {
   type DifficultyLevelEnum,
   VALID_DIFFICULTY_LEVELS,
 } from "./features/bill-difficulty/shared/types";
+import { ELECTION_SCHEDULE } from "./features/election/shared/data/schedule";
+import {
+  isElectionPageHidden,
+  isElectionPath,
+} from "./features/election/shared/utils/visibility";
 import {
   createUnauthorizedResponse,
   getBasicAuthConfig,
@@ -19,6 +24,17 @@ export function middleware(request: NextRequest) {
       return NextResponse.rewrite(new URL("/not-found", request.url));
     }
     return NextResponse.next();
+  }
+
+  // 選挙特設ページ: 非公開日時を過ぎたらTOPへ戻す（ISRのキャッシュより前で止める）。
+  // サイト全体で存在しないページはTOPへリダイレクトしている（app/not-found.tsx）のと揃える。
+  if (
+    isElectionPath(request.nextUrl.pathname) &&
+    isElectionPageHidden(new Date(), ELECTION_SCHEDULE)
+  ) {
+    const response = NextResponse.redirect(new URL("/", request.url), 307);
+    response.headers.set("Cache-Control", "no-store");
+    return response;
   }
 
   const response = _handleDifficultyCookie(request);

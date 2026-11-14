@@ -218,6 +218,11 @@ export type ElectionSchedule = {
   earlyVotingNote: string;
   sourceLabel: string;
   sourceUrl: string;
+  /**
+   * 特設ページ（/election 配下とTOPのバナー）を非公開にする日時。
+   * 投票日前日の選挙運動期間の終わりに合わせて閉じる。
+   */
+  hiddenAt: string;
 };
 
 /** 選挙の進行段階。呼称と並び順ラベルの切り替えに使う。 */
