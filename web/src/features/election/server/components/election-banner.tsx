@@ -39,7 +39,12 @@ export function ElectionBanner() {
   return (
     <Container className="pt-4">
       <div className="overflow-hidden rounded-[14px] border border-primary-darkest/20 bg-mirai-gradient transition-[box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:shadow-election-banner-hover">
-        <Link href="/election/2026" className="relative block p-[22px]">
+        {/* 非公開時刻をまたいで先読み済みのページが表示されないよう prefetch しない */}
+        <Link
+          href="/election/2026"
+          prefetch={false}
+          className="relative block p-[22px]"
+        >
           <span
             aria-hidden="true"
             className="pointer-events-none absolute -right-1 top-3 select-none font-lexend text-[76px] font-black leading-none tracking-[-0.055em] text-white/45"
@@ -85,6 +90,7 @@ export function ElectionBanner() {
         {newDebate && (
           <Link
             href={debatePath(newDebate.id)}
+            prefetch={false}
             className="flex items-center gap-3 border-t border-primary-darkest/15 bg-white/70 px-[22px] py-3 transition-colors hover:bg-white"
           >
             <span className="shrink-0 rounded-[4px] bg-primary-accent px-1.5 py-0.5 text-[9.5px] font-bold tracking-[0.08em] text-white">
