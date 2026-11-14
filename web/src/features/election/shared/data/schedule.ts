@@ -15,6 +15,10 @@ import type { ElectionSchedule } from "../types";
  * 市選管が投票所ごとの時刻を公表したものではない。投票所によっては
  * 繰り上げ閉鎖がありうるため、カウントダウンは「目安」として扱い、
  * 投票所ごとの時刻が公表されたら voteClosesNote を空にすること。
+ *
+ * hiddenAt 以降は特設ページを非公開にする（/election 配下はTOPへリダイレクト、TOPのバナーも出さない）。
+ * 公職選挙法上のリスクを避けるための運用判断で、投票日当日は掲載しない。
+ * 再公開するときは hiddenAt を変更すること。
  */
 export const ELECTION_SCHEDULE: ElectionSchedule = {
   kokujiAt: "2026-11-01T00:00:00+09:00",
@@ -39,4 +43,5 @@ export const ELECTION_SCHEDULE: ElectionSchedule = {
   sourceLabel: "福岡市選挙管理委員会",
   sourceUrl:
     "https://www.city.fukuoka.lg.jp/senkan/senkyo/shisei/1115sityousen.html",
+  hiddenAt: "2026-11-14T23:59:00+09:00",
 };
