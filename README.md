@@ -51,9 +51,11 @@ https://raw.githubusercontent.com/bakumon1107/mirai-gikai-fukuoka-city/base-loca
 | pnpm | `npm install -g pnpm` |
 | GitHub CLI | https://cli.github.com/ 。入れたら `gh auth login` でログイン |
 | Docker | Docker Desktop 等（手元でアプリを動かす場合のみ） |
-| poppler（`pdfinfo` / `pdftotext`） | 議会サイトの調査で PDF を読むのに使う。Mac は `brew install poppler`、Linux / WSL2 は `sudo apt install poppler-utils` |
+| poppler（`pdfinfo` / `pdftotext`） | 議会サイトの調査で PDF を読むのに使う。Mac は `brew install poppler`、Linux / WSL2 は `sudo apt install poppler-utils`、Windows は `scoop install poppler` 等 |
 
-Windows の場合は WSL2（Ubuntu）の中で作業してください（PowerShell で `wsl --install`）。
+Windows の場合は、WSL2（Ubuntu）の中で作業するのがおすすめです（PowerShell で `wsl --install`）。
+WSL2 を使わずに Windows のまま進めることもできます。その場合、手順のコマンドは Git Bash（Git for Windows に付属）で実行し、
+`git config --global core.autocrlf input` を設定してください。
 
 そろったら、下の「[リポジトリを用意する](#リポジトリを用意する)」から順に進めます。
 
@@ -184,7 +186,7 @@ Windows の場合は WSL2（Ubuntu）の中で作業してください（PowerSh
 リポジトリの用意は上の「[リポジトリを用意する](#リポジトリを用意する)」を済ませてください。
 以降は clone した自分の fork のディレクトリで実行します。
 
-前提: Docker（Windows は WSL2 + Docker Desktop）、Node.js 24、pnpm、GitHub CLI（`gh`）
+前提: Docker（Windows は Docker Desktop）、Node.js 24、pnpm、GitHub CLI（`gh`）
 
 ```bash
 cd mirai-gikai-<地域>
