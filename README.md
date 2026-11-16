@@ -18,8 +18,8 @@ Claude Code・Codex CLI・Gemini CLI などの AI コーディングエージェ
 
 ```
 ○○市のみらい議会を作りたいです。
-次の指示書に従って、開発環境の用意から始めてください。
-https://github.com/bakumon1107/mirai-gikai-fukuoka-city/blob/base-local/develop/docs/20261116_1900_ai-setup-guide.md
+次の指示書を要約せずに全文読んで、その手順に従って開発環境の用意から始めてください。
+https://raw.githubusercontent.com/bakumon1107/mirai-gikai-fukuoka-city/base-local/develop/docs/20261116_1900_ai-setup-guide.md
 ```
 
 依頼はこの1回だけです。エージェントが、必要なツールの確認 → GitHub へのログイン → fork →
@@ -29,6 +29,9 @@ https://github.com/bakumon1107/mirai-gikai-fukuoka-city/blob/base-local/develop/
 
 ツールが入っている、fork 済み、といった**途中まで用意できている人も同じ文面で使えます。**
 エージェントが最初に現状を調べ、済んでいる手順は飛ばして足りない分だけ補います。
+
+すでに別の地域版などで mirai-gikai 系の fork を持っている場合は、その fork にテンプレートを足して使います。
+既存の fork のブランチや既定ブランチには触らないよう、指示書の中で制御しています。
 
 2回目以降は、手元にコピーしたフォルダ（`mirai-gikai-<地域>`）でエージェントを起動すれば、
 作業ルールが自動で読み込まれます。
@@ -48,6 +51,7 @@ https://github.com/bakumon1107/mirai-gikai-fukuoka-city/blob/base-local/develop/
 | pnpm | `npm install -g pnpm` |
 | GitHub CLI | https://cli.github.com/ 。入れたら `gh auth login` でログイン |
 | Docker | Docker Desktop 等（手元でアプリを動かす場合のみ） |
+| poppler（`pdfinfo` / `pdftotext`） | 議会サイトの調査で PDF を読むのに使う。Mac は `brew install poppler`、Linux / WSL2 は `sudo apt install poppler-utils` |
 
 Windows の場合は WSL2（Ubuntu）の中で作業してください（PowerShell で `wsl --install`）。
 

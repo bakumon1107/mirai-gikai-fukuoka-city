@@ -287,15 +287,37 @@ AI解説のソースになりうる資料が複数見つかることがある
 
 1. **4-0 前提の確認。** `gh repo set-default --view` が作業中の fork を指しているか確認する。
    未設定・本家（team-mirai）・配布元を指している場合は、以降の `gh` 操作を行わずユーザーに伝える。
-   `git remote -v` で origin が fork であることも確かめる
+   `git remote -v` で origin が fork であることも確かめる。
+   続けて、**この fork がテンプレートから作られたものか**を確かめる。
+
+   ```bash
+   gh api repos/<owner>/<repo> --jq '.parent.full_name'
+   ```
+
+   `bakumon1107/mirai-gikai-fukuoka-city` 以外（本家や別の地域版から作った既存の fork に
+   テンプレートのブランチを足した場合）は、**既存の fork に別の用途のブランチや稼働中のサービスがある前提**で扱い、
+   3.（ブランチ削除）と 2. の既定ブランチ変更は行わない。`<地域>/develop` の作成と 4. だけ行う
 2. **4-1・4-2 ブランチ作成と既定ブランチ変更。** `<地域>/develop` を `origin/base-local/develop` から作って push し、
    `gh repo edit <owner>/<repo> --default-branch <地域>/develop` で既定ブランチにする。
    `<地域>` はローマ字小文字（例: `shibuya`）。決まっていなければ Step 5 後の確認でまとめて聞く
-3. **4-7 不要ブランチの削除。** 削除候補（`<地域>/develop`・`base-local/develop`・`HEAD` 以外）を
-   一覧にして**ユーザーに提示し、承認を得てから**削除する。削除は元に戻せない。
+3. **4-7 不要ブランチの削除。** 削除候補は**配布元からコピーされたブランチだけ**に絞る
+   （fork で利用者が作ったブランチを候補に入れない）。
+
+   ```bash
+   git fetch origin --prune
+   comm -12 \
+     <(git for-each-ref --format='%(refname:lstrip=3)' refs/remotes/origin | sort) \
+     <(git ls-remote --heads https://github.com/bakumon1107/mirai-gikai-fukuoka-city.git | sed 's#.*refs/heads/##' | sort) \
+     | grep -vx -e HEAD -e base-local/develop -e '<地域>/develop'
+   ```
+
+   一覧を**ユーザーに提示し、承認を得てから**削除する。削除は元に戻せない。
    既定ブランチを変える前に削除しない
 4. **4-3 参照の置き換え。** `base-local/develop`・`../mirai-gikai-local-worktree/`・`.github/CODEOWNERS` を
-   自地域向けに置き換え、PR で `<地域>/develop` に入れる
+   自地域向けに置き換え、PR で `<地域>/develop` に入れる。
+   この PR に限り、AGENTS.md の「ベースブランチは必ず `base-local/develop`」より
+   この手順を優先する（その記述自体をこの PR で置き換えるため）。
+   AGENTS.md の worktree の置き場所（`../mirai-gikai-local-worktree/`）は置き換え前の値をそのまま使ってよい
 5. Actions が fork で無効のままの場合は API では確実に有効化できないため、
    ユーザーに **Actions タブで有効化する**よう伝える
 
