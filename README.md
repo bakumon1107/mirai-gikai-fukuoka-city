@@ -54,7 +54,7 @@ fork できるよう、地域固有の情報を設定ファイルに集約して
    配布元リポジトリの既定ブランチは `base-local/develop` ではないため、チェックを外さないと
    **テンプレートのブランチが fork に含まれません**。
    なおこの操作で配布元の全ブランチ（福岡市版の作業ブランチ等）もコピーされます。
-   不要なものは準備ができてから削除します（手順は 4-7）。
+   不要なものは調査で着手が決まってから削除します（手順6）。
 3. リポジトリ名を `mirai-gikai-<地域>` に変更して fork を作成する。
 4. 自分の fork を clone し、テンプレートのブランチへ移る。
 
@@ -64,10 +64,49 @@ fork できるよう、地域固有の情報を設定ファイルに集約して
    git switch base-local/develop
    ```
 
-自地域のブランチ（`<地域>/develop`）の作成・既定ブランチの変更・
-**引き継いだ不要ブランチの削除**は、調査で着手が決まってから
-[fork手順 セクション4](docs/20260304_1000_別地域向けfork手順.md#4-自地域のブランチへ切り替える)
-で行います。
+   `gh` CLI を使う場合は、1〜3 を次の1行で済ませられます
+   （`gh repo fork` は既定で全ブランチをコピーします。`--default-branch-only` は付けないこと）。
+
+   ```bash
+   gh repo fork bakumon1107/mirai-gikai-fukuoka-city --fork-name mirai-gikai-<地域> --clone=false
+   ```
+
+5. **fork 直後の GitHub 設定をする。** fork は配布元の設定を引き継がず、
+   一部の機能が無効の状態で作られます。
+
+   ```bash
+   # gh の既定リポジトリを自分の fork にする。
+   # これをしないと gh pr create / gh pr view / gh issue が本家 team-mirai を向く
+   gh repo set-default <あなたのアカウント>/mirai-gikai-<地域>
+   gh repo set-default --view    # 自分の fork が表示されれば OK
+
+   # fork では Issues が既定で無効になっている
+   gh repo edit <あなたのアカウント>/mirai-gikai-<地域> --enable-issues
+
+   # テンプレート配布元を remote として登録する（あとから更新を取り込むため。fork手順 4-6）
+   git remote add template https://github.com/bakumon1107/mirai-gikai-fukuoka-city.git
+   git fetch template base-local/develop
+   ```
+
+   **GitHub Actions も fork では止まっています。** fork のページの **Actions** タブを開き、
+   `I understand my workflows, go ahead and enable them` を押して有効にしてください
+   （押さないと CI が一切動かず、PR のチェックが付きません）。
+
+6. **AI コーディングエージェントを起動し、「○○市のみらい議会を作りたい」と伝える。**
+   Claude Code・Codex CLI・Gemini CLI など、`AGENTS.md`（`CLAUDE.md`・`GEMINI.md` は同じ内容への
+   シンボリックリンク）を読むエージェントなら同じ流れで動きます。
+   まず `council-survey` の手順（[.claude/skills/council-survey/SKILL.md](.claude/skills/council-survey/SKILL.md)）で
+   その自治体の議会サイトが調査され、何が作れるかが判定されます。
+   着手が決まると、続けて次の GitHub 準備を進めます
+   （[fork手順 セクション4](docs/20260304_1000_別地域向けfork手順.md#4-自地域のブランチへ切り替える)）。
+
+   - `<地域>/develop` を `base-local/develop` から作り、GitHub の既定ブランチにする
+   - **配布元から引き継いだ不要なブランチを削除する**
+     （手順2で `fukuoka-city/*`・`kawasaki/develop` 等もコピーされているため。
+     残すのは `<地域>/develop` と `base-local/develop` の2本）
+   - ワークフロー・`AGENTS.md`・`.claude/`・`CODEOWNERS` の参照を自地域向けに置き換える
+
+   ブランチの削除は元に戻せないため、削除するブランチの一覧を確認してから実行します。
 
 > [!WARNING]
 > fork ネットワークの中にいるため、GitHub 上で Pull Request を作ると
@@ -93,23 +132,39 @@ fork できるよう、地域固有の情報を設定ファイルに集約して
 リポジトリの用意は上の「[リポジトリを用意する](#リポジトリを用意する)」を済ませてください。
 以降は clone した自分の fork のディレクトリで実行します。
 
+前提: Docker（Windows は WSL2 + Docker Desktop）、Node.js 24、pnpm、GitHub CLI（`gh`）
+
 ```bash
 cd mirai-gikai-<地域>
 
-# Supabaseの起動
-npx supabase start
+# パッケージインストール
+pnpm install --frozen-lockfile
 
-# 環境変数の設定（必要に応じて.envの内容を変更してください）
+# 環境変数の設定（ローカル開発ならほぼそのままで動きます）
 cp .env.example .env
 
-# パッケージインストール
-pnpm install
+# Supabaseの起動（初回は Docker イメージの取得で数分かかります）
+npx supabase start
 
-# SupabaseのDB初期化, 開発用シードデータのセットアップ
+# SupabaseのDB初期化, 型生成, 開発用シードデータのセットアップ
 pnpm db:reset
 
 # サーバー起動
 pnpm dev
+```
+
+| サービス | URL |
+|---|---|
+| Web（公開サイト） | http://localhost:3002 |
+| Admin（管理画面） | http://localhost:3001 |
+| Supabase Studio | http://127.0.0.1:54423 |
+
+ポートは `.env` の `WEB_PORT` / `ADMIN_PORT` で変えられます。
+
+PR を出す前に、CI と同じ検証を手元で通してください。
+
+```bash
+pnpm lint && pnpm typecheck && pnpm test && pnpm build
 ```
 
 ## マイグレーション
