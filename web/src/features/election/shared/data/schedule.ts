@@ -1,47 +1,48 @@
 import type { ElectionSchedule } from "../types";
 
 /**
- * 令和8年11月15日執行 福岡市長選挙の日程。
+ * 福岡市長選挙（再選挙）の日程。
  *
- * 出典: 福岡市選挙管理委員会「福岡市長選挙の選挙期日等を決定しました」
+ * 令和8年11月15日執行の福岡市長選挙では、13人のいずれも法定得票数
+ * （有効投票総数の4分の1）に届かず、再選挙になった。再選挙の期日は本稿時点で未定。
+ * 異議の申出の期間は11月30日まで。異議の申出がなければ、その後50日以内に行われ、
+ * 「1月3日告示・1月17日投開票」が有力視されていると報じられている（確定ではない）。
+ *
+ * 出典: 報道（TNCテレビ西日本、2026年11月18日）
+ * https://news.tnc.co.jp/news/articles/NID2026111832908
+ *
+ * 市選管が期日を告示したら、次を埋めること。
+ * - kokujiAt / voteClosesAt / kokujiLabel / voteDateLabel
+ * - 期日前投票（earlyVotingPeriod / earlyVotingHours / earlyVotingPlaces / earlyVotingNote）
+ * - sourceLabel / sourceUrl を市選管のページに差し替える
+ * - voteClosesNote を、カウントダウンが目安である旨の注記に戻す
+ *   （「カウントダウンは投票終了の標準時刻（午後8時）を目安にしています。投票所ごとの時刻は入場整理券でご確認ください。」）
+ * - hiddenAt を投票日前日の 23:59 にする（公職選挙法上のリスクを避けるため、投票日当日は掲載しない）
+ * - kokujiAt と voteClosesAt は必ず両方そろえて入れる（片方だけだと段階の判定と非公開が効かない。テストで検出する）
+ *
+ * 告示日を過ぎたら、候補者の一覧も届出に合わせて直すこと（日程を埋めるだけでは直らない）。
+ * - 届け出た人に rerun を付け、届け出なかった人から外す（新たに届け出た人は候補者データを追加する）
+ * - 番号 no を届出順に付け替える（11月15日の選挙の表明順の番号のまま「届出順」と表示しない）
+ *
+ * 期日前投票の欄は earlyVotingPlaces が空のあいだは出さない。
+ * カウントダウンは voteClosesAt が null のあいだは出さない。
+ *
+ * 1回目（11月15日執行）の日程と出典:
+ * 告示 11月1日（日）／投開票 11月15日（日）／期日前投票 11月2日（月）〜11月14日（土）
  * https://www.city.fukuoka.lg.jp/senkan/senkyo/shisei/1115sityousen.html
- *
- * 期日前投票所の一覧は本稿時点で市選管が未公表のため、
- * 全区で確実に開設される区役所のみを掲載している。
- * 施設の追加公表があった時点で earlyVotingPlaces に追記し、
- * earlyVotingNote を空文字にすること。
- *
- * voteClosesAt の 20:00 は公職選挙法40条の標準的な投票終了時刻であって、
- * 市選管が投票所ごとの時刻を公表したものではない。投票所によっては
- * 繰り上げ閉鎖がありうるため、カウントダウンは「目安」として扱い、
- * 投票所ごとの時刻が公表されたら voteClosesNote を空にすること。
- *
- * hiddenAt 以降は特設ページを非公開にする（/election 配下はTOPへリダイレクト、TOPのバナーも出さない）。
- * 公職選挙法上のリスクを避けるための運用判断で、投票日当日は掲載しない。
- * 再公開するときは hiddenAt を変更すること。
  */
 export const ELECTION_SCHEDULE: ElectionSchedule = {
-  kokujiAt: "2026-11-01T00:00:00+09:00",
-  voteClosesAt: "2026-11-15T20:00:00+09:00",
+  kokujiAt: null,
+  voteClosesAt: null,
   voteClosesNote:
-    "カウントダウンは投票終了の標準時刻（午後8時）を目安にしています。投票所ごとの時刻は入場整理券でご確認ください。",
-  kokujiLabel: "11月1日（日）",
-  voteDateLabel: "11月15日（日）",
-  earlyVotingPeriod: "11月2日（月）〜11月14日（土）",
-  earlyVotingHours: "午前8時30分〜午後8時（施設により異なる）",
-  earlyVotingPlaces: [
-    { ward: "東区", place: "東区役所" },
-    { ward: "博多区", place: "博多区役所" },
-    { ward: "中央区", place: "中央区役所" },
-    { ward: "南区", place: "南区役所" },
-    { ward: "城南区", place: "城南区役所" },
-    { ward: "早良区", place: "早良区役所" },
-    { ward: "西区", place: "西区役所" },
-  ],
-  earlyVotingNote:
-    "区役所以外の期日前投票所は、福岡市選挙管理委員会の公表後に掲載します。開設期間・時間は施設により異なります。",
-  sourceLabel: "福岡市選挙管理委員会",
-  sourceUrl:
-    "https://www.city.fukuoka.lg.jp/senkan/senkyo/shisei/1115sityousen.html",
-  hiddenAt: "2026-11-14T23:59:00+09:00",
+    "再選挙の期日は、福岡市選挙管理委員会がまだ決めていません。異議の申出の期間は11月30日までで、異議の申出がなければその後50日以内に行われ、1月中旬までの見通しと報じられています。",
+  kokujiLabel: "未定",
+  voteDateLabel: "未定",
+  earlyVotingPeriod: "",
+  earlyVotingHours: "",
+  earlyVotingPlaces: [],
+  earlyVotingNote: "",
+  sourceLabel: "報道（TNCテレビ西日本）",
+  sourceUrl: "https://news.tnc.co.jp/news/articles/NID2026111832908",
+  hiddenAt: null,
 };

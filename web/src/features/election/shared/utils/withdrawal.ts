@@ -1,4 +1,5 @@
 import type { Candidate, CandidateWithdrawal } from "../types";
+import { formatMonthDayJa } from "./month-day";
 
 /** 立候補を取りやめたか */
 export function isWithdrawn(candidate: Pick<Candidate, "withdrawal">): boolean {
@@ -17,9 +18,5 @@ export function filterActiveCandidates<T extends Pick<Candidate, "withdrawal">>(
 
 /** "2026-10-29" → "10月29日に立候補を取りやめ" */
 export function formatWithdrawalLabel(withdrawal: CandidateWithdrawal): string {
-  const match = /^\d{4}-(\d{2})-(\d{2})$/.exec(withdrawal.date);
-  const day = match
-    ? `${Number(match[1])}月${Number(match[2])}日`
-    : withdrawal.date;
-  return `${day}に立候補を取りやめ`;
+  return `${formatMonthDayJa(withdrawal.date)}に立候補を取りやめ`;
 }
