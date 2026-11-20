@@ -24,6 +24,12 @@ const ISSUES_EXPANDED: UpdateEntry = {
 const REHACQ_DEBATE =
   "ReHacQ九州のネット討論会（10月28日）での発言を、高島市政への評価と各分野に反映";
 
+/** 2026年11月20日、再選挙への出馬の意向（報道）を載せた。意向が報じられた5人の欄に書く */
+const RERUN_INTENT: UpdateEntry = {
+  date: "2026-11-20",
+  text: "再選挙への出馬の意向が報じられたことを追加",
+};
+
 /** キーは Candidate.id */
 export const CANDIDATE_UPDATES: Readonly<
   Record<string, readonly UpdateEntry[]>
@@ -103,6 +109,7 @@ export const CANDIDATE_UPDATES: Readonly<
       text: "政策集「ANSWER100」の「地域と外国人居住者の生活トラブル」の項目を反映",
     },
     { date: "2026-10-29", text: REHACQ_DEBATE },
+    RERUN_INTENT,
   ],
   "shirabe-takashi": [
     { date: "2026-09-12", text: "掲載を開始" },
@@ -134,6 +141,7 @@ export const CANDIDATE_UPDATES: Readonly<
       date: "2026-10-29",
       text: `${REHACQ_DEBATE}。外国人住民・外国人政策の分野が「未表明」から「表明済み」に`,
     },
+    RERUN_INTENT,
   ],
   "mori-kentaro": [
     { date: "2026-09-19", text: "掲載を開始" },
@@ -156,6 +164,7 @@ export const CANDIDATE_UPDATES: Readonly<
       date: "2026-10-29",
       text: `${REHACQ_DEBATE}。再開発・観光の2分野が「未表明」から「表明済み」に`,
     },
+    RERUN_INTENT,
   ],
   "abe-hideki": [
     { date: "2026-09-19", text: "掲載を開始" },
@@ -217,6 +226,7 @@ export const CANDIDATE_UPDATES: Readonly<
       text: "政策ダイジェストの「ひとりでも、つながっている」（外国人相談窓口の拡充など）を反映",
     },
     { date: "2026-10-29", text: REHACQ_DEBATE },
+    RERUN_INTENT,
   ],
   "katayama-sumiko": [
     { date: "2026-09-28", text: "掲載を開始" },
@@ -253,6 +263,7 @@ export const CANDIDATE_UPDATES: Readonly<
     ISSUES_EXPANDED,
     { date: "2026-10-28", text: "政策集「ともにつくる、福岡」を反映" },
     { date: "2026-10-29", text: REHACQ_DEBATE },
+    RERUN_INTENT,
   ],
 };
 

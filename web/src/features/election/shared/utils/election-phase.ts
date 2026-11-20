@@ -3,17 +3,23 @@ import type { ElectionPhase, ElectionSchedule } from "../types";
 /**
  * 選挙の進行段階を判定する。
  * 告示日の 00:00 までは before-kokuji、投票締切までは campaigning、
- * それ以降は after-vote。
+ * それ以降は after-vote。期日が決まっていない（kokujiAt が null）間は before-kokuji。
  */
 export function getElectionPhase(
   now: Date,
-  schedule: ElectionSchedule
+  schedule: Pick<ElectionSchedule, "kokujiAt" | "voteClosesAt">
 ): ElectionPhase {
+  if (schedule.kokujiAt === null) {
+    return "before-kokuji";
+  }
   const nowMs = now.getTime();
   if (nowMs < new Date(schedule.kokujiAt).getTime()) {
     return "before-kokuji";
   }
-  if (nowMs < new Date(schedule.voteClosesAt).getTime()) {
+  if (
+    schedule.voteClosesAt === null ||
+    nowMs < new Date(schedule.voteClosesAt).getTime()
+  ) {
     return "campaigning";
   }
   return "after-vote";

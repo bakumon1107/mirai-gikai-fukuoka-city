@@ -2,7 +2,7 @@ import "server-only";
 import { ArrowRight, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { Container } from "@/components/layouts/container";
-import { ACTIVE_CANDIDATES } from "../../shared/data/candidates";
+import { RERUN_CANDIDATES } from "../../shared/data/candidates";
 import { DEBATES } from "../../shared/data/debates";
 import { ISSUES } from "../../shared/data/issues";
 import { ELECTION_SCHEDULE } from "../../shared/data/schedule";
@@ -33,7 +33,11 @@ export function ElectionBanner() {
   }
 
   const noun = getCandidateNoun(phase);
-  const { days } = getCountdown(now, ELECTION_SCHEDULE.voteClosesAt);
+  // 再選挙の期日が決まるまでは、残り日数の代わりに「未定」を出す
+  const days =
+    ELECTION_SCHEDULE.voteClosesAt === null
+      ? null
+      : getCountdown(now, ELECTION_SCHEDULE.voteClosesAt).days;
   const newDebate = findNewDebate(DEBATES, now);
 
   return (
@@ -57,13 +61,15 @@ export function ElectionBanner() {
               特設ページ
             </span>
             <span className="mt-3 block text-[21px] font-bold leading-[1.4] tracking-[-0.02em] text-mirai-text">
-              福岡市長選挙
+              福岡市長選挙（再選挙）
               <br />
               {noun}と争点
             </span>
             <span className="mt-2.5 block max-w-[400px] text-xs leading-[1.85] text-mirai-text-secondary">
-              {phase === "before-kokuji" ? "出馬の意向を示した" : "立候補した"}
-              {ACTIVE_CANDIDATES.length}
+              {phase === "before-kokuji"
+                ? "再選挙への出馬の意向を示した"
+                : "立候補した"}
+              {RERUN_CANDIDATES.length}
               人の公表内容を、{ISSUES.length}
               の分野で同じ物差しに並べています。評価や推薦は行いません。
             </span>
@@ -73,17 +79,28 @@ export function ElectionBanner() {
                 特設ページを見る
                 <ArrowRight className="size-4" />
               </span>
-              <span className="flex items-baseline gap-1.5">
-                <span className="text-[11px] font-bold text-primary-deep">
-                  投票日まで
+              {days === null ? (
+                <span className="flex items-baseline gap-1.5">
+                  <span className="text-[11px] font-bold text-primary-deep">
+                    投票日
+                  </span>
+                  <span className="text-[15px] font-bold text-mirai-text">
+                    {ELECTION_SCHEDULE.voteDateLabel}
+                  </span>
                 </span>
-                <span className="font-lexend text-2xl font-black tracking-[-0.04em] text-mirai-text">
-                  {days}
+              ) : (
+                <span className="flex items-baseline gap-1.5">
+                  <span className="text-[11px] font-bold text-primary-deep">
+                    投票日まで
+                  </span>
+                  <span className="font-lexend text-2xl font-black tracking-[-0.04em] text-mirai-text">
+                    {days}
+                  </span>
+                  <span className="text-[11px] font-bold text-mirai-text-secondary">
+                    日
+                  </span>
                 </span>
-                <span className="text-[11px] font-bold text-mirai-text-secondary">
-                  日
-                </span>
-              </span>
+              )}
             </span>
           </span>
         </Link>

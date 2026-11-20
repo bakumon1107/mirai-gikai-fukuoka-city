@@ -1,6 +1,29 @@
 import type { Candidate } from "../types";
+import { filterRerunCandidates } from "../utils/rerun";
 import { withVideoTimestamp } from "../utils/video-timestamp";
 import { filterActiveCandidates } from "../utils/withdrawal";
+
+/**
+ * 再選挙への出馬の意向（11月15日の選挙で法定得票数に届いた人がおらず、再選挙になった）。
+ * 日付は意向を報じた記事の日付。本人の会見日ではない。
+ * TNC（11/18）は稲富・新村・森・神野の4氏、データ・マックス（11/19）はこれに井上氏を加えた5氏、
+ * KBC（11/18）は「稲富さんを含め5人」と報じている。
+ */
+const RERUN_NIKKEI = {
+  date: "2026-11-16",
+  source: "報道（日本経済新聞）",
+  url: "https://www.nikkei.com/article/DGXZQOJC28CBL0Y6A021C2000000/",
+};
+const RERUN_TNC = {
+  date: "2026-11-18",
+  source: "報道（TNCテレビ西日本）",
+  url: "https://news.tnc.co.jp/news/articles/NID2026111832908",
+};
+const RERUN_DATA_MAX = {
+  date: "2026-11-19",
+  source: "報道（NetIB-News）",
+  url: "https://www.data-max.co.jp/article/88059",
+};
 
 /**
  * ReHacQ九州の討論会（2026年10月28日、3時間32分の生配信）。13人が出演、吉富氏は不参加。
@@ -1861,6 +1884,7 @@ export const CANDIDATES: Candidate[] = [
   {
     id: "niimura-masaru",
     no: "04",
+    rerun: RERUN_NIKKEI,
     name: "新村 優",
     kana: "にいむら まさる",
     age: 46,
@@ -2904,6 +2928,7 @@ export const CANDIDATES: Candidate[] = [
   {
     id: "inoue-kiyoshi",
     no: "06",
+    rerun: RERUN_DATA_MAX,
     name: "井上 潔",
     kana: "いのうえ きよし",
     age: 56,
@@ -3263,6 +3288,7 @@ export const CANDIDATES: Candidate[] = [
   {
     id: "mori-kentaro",
     no: "07",
+    rerun: RERUN_NIKKEI,
     name: "森 健太郎",
     kana: "もり けんたろう",
     age: 48,
@@ -5304,6 +5330,7 @@ export const CANDIDATES: Candidate[] = [
   {
     id: "jinno-genki",
     no: "11",
+    rerun: RERUN_TNC,
     name: "神野 元基",
     kana: "じんの げんき",
     age: 41,
@@ -6685,6 +6712,7 @@ export const CANDIDATES: Candidate[] = [
   {
     id: "inatomi-shuji",
     no: "14",
+    rerun: RERUN_TNC,
     name: "稲富 修二",
     kana: "いなとみ しゅうじ",
     age: 56,
@@ -7213,7 +7241,13 @@ export const CANDIDATES: Candidate[] = [
 ];
 
 /**
- * 立候補を取りやめた人を除いた一覧。人数・争点の比較・個人ページはこちらを使う。
+ * 立候補を取りやめた人を除いた一覧。個人ページ（静的生成の対象）はこちらを使う。
  * 表明順の番号と討論会での発言は記録として残すため、CANDIDATES からは消さない。
  */
 export const ACTIVE_CANDIDATES = filterActiveCandidates(CANDIDATES);
+
+/**
+ * 再選挙への出馬の意向が確認できた人。特設トップ・争点の比較・人数はこちらを使う。
+ * それ以外の人の個人ページは、URLでは引き続き開ける（ACTIVE_CANDIDATES）。
+ */
+export const RERUN_CANDIDATES = filterRerunCandidates(CANDIDATES);

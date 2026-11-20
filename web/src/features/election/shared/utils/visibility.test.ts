@@ -26,14 +26,24 @@ describe("isElectionPageHidden", () => {
   });
 });
 
-describe("ELECTION_SCHEDULE.hiddenAt", () => {
-  it("投票日前日の23:59（日本時間）に非公開にする", () => {
-    expect(ELECTION_SCHEDULE.hiddenAt).toBe("2026-11-14T23:59:00+09:00");
+describe("isElectionPageHidden（期日未定）", () => {
+  it("hiddenAt が null なら、いつでも公開する", () => {
+    const now = new Date("2027-01-20T10:00:00+09:00");
+    expect(isElectionPageHidden(now, { hiddenAt: null })).toBe(false);
   });
+});
 
-  it("投票締切より前に非公開になる", () => {
-    expect(new Date(ELECTION_SCHEDULE.hiddenAt).getTime()).toBeLessThan(
-      new Date(ELECTION_SCHEDULE.voteClosesAt).getTime()
+describe("ELECTION_SCHEDULE.hiddenAt", () => {
+  it("投票日が決まっていれば、投票締切より前に非公開になる", () => {
+    const { hiddenAt, voteClosesAt } = ELECTION_SCHEDULE;
+    if (voteClosesAt === null) {
+      // 期日が決まるまでは閉じる日時も置かない
+      expect(hiddenAt).toBeNull();
+      return;
+    }
+    expect(hiddenAt).not.toBeNull();
+    expect(new Date(hiddenAt ?? "").getTime()).toBeLessThan(
+      new Date(voteClosesAt).getTime()
     );
   });
 });

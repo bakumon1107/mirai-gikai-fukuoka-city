@@ -44,6 +44,7 @@ import {
   findInterviewLink,
   formatInterviewLinkLabel,
 } from "../../shared/utils/interviews";
+import { formatRerunLabel } from "../../shared/utils/rerun";
 
 type Props = {
   candidate: Candidate;
@@ -99,6 +100,20 @@ export function CandidateDetailView({ candidate, phase, tab }: Props) {
             {candidate.party}
           </span>
         </div>
+        {candidate.rerun && (
+          <p className="mt-2.5 text-[11.5px] leading-[1.7] text-mirai-text-subtle">
+            {formatRerunLabel(candidate.rerun)}（出典：
+            <a
+              href={candidate.rerun.url}
+              target="_blank"
+              rel="noreferrer"
+              className="font-bold text-primary-accent"
+            >
+              {candidate.rerun.source}
+            </a>
+            ）
+          </p>
+        )}
         {candidate.links.length > 0 && (
           <div className="mt-3 flex flex-wrap gap-2">
             {candidate.links.map((link) => (
