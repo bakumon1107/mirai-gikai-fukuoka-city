@@ -11,16 +11,12 @@ import { CandidateNumber } from "../../client/components/candidate-number";
 import { DisclaimerBar } from "../../client/components/disclaimer-bar";
 import { SectionHeading } from "../../client/components/section-heading";
 import { VoteCountdown } from "../../client/components/vote-countdown";
-import { ACTIVE_CANDIDATES, CANDIDATES } from "../../shared/data/candidates";
+import { RERUN_CANDIDATES } from "../../shared/data/candidates";
 import { DEBATES } from "../../shared/data/debates";
 import { ISSUES } from "../../shared/data/issues";
 import { ELECTION_SCHEDULE } from "../../shared/data/schedule";
 import { buildSiteLinks } from "../../shared/data/site-links";
-import type {
-  Candidate,
-  CandidateWithdrawal,
-  ElectionPhase,
-} from "../../shared/types";
+import type { ElectionPhase } from "../../shared/types";
 import { getCountdown } from "../../shared/utils/countdown";
 import {
   debatePath,
@@ -32,11 +28,8 @@ import {
   getCandidateNoun,
   getOrderLabel,
 } from "../../shared/utils/election-phase";
+import { formatRerunReport } from "../../shared/utils/rerun";
 import { countStatedIssues } from "../../shared/utils/stance";
-import {
-  formatWithdrawalLabel,
-  isWithdrawn,
-} from "../../shared/utils/withdrawal";
 
 /** 冒頭の一覧に最低限並べる行数。表明者が少ないうちは「表明待ち」の行で埋める */
 const HERO_SLOT_COUNT = 4;
@@ -50,10 +43,10 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
   const noun = getCandidateNoun(phase);
   const orderLabel = getOrderLabel(phase);
   const siteLinks = buildSiteLinks(questionsSlug);
-  const initialDays = getCountdown(
-    new Date(),
-    ELECTION_SCHEDULE.voteClosesAt
-  ).days;
+  // 再選挙の期日が決まるまでは、カウントダウンを出さない
+  const { voteClosesAt } = ELECTION_SCHEDULE;
+  const initialDays =
+    voteClosesAt === null ? null : getCountdown(new Date(), voteClosesAt).days;
   // 告示で立候補の届出が締め切られるため、以降は「表明待ち」の行を出さない
   const isBeforeKokuji = phase === "before-kokuji";
   // 配信から一定期間の討論会は、ヒーローの中でも新着として案内する
@@ -61,9 +54,8 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
   // 表明待ちの行は、冒頭の一覧が合計4行になるよう候補者数に応じて増減させる（4人以上なら出ない）
   const pendingSlotIds = isBeforeKokuji
     ? Array.from(
-        { length: Math.max(0, HERO_SLOT_COUNT - CANDIDATES.length) },
-        (_, offset) =>
-          `slot-${String(CANDIDATES.length + offset + 1).padStart(2, "0")}`
+        { length: Math.max(0, HERO_SLOT_COUNT - RERUN_CANDIDATES.length) },
+        (_, offset) => `slot-${offset + 1}`
       )
     : [];
 
@@ -82,47 +74,33 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
             FUKUOKA MAYORAL ELECTION
           </p>
           <h1 className="mt-4 text-[30px] font-bold leading-[1.35] tracking-[-0.015em] text-mirai-text">
-            福岡市長選挙
+            福岡市長選挙（再選挙）
             <br />
             {noun}と争点
           </h1>
           <p className="mt-3.5 max-w-[430px] text-[13px] leading-[1.95] text-mirai-text-secondary">
-            現職の高島宗一郎市長は不出馬を表明。出馬の意向を示した人から順に、公表内容を
+            11月15日の選挙では、当選に必要な法定得票数（有効投票総数の4分の1）に届いた人がおらず、再選挙が行われます。再選挙への出馬の意向が確認できた人の公表内容を、
             {ISSUES.length}
-            の分野で同じ物差しに並べていきます。評価や推薦は行いません。
+            の分野で同じ物差しに並べています。評価や推薦は行いません。
           </p>
 
           <ol className="mt-6 grid grid-cols-2 gap-1.5">
-            {CANDIDATES.map((candidate) => (
+            {RERUN_CANDIDATES.map((candidate) => (
               <li key={candidate.id}>
-                {isWithdrawn(candidate) ? (
-                  <span className="flex items-center gap-2 rounded-lg bg-white/40 px-2 py-1.5">
-                    <CandidateNumber no={candidate.no} size="sm" muted />
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate text-[13px] font-bold leading-[1.35] text-mirai-text-muted">
-                        {candidate.name}
-                      </span>
-                      <span className="block truncate text-[10px] leading-[1.4] text-mirai-text-muted">
-                        立候補を取りやめ
-                      </span>
+                <Link
+                  href={`/election/2026/candidates/${candidate.id}`}
+                  className="flex items-center gap-2 rounded-lg bg-white/75 px-2 py-1.5 transition-colors duration-200 hover:bg-white"
+                >
+                  <CandidateNumber no={candidate.no} size="sm" />
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-[13px] font-bold leading-[1.35] text-mirai-text">
+                      {candidate.name}
+                    </span>
+                    <span className="hidden truncate text-[10px] leading-[1.4] text-primary-deep sm:block">
+                      {candidate.title}
                     </span>
                   </span>
-                ) : (
-                  <Link
-                    href={`/election/2026/candidates/${candidate.id}`}
-                    className="flex items-center gap-2 rounded-lg bg-white/75 px-2 py-1.5 transition-colors duration-200 hover:bg-white"
-                  >
-                    <CandidateNumber no={candidate.no} size="sm" />
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate text-[13px] font-bold leading-[1.35] text-mirai-text">
-                        {candidate.name}
-                      </span>
-                      <span className="hidden truncate text-[10px] leading-[1.4] text-primary-deep sm:block">
-                        {candidate.title}
-                      </span>
-                    </span>
-                  </Link>
-                )}
+                </Link>
               </li>
             ))}
             {pendingSlotIds.map((slotId) => (
@@ -144,11 +122,15 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
           </ol>
 
           <div className="mt-6 flex flex-wrap items-center gap-5 rounded-xl bg-white/80 px-4.5 py-4">
-            <VoteCountdown
-              voteClosesAt={ELECTION_SCHEDULE.voteClosesAt}
-              initialDays={initialDays}
-            />
-            <div className="hidden w-px self-stretch bg-primary-darkest/20 sm:block" />
+            {voteClosesAt !== null && initialDays !== null && (
+              <>
+                <VoteCountdown
+                  voteClosesAt={voteClosesAt}
+                  initialDays={initialDays}
+                />
+                <div className="hidden w-px self-stretch bg-primary-darkest/20 sm:block" />
+              </>
+            )}
             <div>
               <p className="text-[10px] font-bold tracking-[0.08em] text-primary-deep">
                 告示
@@ -167,10 +149,10 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
             </div>
             <div>
               <p className="text-[10px] font-bold tracking-[0.08em] text-primary-deep">
-                {isBeforeKokuji ? "出馬表明" : "立候補届出"}
+                {isBeforeKokuji ? "出馬の意向" : "立候補届出"}
               </p>
               <p className="mt-0.5 text-[15px] font-bold leading-tight text-mirai-text">
-                {ACTIVE_CANDIDATES.length}人{" "}
+                {RERUN_CANDIDATES.length}人{" "}
                 <span className="text-[11px] font-medium text-mirai-text-subtle">
                   {orderLabel}
                 </span>
@@ -179,6 +161,20 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
             {ELECTION_SCHEDULE.voteClosesNote && (
               <p className="w-full text-[10px] leading-[1.7] text-mirai-text-muted">
                 {ELECTION_SCHEDULE.voteClosesNote}
+                {voteClosesAt === null && (
+                  <>
+                    （出典：
+                    <a
+                      href={ELECTION_SCHEDULE.sourceUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="underline"
+                    >
+                      {ELECTION_SCHEDULE.sourceLabel}
+                    </a>
+                    ）
+                  </>
+                )}
               </p>
             )}
           </div>
@@ -210,8 +206,9 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
       </section>
 
       <DisclaimerBar>
-        本ページは非公式サイトによる整理です。掲載内容は報道および各陣営の公表資料をもとにAIで要約し、人が確認したものです。告示前は
-        <strong>出馬表明順</strong>、告示後は<strong>届出順</strong>
+        本ページは非公式サイトによる整理です。掲載内容は報道および各陣営の公表資料をもとにAIで要約し、人が確認したものです。再選挙の告示前は
+        <strong>11月15日の選挙の出馬表明順</strong>
+        （番号もそのまま）、告示後は<strong>届出順</strong>
         で並び順を固定します。特定の{noun}
         への投票を呼びかけるものではありません。
       </DisclaimerBar>
@@ -219,69 +216,68 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
       <section className="px-4 sm:px-6 pb-2 pt-8">
         <SectionHeading
           eyebrow="01 — CANDIDATES"
-          title={isBeforeKokuji ? "出馬を表明した人" : "立候補した人"}
+          title={
+            isBeforeKokuji ? "再選挙への出馬の意向を示した人" : "立候補した人"
+          }
           description={
             isBeforeKokuji
-              ? `${orderLabel}・敬称略。新たな表明があり次第、随時追加します。`
+              ? `11月15日の選挙の${orderLabel}・敬称略。番号も11月15日の選挙のままです。新たな表明があり次第、随時追加します。`
               : `${orderLabel}・敬称略。告示で立候補の届出が締め切られています。`
           }
         />
       </section>
 
       <section className="flex flex-col gap-3 px-4 sm:px-6 pb-8 pt-4">
-        {CANDIDATES.map((candidate) =>
-          candidate.withdrawal ? (
-            <WithdrawnCandidateCard
-              key={candidate.id}
-              candidate={candidate}
-              withdrawal={candidate.withdrawal}
-            />
-          ) : (
-            <Link
-              key={candidate.id}
-              href={`/election/2026/candidates/${candidate.id}`}
-              className="rounded-xl border border-mirai-border bg-card p-4 transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-[3px] hover:border-primary hover:shadow-election-card-hover"
-            >
-              <div className="flex items-center gap-3">
-                <CandidateNumber no={candidate.no} />
-                <div className="min-w-0 flex-1">
-                  <p className="text-[11px] text-mirai-text-muted">
-                    {candidate.kana}
-                  </p>
-                  <p className="mt-px text-xl font-bold leading-tight tracking-[-0.025em] text-mirai-text">
-                    {candidate.name}
-                  </p>
-                </div>
+        {RERUN_CANDIDATES.map((candidate) => (
+          <Link
+            key={candidate.id}
+            href={`/election/2026/candidates/${candidate.id}`}
+            className="rounded-xl border border-mirai-border bg-card p-4 transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-[3px] hover:border-primary hover:shadow-election-card-hover"
+          >
+            <div className="flex items-center gap-3">
+              <CandidateNumber no={candidate.no} />
+              <div className="min-w-0 flex-1">
+                <p className="text-[11px] text-mirai-text-muted">
+                  {candidate.kana}
+                </p>
+                <p className="mt-px text-xl font-bold leading-tight tracking-[-0.025em] text-mirai-text">
+                  {candidate.name}
+                </p>
               </div>
-              <div className="mt-2.5 flex flex-wrap gap-1.5">
-                {candidate.age !== null && (
-                  <span className="rounded-[5px] bg-mirai-surface-grouped px-1.5 py-0.5 text-[11px] font-medium text-mirai-text-secondary">
-                    {candidate.age}歳
-                  </span>
-                )}
+            </div>
+            <div className="mt-2.5 flex flex-wrap gap-1.5">
+              {candidate.age !== null && (
                 <span className="rounded-[5px] bg-mirai-surface-grouped px-1.5 py-0.5 text-[11px] font-medium text-mirai-text-secondary">
-                  {candidate.title}
+                  {candidate.age}歳
                 </span>
-                <span className="rounded-[5px] bg-mirai-gradient px-1.5 py-0.5 text-[11px] font-medium text-primary-darkest">
-                  {candidate.party}
-                </span>
-              </div>
-              <p className="mt-2.5 text-xs leading-[1.85] text-mirai-text-secondary">
-                {candidate.lead}
+              )}
+              <span className="rounded-[5px] bg-mirai-surface-grouped px-1.5 py-0.5 text-[11px] font-medium text-mirai-text-secondary">
+                {candidate.title}
+              </span>
+              <span className="rounded-[5px] bg-mirai-gradient px-1.5 py-0.5 text-[11px] font-medium text-primary-darkest">
+                {candidate.party}
+              </span>
+            </div>
+            <p className="mt-2.5 text-xs leading-[1.85] text-mirai-text-secondary">
+              {candidate.lead}
+            </p>
+            {candidate.rerun && (
+              <p className="mt-1.5 text-[11px] leading-[1.7] text-mirai-text-muted">
+                再選挙への出馬の意向：{formatRerunReport(candidate.rerun)}
               </p>
-              <div className="mt-3 flex items-center justify-between gap-2 border-t border-mirai-surface-muted pt-2.5">
-                <span className="text-[11px] text-mirai-text-muted">
-                  {ISSUES.length}分野のうち {countStatedIssues(candidate)}
-                  分野で言及あり
-                </span>
-                <span className="flex items-center gap-1 text-xs font-bold text-primary-accent">
-                  詳しく見る
-                  <ArrowRight className="size-3.5" />
-                </span>
-              </div>
-            </Link>
-          )
-        )}
+            )}
+            <div className="mt-3 flex items-center justify-between gap-2 border-t border-mirai-surface-muted pt-2.5">
+              <span className="text-[11px] text-mirai-text-muted">
+                {ISSUES.length}分野のうち {countStatedIssues(candidate)}
+                分野で言及あり
+              </span>
+              <span className="flex items-center gap-1 text-xs font-bold text-primary-accent">
+                詳しく見る
+                <ArrowRight className="size-3.5" />
+              </span>
+            </div>
+          </Link>
+        ))}
 
         {isBeforeKokuji && (
           <div className="rounded-xl border-[1.5px] border-dashed border-mirai-border bg-mirai-surface px-4.5 py-5 text-center">
@@ -289,8 +285,8 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
               ほかの出馬表明を待っています
             </p>
             <p className="mx-auto mt-2 max-w-[400px] text-[11.5px] leading-[1.9] text-mirai-text-muted">
-              告示は{ELECTION_SCHEDULE.kokujiLabel}
-              。新たに出馬を表明した人が確認できた時点で、同じ様式のカードと分野別の整理を追加します。現職の高島宗一郎市長は不出馬を表明しています。
+              再選挙の告示日は{ELECTION_SCHEDULE.kokujiLabel}
+              。新たに再選挙への出馬の意向を示した人が確認できた時点で、同じ様式のカードと分野別の整理を追加します。
             </p>
           </div>
         )}
@@ -386,47 +382,52 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
         </div>
       </section>
 
-      <section className="mx-6 mb-8 overflow-hidden rounded-xl border border-mirai-border">
-        <div className="border-b border-mirai-border bg-mirai-surface px-4.5 py-4">
-          <h2 className="text-[15px] font-bold text-mirai-text">期日前投票</h2>
-          <p className="mt-1.5 text-[11.5px] leading-[1.8] text-mirai-text-note">
-            {ELECTION_SCHEDULE.earlyVotingPeriod}／
-            {ELECTION_SCHEDULE.earlyVotingHours}
-          </p>
-        </div>
-        <div className="flex flex-col bg-card">
-          {ELECTION_SCHEDULE.earlyVotingPlaces.map((place) => (
-            <div
-              key={place.ward}
-              className="flex items-baseline gap-3.5 border-b border-mirai-surface-grouped px-4.5 py-[11px]"
-            >
-              <span className="w-16 shrink-0 text-xs font-bold text-mirai-text">
-                {place.ward}
-              </span>
-              <span className="flex-1 text-[11.5px] leading-[1.7] text-mirai-text-subtle">
-                {place.place}
-              </span>
-            </div>
-          ))}
-        </div>
-        <div className="border-t border-mirai-surface-muted bg-card px-4.5 py-3">
-          {ELECTION_SCHEDULE.earlyVotingNote && (
-            <p className="text-[10.5px] leading-[1.7] text-mirai-text-note">
-              {ELECTION_SCHEDULE.earlyVotingNote}
+      {/* 期日前投票所が公表されるまでは欄ごと出さない（再選挙の期日が未定のあいだなど） */}
+      {ELECTION_SCHEDULE.earlyVotingPlaces.length > 0 && (
+        <section className="mx-6 mb-8 overflow-hidden rounded-xl border border-mirai-border">
+          <div className="border-b border-mirai-border bg-mirai-surface px-4.5 py-4">
+            <h2 className="text-[15px] font-bold text-mirai-text">
+              期日前投票
+            </h2>
+            <p className="mt-1.5 text-[11.5px] leading-[1.8] text-mirai-text-note">
+              {ELECTION_SCHEDULE.earlyVotingPeriod}／
+              {ELECTION_SCHEDULE.earlyVotingHours}
             </p>
-          )}
-          <p className="mt-1 text-[10.5px] leading-[1.7] text-mirai-text-muted">
-            出典：
-            <a
-              href={ELECTION_SCHEDULE.sourceUrl}
-              target="_blank"
-              rel="noreferrer"
-            >
-              {ELECTION_SCHEDULE.sourceLabel}
-            </a>
-          </p>
-        </div>
-      </section>
+          </div>
+          <div className="flex flex-col bg-card">
+            {ELECTION_SCHEDULE.earlyVotingPlaces.map((place) => (
+              <div
+                key={place.ward}
+                className="flex items-baseline gap-3.5 border-b border-mirai-surface-grouped px-4.5 py-[11px]"
+              >
+                <span className="w-16 shrink-0 text-xs font-bold text-mirai-text">
+                  {place.ward}
+                </span>
+                <span className="flex-1 text-[11.5px] leading-[1.7] text-mirai-text-subtle">
+                  {place.place}
+                </span>
+              </div>
+            ))}
+          </div>
+          <div className="border-t border-mirai-surface-muted bg-card px-4.5 py-3">
+            {ELECTION_SCHEDULE.earlyVotingNote && (
+              <p className="text-[10.5px] leading-[1.7] text-mirai-text-note">
+                {ELECTION_SCHEDULE.earlyVotingNote}
+              </p>
+            )}
+            <p className="mt-1 text-[10.5px] leading-[1.7] text-mirai-text-muted">
+              出典：
+              <a
+                href={ELECTION_SCHEDULE.sourceUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {ELECTION_SCHEDULE.sourceLabel}
+              </a>
+            </p>
+          </div>
+        </section>
+      )}
 
       <section className="px-4 sm:px-6 pb-10">
         <SectionHeading
@@ -454,45 +455,6 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
           ))}
         </div>
       </section>
-    </div>
-  );
-}
-
-/**
- * 立候補を取りやめた人のカード。表明順の番号は残し、個人ページへのリンクと
- * 公約の要約は出さない。取りやめを確認した出典だけ示す。
- */
-function WithdrawnCandidateCard({
-  candidate,
-  withdrawal,
-}: {
-  candidate: Candidate;
-  withdrawal: CandidateWithdrawal;
-}) {
-  return (
-    <div className="rounded-xl border border-mirai-border bg-mirai-surface p-4">
-      <div className="flex items-center gap-3">
-        <CandidateNumber no={candidate.no} muted />
-        <div className="min-w-0 flex-1">
-          <p className="text-[11px] text-mirai-text-muted">{candidate.kana}</p>
-          <p className="mt-px text-xl font-bold leading-tight tracking-[-0.025em] text-mirai-text-muted">
-            {candidate.name}
-          </p>
-        </div>
-      </div>
-      <p className="mt-2.5 text-xs leading-[1.85] text-mirai-text-subtle">
-        {formatWithdrawalLabel(withdrawal)}
-        ました。個人ページの掲載は終了しています。
-      </p>
-      <a
-        href={withdrawal.url}
-        target="_blank"
-        rel="noreferrer"
-        className="mt-2 inline-flex items-center gap-1 text-[11px] font-bold text-primary-accent"
-      >
-        出典：{withdrawal.source}
-        <ArrowUpRight className="size-3" />
-      </a>
     </div>
   );
 }

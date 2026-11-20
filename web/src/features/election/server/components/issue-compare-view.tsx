@@ -7,7 +7,7 @@ import { CandidateNumber } from "../../client/components/candidate-number";
 import { DisclaimerBar } from "../../client/components/disclaimer-bar";
 import { PositionBody } from "../../client/components/position-body";
 import { StancePill } from "../../client/components/stance-pill";
-import { ACTIVE_CANDIDATES } from "../../shared/data/candidates";
+import { RERUN_CANDIDATES } from "../../shared/data/candidates";
 import { DEBATES } from "../../shared/data/debates";
 import { ISSUES } from "../../shared/data/issues";
 import { ELECTION_SCHEDULE } from "../../shared/data/schedule";
@@ -55,7 +55,10 @@ export function IssueCompareView({ issue, phase, questionsSlug }: Props) {
           {issue.label}
         </h1>
         <p className="mt-2.5 text-[12.5px] leading-[1.9] text-mirai-text-secondary">
-          {orderLabel}に並べています。分類は各{noun}
+          {phase === "before-kokuji"
+            ? `再選挙への出馬の意向が確認できた人を、11月15日の選挙の${orderLabel}に並べています。`
+            : `${orderLabel}に並べています。`}
+          分類は各{noun}
           の記述にもとづく整理であり、優劣を示すものではありません。
         </p>
 
@@ -123,7 +126,7 @@ export function IssueCompareView({ issue, phase, questionsSlug }: Props) {
       </section>
 
       <section className="flex flex-col gap-2.5 px-4 sm:px-6 pb-7">
-        {ACTIVE_CANDIDATES.map((candidate) => {
+        {RERUN_CANDIDATES.map((candidate) => {
           const position = candidate.positions[issue.id];
           return (
             <div
@@ -165,7 +168,7 @@ export function IssueCompareView({ issue, phase, questionsSlug }: Props) {
         {phase === "before-kokuji" && (
           <div className="rounded-[10px] border-[1.5px] border-dashed border-mirai-border bg-mirai-surface px-4.5 py-5 text-center">
             <p className="text-[11.5px] leading-[1.9] text-mirai-text-muted">
-              この分野は、出馬表明があった人から順に行が増えていきます。告示は
+              この分野は、再選挙への出馬の意向が確認できた人から順に行が増えていきます。告示日は
               {ELECTION_SCHEDULE.kokujiLabel}です。
             </p>
           </div>
