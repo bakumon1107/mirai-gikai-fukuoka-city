@@ -1,5 +1,68 @@
 import { describe, expect, it } from "vitest";
-import { extractLineRanges, stripSpeakerPrefix } from "./extract-speech";
+import {
+  extractLineRanges,
+  findSpeakerMismatches,
+  speakerNameOf,
+  stripSpeakerPrefix,
+} from "./extract-speech";
+
+describe("speakerNameOf", () => {
+  it("議員の発言者行から氏名を取り出す", () => {
+    expect(speakerNameOf("◯54番（勝見美代）登壇　私は")).toBe("勝見美代");
+  });
+
+  it("氏名の空白を除いて返す", () => {
+    expect(speakerNameOf("◯保健医療局長（山嶋　剛）　お答えします")).toBe(
+      "山嶋剛"
+    );
+  });
+
+  it("継続行は null を返す", () => {
+    expect(speakerNameOf("　次に、ワクチン接種についてです。")).toBeNull();
+  });
+});
+
+describe("findSpeakerMismatches", () => {
+  const minutes = [
+    "◯議長（平畑雅博）　勝見美代議員。",
+    "◯54番（勝見美代）登壇　質問します。",
+    "　次に、ワクチンについて。",
+    "",
+    "◯議長（平畑雅博）　山嶋保健医療局長。",
+    "◯保健医療局長（山嶋　剛）　お答えします。",
+    "　以上です。",
+  ];
+
+  it("質問者の範囲が一致すれば空配列を返す", () => {
+    expect(findSpeakerMismatches(minutes, [[2, 3]], "勝見美代")).toEqual([]);
+  });
+
+  it("範囲の先頭が継続行でも直前の発言者行で判定する", () => {
+    expect(findSpeakerMismatches(minutes, [[3, 3]], "勝見美代")).toEqual([]);
+  });
+
+  it("複数答弁者の表記に含まれる氏名なら一致とみなす", () => {
+    expect(
+      findSpeakerMismatches(
+        minutes,
+        [[6, 7]],
+        "市民局長（舟越伸一）・保健医療局長（山嶋剛）"
+      )
+    ).toEqual([]);
+  });
+
+  it("範囲の途中に別の発言者が入っていれば不一致を返す", () => {
+    const result = findSpeakerMismatches(minutes, [[2, 6]], "勝見美代");
+    expect(result).toHaveLength(2);
+    expect(result[0]).toMatch(/5行目の発言者「平畑雅博」/);
+  });
+
+  it("別の会議録を渡して発言者がずれた場合は不一致を返す", () => {
+    expect(findSpeakerMismatches(minutes, [[6, 7]], "勝見美代")).toHaveLength(
+      1
+    );
+  });
+});
 
 describe("stripSpeakerPrefix", () => {
   it("質問者の登壇行から発言者表記を取り除く", () => {

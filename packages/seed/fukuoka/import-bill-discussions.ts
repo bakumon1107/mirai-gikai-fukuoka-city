@@ -16,9 +16,30 @@
 
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { createAdminClient } from "../shared/helper";
-import { extractLineRanges, type LineRange } from "./extract-speech";
+import {
+  extractLineRanges,
+  findSpeakerMismatches,
+  type LineRange,
+} from "./extract-speech";
+
+const REPO_ROOT = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "../../.."
+);
+
+/**
+ * 会議録のパスを解決する。pnpm exec は packages/seed で実行されるため、
+ * 相対パスはカレントディレクトリで見つからなければリポジトリルート基準でも探す。
+ */
+function resolveMinutesPath(p: string): string | null {
+  const candidates = path.isAbsolute(p)
+    ? [p]
+    : [path.resolve(process.cwd(), p), path.resolve(REPO_ROOT, p)];
+  return candidates.find((c) => fs.existsSync(c)) ?? null;
+}
 
 type OverviewEntry = {
   billNumbers: string[];
@@ -70,11 +91,11 @@ async function main() {
     },
   });
   const [dataArg] = positionals;
-  const isDryRun = values["dry-run"] ?? false;
+  const isDryRun = values["dry-run"];
 
   if (!dataArg || !values.minutes) {
     console.error(
-      "❌ 取り込むJSONと会議録テキストを指定してください（例: fukuoka/bill-discussions-r8-4.json --minutes ~/minutes/2026-09-02_1日目.txt）"
+      "❌ 取り込むJSONと会議録テキストを指定してください（例: fukuoka/bill-discussions-r8-4.json --minutes docs/fukuoka/meeting-minutes/令和８年第４回定例会/2026-09-02_1日目.txt）"
     );
     process.exit(1);
   }
@@ -82,12 +103,12 @@ async function main() {
   const dataPath = path.resolve(process.cwd(), dataArg);
   const data: DiscussionFile = JSON.parse(fs.readFileSync(dataPath, "utf-8"));
 
-  const minutesPath = path.resolve(process.cwd(), values.minutes);
-  if (!fs.existsSync(minutesPath)) {
-    console.error(`❌ 会議録が見つかりません: ${minutesPath}`);
+  const minutesPath = resolveMinutesPath(values.minutes);
+  if (!minutesPath) {
+    console.error(`❌ 会議録が見つかりません: ${values.minutes}`);
     process.exit(1);
   }
-  const minutesLines = fs.readFileSync(minutesPath, "utf-8").split("\n");
+  const minutesLines = fs.readFileSync(minutesPath, "utf-8").split(/\r?\n/);
 
   console.log(
     isDryRun ? "🔍 DRY RUN モード（DB更新なし）" : "🚀 議案質疑の取り込み開始"
@@ -163,6 +184,24 @@ async function main() {
       answerRaw = extractLineRanges(minutesLines, entry.answerLines);
     } catch (e) {
       errors.push(`${context}: ${(e as Error).message}`);
+      continue;
+    }
+
+    // 会議録の取り違え・行ずれで別人の発言を取り込まないよう、範囲内の発言者を照合する
+    const speakerErrors = [
+      ...findSpeakerMismatches(
+        minutesLines,
+        entry.questionLines,
+        entry.questionerName
+      ),
+      ...findSpeakerMismatches(
+        minutesLines,
+        entry.answerLines,
+        entry.answererRole
+      ),
+    ];
+    if (speakerErrors.length > 0) {
+      errors.push(...speakerErrors.map((m) => `${context}: ${m}`));
       continue;
     }
 
