@@ -44,7 +44,7 @@ import {
   findInterviewLink,
   formatInterviewLinkLabel,
 } from "../../shared/utils/interviews";
-import { formatRerunLabel } from "../../shared/utils/rerun";
+import { formatMonthDayJa } from "../../shared/utils/month-day";
 
 type Props = {
   candidate: Candidate;
@@ -100,9 +100,10 @@ export function CandidateDetailView({ candidate, phase, tab }: Props) {
             {candidate.party}
           </span>
         </div>
-        {candidate.rerun && (
+        {candidate.rerun ? (
           <p className="mt-2.5 text-[11.5px] leading-[1.7] text-mirai-text-subtle">
-            {formatRerunLabel(candidate.rerun)}（出典：
+            再選挙への出馬の意向が報じられています（
+            {formatMonthDayJa(candidate.rerun.date)}・
             <a
               href={candidate.rerun.url}
               target="_blank"
@@ -112,6 +113,12 @@ export function CandidateDetailView({ candidate, phase, tab }: Props) {
               {candidate.rerun.source}
             </a>
             ）
+          </p>
+        ) : (
+          // 再選挙の特設ページの中にあるため、再選挙の立候補予定者と読まれないよう位置づけを示す。
+          // 確認できていないことだけを書き、「出ない」とは書かない
+          <p className="mt-2.5 rounded-lg bg-mirai-surface-grouped px-3.5 py-2.5 text-[11.5px] leading-[1.7] text-mirai-text-subtle">
+            11月15日の選挙に立候補した人です。再選挙への出馬の意向は、このページでは確認できていません。
           </p>
         )}
         {candidate.links.length > 0 && (

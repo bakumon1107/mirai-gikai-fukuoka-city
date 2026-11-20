@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { CANDIDATES } from "../data/candidates";
-import { filterRerunCandidates, formatRerunLabel } from "./rerun";
+import { filterRerunCandidates, formatRerunReport } from "./rerun";
 
-const RERUN = { date: "2026-11-18", source: "s", url: "https://x" };
+const RERUN = { date: "2026-11-18", source: "TNC", url: "https://x" };
 const WITHDRAWAL = { date: "2026-10-29", source: "s", url: "https://x" };
 
 describe("filterRerunCandidates", () => {
@@ -25,9 +25,9 @@ describe("filterRerunCandidates", () => {
   });
 });
 
-describe("formatRerunLabel", () => {
-  it("月日を日本語で表す", () => {
-    expect(formatRerunLabel(RERUN)).toBe("11月18日に再選挙への出馬の意向");
+describe("formatRerunReport", () => {
+  it("報道の日付と媒体を書く（本人の表明日としては書かない）", () => {
+    expect(formatRerunReport(RERUN)).toBe("11月18日の報道（TNC）");
   });
 });
 

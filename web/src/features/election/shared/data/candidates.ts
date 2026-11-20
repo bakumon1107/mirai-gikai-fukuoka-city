@@ -11,17 +11,17 @@ import { filterActiveCandidates } from "../utils/withdrawal";
  */
 const RERUN_NIKKEI = {
   date: "2026-11-16",
-  source: "報道（日本経済新聞）",
+  source: "日本経済新聞",
   url: "https://www.nikkei.com/article/DGXZQOJC28CBL0Y6A021C2000000/",
 };
 const RERUN_TNC = {
   date: "2026-11-18",
-  source: "報道（TNCテレビ西日本）",
+  source: "TNCテレビ西日本",
   url: "https://news.tnc.co.jp/news/articles/NID2026111832908",
 };
 const RERUN_DATA_MAX = {
   date: "2026-11-19",
-  source: "報道（NetIB-News）",
+  source: "NetIB-News",
   url: "https://www.data-max.co.jp/article/88059",
 };
 

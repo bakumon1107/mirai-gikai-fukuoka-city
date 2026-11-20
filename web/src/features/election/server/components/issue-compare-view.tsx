@@ -55,8 +55,10 @@ export function IssueCompareView({ issue, phase, questionsSlug }: Props) {
           {issue.label}
         </h1>
         <p className="mt-2.5 text-[12.5px] leading-[1.9] text-mirai-text-secondary">
-          再選挙への出馬の意向が確認できた人を、11月15日の選挙の{orderLabel}
-          に並べています。分類は各{noun}
+          {phase === "before-kokuji"
+            ? `再選挙への出馬の意向が確認できた人を、11月15日の選挙の${orderLabel}に並べています。`
+            : `${orderLabel}に並べています。`}
+          分類は各{noun}
           の記述にもとづく整理であり、優劣を示すものではありません。
         </p>
 

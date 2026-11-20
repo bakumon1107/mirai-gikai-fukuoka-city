@@ -191,7 +191,7 @@ export type Candidate = {
 export type CandidateRerun = {
   /** 意向を確認した日（報道の日付）。"YYYY-MM-DD" 形式 */
   date: string;
-  /** 出典の表記（例: 「報道（TNCテレビ西日本）」） */
+  /** 報じた媒体の名前（例: 「TNCテレビ西日本」） */
   source: string;
   url: string;
 };

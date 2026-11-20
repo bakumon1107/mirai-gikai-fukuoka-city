@@ -14,7 +14,10 @@ export function filterRerunCandidates<
   );
 }
 
-/** "2026-11-18" → "11月18日に再選挙への出馬の意向" */
-export function formatRerunLabel(rerun: CandidateRerun): string {
-  return `${formatMonthDayJa(rerun.date)}に再選挙への出馬の意向`;
+/**
+ * 日付は報道の日付であって本人の表明日ではないため、「いつ報じられたか」として書く。
+ * → "11月18日の報道（TNCテレビ西日本）"
+ */
+export function formatRerunReport(rerun: CandidateRerun): string {
+  return `${formatMonthDayJa(rerun.date)}の報道（${rerun.source}）`;
 }

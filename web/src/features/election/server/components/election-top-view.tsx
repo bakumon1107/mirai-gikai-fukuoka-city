@@ -28,7 +28,7 @@ import {
   getCandidateNoun,
   getOrderLabel,
 } from "../../shared/utils/election-phase";
-import { formatRerunLabel } from "../../shared/utils/rerun";
+import { formatRerunReport } from "../../shared/utils/rerun";
 import { countStatedIssues } from "../../shared/utils/stance";
 
 /** 冒頭の一覧に最低限並べる行数。表明者が少ないうちは「表明待ち」の行で埋める */
@@ -263,7 +263,7 @@ export function ElectionTopView({ phase, questionsSlug }: Props) {
             </p>
             {candidate.rerun && (
               <p className="mt-1.5 text-[11px] leading-[1.7] text-mirai-text-muted">
-                {formatRerunLabel(candidate.rerun)}（{candidate.rerun.source}）
+                再選挙への出馬の意向：{formatRerunReport(candidate.rerun)}
               </p>
             )}
             <div className="mt-3 flex items-center justify-between gap-2 border-t border-mirai-surface-muted pt-2.5">

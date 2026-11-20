@@ -33,18 +33,24 @@ describe("isElectionPageHidden（期日未定）", () => {
   });
 });
 
-describe("ELECTION_SCHEDULE.hiddenAt", () => {
-  it("投票日が決まっていれば、投票締切より前に非公開になる", () => {
-    const { hiddenAt, voteClosesAt } = ELECTION_SCHEDULE;
-    if (voteClosesAt === null) {
-      // 期日が決まるまでは閉じる日時も置かない
-      expect(hiddenAt).toBeNull();
+describe("ELECTION_SCHEDULE の日程", () => {
+  const { kokujiAt, voteClosesAt, hiddenAt } = ELECTION_SCHEDULE;
+
+  it("告示日・投票締切・非公開日時は、3つとも未定か3つとも決まっているかのどちらか", () => {
+    const decided = [kokujiAt, voteClosesAt, hiddenAt].map(
+      (value) => value !== null
+    );
+    expect(new Set(decided).size).toBe(1);
+  });
+
+  it("投票日が決まっていれば、投票日前日の23:59（日本時間）に非公開にする", () => {
+    if (voteClosesAt === null || hiddenAt === null) {
       return;
     }
-    expect(hiddenAt).not.toBeNull();
-    expect(new Date(hiddenAt ?? "").getTime()).toBeLessThan(
-      new Date(voteClosesAt).getTime()
-    );
+    const voteDate = voteClosesAt.slice(0, 10);
+    const dayBefore = new Date(`${voteDate}T00:00:00+09:00`);
+    dayBefore.setTime(dayBefore.getTime() - 60 * 1000);
+    expect(new Date(hiddenAt).getTime()).toBe(dayBefore.getTime());
   });
 });
 
