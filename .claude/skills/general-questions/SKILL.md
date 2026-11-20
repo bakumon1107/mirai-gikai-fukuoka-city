@@ -77,8 +77,9 @@ web/src/features/general-questions/
 
 ### 生データ（会議録テキスト）の場所
 ```text
-docs/fukuoka/meeting-minutes/<会期名>/   # 会議録全文テキスト（会期・日別）
+docs/fukuoka/meeting-minutes/<会期名>/   # 会議録全文テキスト（会期・日別）。gitignore済み・取り込み時に手元にだけ置く
 ```
+全文はリポジトリに残さない。質問者ごとの本文は `general_questions.raw_text`、議案質疑の本文は `bill_discussions.question_raw` / `answer_raw` としてDBに入っている。
 （旧: mirai-gikai-fukuoka-master-data リポジトリの output/ に r7-5 の中間JSONがあったが、現在ローカルに存在しない）
 
 ### publish_status の管理

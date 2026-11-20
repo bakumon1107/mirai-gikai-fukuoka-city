@@ -100,14 +100,26 @@ slug は `r8-3` 形式（令和8年第3回 → r8-3）。`name` は「令和8年
 
 議案カードの「議会での審議」欄（`bill_discussions` と `bills.discussion_overview_points`）は、定例会第１日の議案質疑から作る。
 
-1. 会議録を `docs/fukuoka/meeting-minutes/<会期名>/<YYYY-MM-DD>_1日目.txt` に保存する（[README](../../../docs/fukuoka/meeting-minutes/README.md) 参照）
-2. `packages/seed/fukuoka/bill-discussions-<会期slug>.json` に、議案ごとの要約・答弁者・質疑本文の行範囲を書く
+1. 会議録の全文をテキスト化して手元に置く（下記「会議録のテキスト化」）。置き場所は `docs/fukuoka/meeting-minutes/<会期名>/<YYYY-MM-DD>_1日目.txt` を推奨（gitignore済み）。**全文はコミットしない**（本文は `question_raw` / `answer_raw` としてDBに入る）
+2. `packages/seed/fukuoka/bill-discussions-<会期slug>.json` に、議案ごとの要約・答弁者・質疑本文の行範囲と、出典URL（`sourceUrl`）を書く
 3. `--dry-run` で件数と切り出し結果を確認し、生成内容をユーザーに提示する:
    ```bash
    cd packages/seed && pnpm exec tsx --env-file=../../.env.production \
-     fukuoka/import-bill-discussions.ts fukuoka/bill-discussions-<会期slug>.json --dry-run
+     fukuoka/import-bill-discussions.ts fukuoka/bill-discussions-<会期slug>.json \
+     --minutes <会議録テキストのパス> --dry-run
    ```
 4. レビューを通ったら `--dry-run` を外して実行し、DBに反映する
+
+JSONの行範囲は、そのとき使った全文テキストの行番号を指す。全文を残さないため、後から再実行する場合は `sourceUrl` から取り直し、同じ手順でテキスト化してから行範囲が合っているか `--dry-run` で確かめること（速報版は正式版に差し替わると行がずれる）。
+
+### 会議録のテキスト化
+
+取得元は会議録速報版（`gikai.city.fukuoka.lg.jp/result/prompt/`）から辿れる単体HTML（`gikai.city.fukuoka.lg.jp/wp-content/uploads/...htm`）が早い。一太郎出力で **Shift_JIS（cp932）**、`<DIV>` 1つが1行。
+
+- `<DIV>` と `<HR>` の単位で改行し、`<FONT>` などのインラインタグを除いてテキスト化する（行頭の全角スペースは残す）
+- 表記の正規化は次の2点だけ行う。それ以外の異体字・誤植は直さない
+  - 発言者行の先頭記号 `○`（U+25CB）→ `◯`（U+25EF）。`extract-speech.ts` と UI の逐語録表示が `◯` を前提にしている
+  - 本文中の市長名 `髙島` → `高島`（既存DBの表記に合わせる）。**`髙` → `高` の文字単位の置換はしないこと**: 議会事務局次長「髙着一孝」の氏名まで変わった例がある
 
 **1人の質問者が複数議案を続けて質疑する点に注意**。質問段落と答弁ブロックを議案ごとに切り分け、JSONの `questionLines` / `answerLines` に議案別の行範囲を持たせること。質問者単位でまとめると、所管の異なる答弁者が無関係な議案のレコードに載る（過去に発生済み）。答弁者が複数のときは `answererRole` に「役職（氏名）」を「・」で連結し、`answerer_name` は入れない。
 
