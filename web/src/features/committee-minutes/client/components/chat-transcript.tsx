@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import type { CommitteeSpeech } from "../../shared/types";
 import type { TranscriptSection } from "../../shared/utils/build-transcript-sections";
+import { splitBubbleParagraphs } from "../../shared/utils/split-bubble-paragraphs";
 
 type Props = {
   sections: TranscriptSection[];
@@ -36,6 +37,11 @@ function SpeechBubble({
   const right = isRightSide(speech);
   const badgeLabel = right ? "答弁" : "質疑・意見";
   const speakerLabel = right ? "執行部" : "委員";
+  // わかりやすい表現は空行ごとに吹き出しを分ける（原文は1つの吹き出しのまま）
+  const paragraphs =
+    !detailMode && speech.simpleText
+      ? splitBubbleParagraphs(speech.simpleText)
+      : [body];
 
   return (
     <div className={`flex ${right ? "justify-end" : "justify-start"}`}>
@@ -56,14 +62,20 @@ function SpeechBubble({
           </span>
           <span className="font-bold text-mirai-text">{speakerLabel}</span>
         </div>
-        <div
-          className={`rounded-2xl px-4 py-3 text-left text-sm text-mirai-text-secondary leading-relaxed whitespace-pre-wrap border ${
-            right
-              ? "rounded-tr-sm bg-white border-mirai-border"
-              : "rounded-tl-sm bg-mirai-gradient-end border-mirai-gradient-start"
-          }`}
-        >
-          {body}
+        <div className={`flex flex-col gap-1.5 ${right ? "items-end" : ""}`}>
+          {paragraphs.map((paragraph, index) => (
+            <div
+              // 同じ発言内で同一文の段落が並ぶことはないため本文をキーにする
+              key={paragraph}
+              className={`rounded-2xl px-4 py-3 text-left text-sm text-mirai-text-secondary leading-relaxed whitespace-pre-wrap border ${
+                right
+                  ? `${index === 0 ? "rounded-tr-sm" : ""} bg-white border-mirai-border`
+                  : `${index === 0 ? "rounded-tl-sm" : ""} bg-mirai-gradient-end border-mirai-gradient-start`
+              }`}
+            >
+              {paragraph}
+            </div>
+          ))}
         </div>
       </div>
     </div>
