@@ -181,6 +181,19 @@ export type Candidate = {
    * 表明順の番号と討論会での発言は記録として残す。
    */
   withdrawal?: CandidateWithdrawal;
+  /**
+   * 再選挙への出馬の意向が確認できた場合のみ持つ。
+   * 特設トップ・争点の比較に並べるのはこれを持つ人だけ。
+   */
+  rerun?: CandidateRerun;
+};
+
+export type CandidateRerun = {
+  /** 意向を確認した日（報道の日付）。"YYYY-MM-DD" 形式 */
+  date: string;
+  /** 報じた媒体の名前（例: 「TNCテレビ西日本」） */
+  source: string;
+  url: string;
 };
 
 export type CandidateWithdrawal = {
@@ -200,14 +213,17 @@ export type EarlyVotingPlace = {
 };
 
 export type ElectionSchedule = {
-  /** 告示日（日本時間の 00:00） */
-  kokujiAt: string;
+  /** 告示日（日本時間の 00:00）。期日が決まっていなければ null */
+  kokujiAt: string | null;
   /**
-   * カウントダウンの基準となる投票終了日時。
+   * カウントダウンの基準となる投票終了日時。期日が決まっていなければ null（カウントダウンを出さない）。
    * 公職選挙法40条の標準時刻であり、投票所ごとの公表値ではない。
    */
-  voteClosesAt: string;
-  /** カウントダウンが目安である旨の注記。投票所ごとの時刻が公表されたら空にする */
+  voteClosesAt: string | null;
+  /**
+   * 日程の欄に添える注記（カウントダウンが目安であること、期日が未定であることなど）。
+   * 不要になったら空にする
+   */
   voteClosesNote: string;
   kokujiLabel: string;
   voteDateLabel: string;
@@ -220,9 +236,9 @@ export type ElectionSchedule = {
   sourceUrl: string;
   /**
    * 特設ページ（/election 配下とTOPのバナー）を非公開にする日時。
-   * 投票日前日の選挙運動期間の終わりに合わせて閉じる。
+   * 投票日前日の選挙運動期間の終わりに合わせて閉じる。期日が決まるまでは null（公開したまま）。
    */
-  hiddenAt: string;
+  hiddenAt: string | null;
 };
 
 /** 選挙の進行段階。呼称と並び順ラベルの切り替えに使う。 */

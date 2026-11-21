@@ -4,8 +4,8 @@ import { getElectionTopPageData } from "@/features/election/server/loaders/get-e
 import { ISSUES } from "@/features/election/shared/data/issues";
 
 export const metadata = {
-  title: "福岡市長選挙 2026 | みらい議会＠福岡市",
-  description: `2026年11月15日投開票の福岡市長選挙について、出馬を表明した人の公表内容を${ISSUES.length}の分野で同じ物差しに並べて掲載します。非公式サイトによる整理で、評価や推薦は行いません。`,
+  title: "福岡市長選挙（再選挙） 2026 | みらい議会＠福岡市",
+  description: `2026年11月15日の福岡市長選挙は法定得票数に届いた人がおらず、再選挙になりました。再選挙への出馬の意向を示した人の公表内容を${ISSUES.length}の分野で同じ物差しに並べて掲載します。非公式サイトによる整理で、評価や推薦は行いません。`,
 };
 
 /**

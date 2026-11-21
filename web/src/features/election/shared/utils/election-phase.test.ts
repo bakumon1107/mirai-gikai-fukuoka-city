@@ -36,6 +36,13 @@ describe("getElectionPhase", () => {
     const now = new Date("2026-11-16T09:00:00+09:00");
     expect(getElectionPhase(now, schedule)).toBe("after-vote");
   });
+
+  it("期日が決まっていない（告示日が null）間は before-kokuji", () => {
+    const now = new Date("2026-11-20T09:00:00+09:00");
+    expect(getElectionPhase(now, { kokujiAt: null, voteClosesAt: null })).toBe(
+      "before-kokuji"
+    );
+  });
 });
 
 describe("getCandidateNoun", () => {

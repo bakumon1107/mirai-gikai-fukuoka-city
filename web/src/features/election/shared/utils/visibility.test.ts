@@ -26,15 +26,31 @@ describe("isElectionPageHidden", () => {
   });
 });
 
-describe("ELECTION_SCHEDULE.hiddenAt", () => {
-  it("投票日前日の23:59（日本時間）に非公開にする", () => {
-    expect(ELECTION_SCHEDULE.hiddenAt).toBe("2026-11-14T23:59:00+09:00");
+describe("isElectionPageHidden（期日未定）", () => {
+  it("hiddenAt が null なら、いつでも公開する", () => {
+    const now = new Date("2027-01-20T10:00:00+09:00");
+    expect(isElectionPageHidden(now, { hiddenAt: null })).toBe(false);
+  });
+});
+
+describe("ELECTION_SCHEDULE の日程", () => {
+  const { kokujiAt, voteClosesAt, hiddenAt } = ELECTION_SCHEDULE;
+
+  it("告示日・投票締切・非公開日時は、3つとも未定か3つとも決まっているかのどちらか", () => {
+    const decided = [kokujiAt, voteClosesAt, hiddenAt].map(
+      (value) => value !== null
+    );
+    expect(new Set(decided).size).toBe(1);
   });
 
-  it("投票締切より前に非公開になる", () => {
-    expect(new Date(ELECTION_SCHEDULE.hiddenAt).getTime()).toBeLessThan(
-      new Date(ELECTION_SCHEDULE.voteClosesAt).getTime()
-    );
+  it("投票日が決まっていれば、投票日前日の23:59（日本時間）に非公開にする", () => {
+    if (voteClosesAt === null || hiddenAt === null) {
+      return;
+    }
+    const voteDate = voteClosesAt.slice(0, 10);
+    const dayBefore = new Date(`${voteDate}T00:00:00+09:00`);
+    dayBefore.setTime(dayBefore.getTime() - 60 * 1000);
+    expect(new Date(hiddenAt).getTime()).toBe(dayBefore.getTime());
   });
 });
 
