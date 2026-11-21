@@ -7,6 +7,9 @@ node_modules
 # sample files
 docs/fukuoka/sample/
 
+# 会議録の全文テキスト（取り込み時の作業ファイル。本文はDBに入るのでコミットしない）
+docs/fukuoka/meeting-minutes/
+
 # env files
 .env
 .env.*
