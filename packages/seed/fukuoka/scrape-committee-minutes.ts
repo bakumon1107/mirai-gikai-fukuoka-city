@@ -252,7 +252,13 @@ async function main(): Promise<void> {
     if (!doc.date.startsWith(`${year}-`)) continue;
     const committee = committeeFromTitle(doc.title);
     if (!committee) {
-      // 本会議（定例会・臨時会）や対象外の会議はスキップ
+      // 本会議（定例会・臨時会）や対象外の会議はスキップ。
+      // 委員会なのにマスタに無いもの（改選後の新設特別委など）は取りこぼし防止のため警告する
+      if (doc.title.includes("委員会")) {
+        console.warn(
+          `委員会マスタ未登録のためスキップ: ${doc.date} ${doc.title} (DocumentID=${doc.documentId})`
+        );
+      }
       continue;
     }
     if (scrapedKeys.has(`${doc.date}|${committee.slug}`)) {
