@@ -23,7 +23,8 @@ function SpeechBubble({
   speech: CommitteeSpeech;
   detailMode: boolean;
 }) {
-  const body = detailMode ? speech.text : (speech.simpleText ?? speech.text);
+  const useSimple = !detailMode && Boolean(speech.simpleText);
+  const body = useSimple ? (speech.simpleText as string) : speech.text;
 
   // 開会時刻・傍聴・調査事項などの記録は中央のシステムメッセージとして表示する
   if (speech.speakerType === "note") {
@@ -38,10 +39,7 @@ function SpeechBubble({
   const badgeLabel = right ? "答弁" : "質疑・意見";
   const speakerLabel = right ? "執行部" : "委員";
   // わかりやすい表現は空行ごとに吹き出しを分ける（原文は1つの吹き出しのまま）
-  const paragraphs =
-    !detailMode && speech.simpleText
-      ? splitBubbleParagraphs(speech.simpleText)
-      : [body];
+  const paragraphs = useSimple ? splitBubbleParagraphs(body) : [body];
 
   return (
     <div className={`flex ${right ? "justify-end" : "justify-start"}`}>
@@ -62,11 +60,14 @@ function SpeechBubble({
           </span>
           <span className="font-bold text-mirai-text">{speakerLabel}</span>
         </div>
-        <div className={`flex flex-col gap-1.5 ${right ? "items-end" : ""}`}>
+        <div
+          className={`flex flex-col gap-1.5 ${right ? "items-end" : "items-start"}`}
+        >
           {paragraphs.map((paragraph, index) => (
             <div
-              // 同じ発言内で同一文の段落が並ぶことはないため本文をキーにする
-              key={paragraph}
+              // 同じ文の段落が重なっても衝突しないよう位置と本文でキーを作る
+              key={`${index}-${paragraph}`}
+              data-bubble=""
               className={`rounded-2xl px-4 py-3 text-left text-sm text-mirai-text-secondary leading-relaxed whitespace-pre-wrap border ${
                 right
                   ? `${index === 0 ? "rounded-tr-sm" : ""} bg-white border-mirai-border`

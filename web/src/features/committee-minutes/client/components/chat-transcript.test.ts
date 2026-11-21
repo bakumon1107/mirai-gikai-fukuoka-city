@@ -13,7 +13,7 @@ function render(speeches: CommitteeSpeech[]): string {
 }
 
 function countBubbles(html: string): number {
-  return html.match(/rounded-2xl px-4 py-3/g)?.length ?? 0;
+  return html.match(/data-bubble=""/g)?.length ?? 0;
 }
 
 describe("ChatTranscript", () => {
@@ -28,8 +28,8 @@ describe("ChatTranscript", () => {
       },
     ]);
     expect(countBubbles(html)).toBe(2);
-    expect(html).toContain("前半の段落です。</div>");
-    expect(html).toContain("後半の段落です。</div>");
+    expect(html).toContain("前半の段落です。");
+    expect(html).toContain("後半の段落です。");
     // 発言者の見出しは1つだけ
     expect(html.match(/質疑・意見/g)).toHaveLength(1);
   });

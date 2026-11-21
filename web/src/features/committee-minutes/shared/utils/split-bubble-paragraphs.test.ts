@@ -34,4 +34,14 @@ describe("splitBubbleParagraphs", () => {
   it("空文字はそのまま返す", () => {
     expect(splitBubbleParagraphs("")).toEqual([""]);
   });
+
+  it("空行だけの本文は空文字1つにする", () => {
+    expect(splitBubbleParagraphs(" \n \n")).toEqual([""]);
+  });
+
+  it("同じ段落が繰り返されてもそれぞれ残す", () => {
+    expect(splitBubbleParagraphs("以上です。\n\n本文。\n\n以上です。")).toEqual(
+      ["以上です。", "本文。", "以上です。"]
+    );
+  });
 });

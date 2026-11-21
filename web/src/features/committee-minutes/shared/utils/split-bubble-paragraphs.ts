@@ -8,5 +8,5 @@ export function splitBubbleParagraphs(text: string): string[] {
     .split(/\n[ \t　]*\n/)
     .map((paragraph) => paragraph.trim())
     .filter((paragraph) => paragraph.length > 0);
-  return paragraphs.length > 0 ? paragraphs : [text];
+  return paragraphs.length > 0 ? paragraphs : [text.trim()];
 }
