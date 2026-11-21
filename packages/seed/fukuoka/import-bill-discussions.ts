@@ -168,8 +168,10 @@ async function main() {
     return ids;
   }
 
-  // 途中で失敗して会期が半分だけ更新された状態にならないよう、
-  // 書き込む前に全レコードを組み立てて検証する
+  // 検証エラー（議案番号・行範囲・発言者の不一致）で途中まで書き込まないよう、
+  // 書き込む前に全レコードを組み立てて検証する。
+  // 書き込み自体はトランザクションではないため、通信エラー等で途中失敗した場合は
+  // 再実行すること（upsert / update なので同じ内容で上書きされ、整合した状態に戻る）
   const discussionRecords: { billNumber: string; record: DiscussionRecord }[] =
     [];
   const seenKeys = new Set<string>();
