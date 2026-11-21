@@ -165,6 +165,10 @@ export const CANDIDATE_UPDATES: Readonly<
       text: `${REHACQ_DEBATE}。再開発・観光の2分野が「未表明」から「表明済み」に`,
     },
     RERUN_INTENT,
+    {
+      date: "2026-11-21",
+      text: "公約に加わった「＋1」（サイバー攻撃からも市民を守る）を行政運営・DXに、公約紹介の南区の新駅を交通に反映",
+    },
   ],
   "abe-hideki": [
     { date: "2026-09-19", text: "掲載を開始" },
@@ -264,6 +268,10 @@ export const CANDIDATE_UPDATES: Readonly<
     { date: "2026-10-28", text: "政策集「ともにつくる、福岡」を反映" },
     { date: "2026-10-29", text: REHACQ_DEBATE },
     RERUN_INTENT,
+    {
+      date: "2026-11-21",
+      text: "本人サイトの「よくあるご質問」（11月7日）の回答を、外国人住民・外国人政策（外国人への参政権付与に反対）と財政規律（ワンヘルス事業）に反映",
+    },
   ],
 };
 
