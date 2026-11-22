@@ -211,6 +211,10 @@ pnpm install --frozen-lockfile
 # 環境変数の設定（ローカル開発ならほぼそのままで動きます）
 cp .env.example .env
 
+# 【最初の1回】supabase/config.toml の project_id を mirai-gikai-<地域> に変える
+# （同じ名前のままだと、同じ PC の別の mirai-gikai 系リポジトリとローカル DB を共有してしまう）
+# 詳しくは docs/20260304_1000_別地域向けfork手順.md セクション 1-5
+
 # Supabaseの起動（初回は Docker イメージの取得で数分かかります）
 npx supabase start
 
