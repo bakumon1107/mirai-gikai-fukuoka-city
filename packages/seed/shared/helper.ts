@@ -11,6 +11,13 @@ export function createAdminClient() {
 }
 
 const TABLES_TO_CLEAR = [
+  // 議事録ベースのアーカイブ（子テーブルから先に消す）
+  "press_conference_turns",
+  "press_conference_items",
+  "press_conferences",
+  "committee_meeting_topics",
+  "committee_meetings",
+  "general_questions",
   "interview_report",
   "interview_messages",
   "interview_sessions",

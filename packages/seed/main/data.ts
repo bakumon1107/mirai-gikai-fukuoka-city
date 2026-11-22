@@ -41,6 +41,13 @@ export const councilSessions: CouncilSessionInsert[] = [
     start_date: "2025-11-25",
     end_date: "2025-12-20",
     is_active: true,
+    // 会期の節目（トップの「会期の流れ」用）。議案採決日は閉会日と別の日になりうる
+    schedule_milestones: {
+      representativeQuestions: { from: "2025-12-01", to: "2025-12-01" },
+      generalQuestions: { from: "2025-12-02", to: "2025-12-04" },
+      standingCommittees: { from: "2025-12-05", to: "2025-12-09" },
+      billVote: "2025-12-19",
+    },
   },
   {
     name: "令和7年 第3回定例会",

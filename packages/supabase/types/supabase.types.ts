@@ -284,8 +284,131 @@ export type Database = {
           },
         ]
       }
+      committee_meeting_topics: {
+        Row: {
+          bill_id: string | null
+          created_at: string
+          discussion_summary: string | null
+          end_voice_no: number | null
+          id: string
+          meeting_id: string
+          speakers: Json
+          start_voice_no: number | null
+          summary: string | null
+          title: string
+          topic_order: number
+          updated_at: string
+        }
+        Insert: {
+          bill_id?: string | null
+          created_at?: string
+          discussion_summary?: string | null
+          end_voice_no?: number | null
+          id?: string
+          meeting_id: string
+          speakers?: Json
+          start_voice_no?: number | null
+          summary?: string | null
+          title: string
+          topic_order: number
+          updated_at?: string
+        }
+        Update: {
+          bill_id?: string | null
+          created_at?: string
+          discussion_summary?: string | null
+          end_voice_no?: number | null
+          id?: string
+          meeting_id?: string
+          speakers?: Json
+          start_voice_no?: number | null
+          summary?: string | null
+          title?: string
+          topic_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "committee_meeting_topics_bill_id_fkey"
+            columns: ["bill_id"]
+            isOneToOne: false
+            referencedRelation: "bills"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "committee_meeting_topics_meeting_id_fkey"
+            columns: ["meeting_id"]
+            isOneToOne: false
+            referencedRelation: "committee_meetings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      committee_meetings: {
+        Row: {
+          committee_id: string | null
+          committee_name: string
+          committee_slug: string
+          created_at: string
+          id: string
+          meeting_date: string
+          publish_status: string
+          raw_text: string
+          source_id: string | null
+          source_url: string | null
+          speech_count: number | null
+          speeches: Json
+          summary: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          committee_id?: string | null
+          committee_name: string
+          committee_slug: string
+          created_at?: string
+          id?: string
+          meeting_date: string
+          publish_status?: string
+          raw_text?: string
+          source_id?: string | null
+          source_url?: string | null
+          speech_count?: number | null
+          speeches?: Json
+          summary?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          committee_id?: string | null
+          committee_name?: string
+          committee_slug?: string
+          created_at?: string
+          id?: string
+          meeting_date?: string
+          publish_status?: string
+          raw_text?: string
+          source_id?: string | null
+          source_url?: string | null
+          speech_count?: number | null
+          speeches?: Json
+          summary?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "committee_meetings_committee_id_fkey"
+            columns: ["committee_id"]
+            isOneToOne: false
+            referencedRelation: "committees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       committees: {
         Row: {
+          committee_type: string
           created_at: string
           description: string | null
           id: string
@@ -295,6 +418,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          committee_type?: string
           created_at?: string
           description?: string | null
           id?: string
@@ -304,6 +428,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          committee_type?: string
           created_at?: string
           description?: string | null
           id?: string
@@ -322,6 +447,7 @@ export type Database = {
           id: string
           is_active: boolean
           name: string
+          schedule_milestones: Json | null
           slug: string | null
           start_date: string
           updated_at: string
@@ -333,6 +459,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           name: string
+          schedule_milestones?: Json | null
           slug?: string | null
           start_date: string
           updated_at?: string
@@ -344,6 +471,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           name?: string
+          schedule_milestones?: Json | null
           slug?: string | null
           start_date?: string
           updated_at?: string
@@ -460,6 +588,71 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      general_questions: {
+        Row: {
+          answer_raw_text: string | null
+          council_session_id: string
+          created_at: string
+          id: string
+          publish_status: string
+          question_order: number
+          question_type: string
+          questioner_name: string
+          questioner_number: number | null
+          questioner_party: string | null
+          raw_text: string | null
+          session_day: number
+          source_url: string | null
+          summary: string | null
+          topics: Json
+          updated_at: string
+        }
+        Insert: {
+          answer_raw_text?: string | null
+          council_session_id: string
+          created_at?: string
+          id?: string
+          publish_status?: string
+          question_order?: number
+          question_type?: string
+          questioner_name: string
+          questioner_number?: number | null
+          questioner_party?: string | null
+          raw_text?: string | null
+          session_day?: number
+          source_url?: string | null
+          summary?: string | null
+          topics?: Json
+          updated_at?: string
+        }
+        Update: {
+          answer_raw_text?: string | null
+          council_session_id?: string
+          created_at?: string
+          id?: string
+          publish_status?: string
+          question_order?: number
+          question_type?: string
+          questioner_name?: string
+          questioner_number?: number | null
+          questioner_party?: string | null
+          raw_text?: string | null
+          session_day?: number
+          source_url?: string | null
+          summary?: string | null
+          topics?: Json
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "general_questions_council_session_id_fkey"
+            columns: ["council_session_id"]
+            isOneToOne: false
+            referencedRelation: "council_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       interview_configs: {
         Row: {
@@ -737,6 +930,121 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      press_conference_items: {
+        Row: {
+          created_at: string
+          detail: string | null
+          id: string
+          item_type: string
+          material_url: string | null
+          order_index: number
+          press_conference_id: string
+          summary: string | null
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          detail?: string | null
+          id?: string
+          item_type: string
+          material_url?: string | null
+          order_index: number
+          press_conference_id: string
+          summary?: string | null
+          title: string
+        }
+        Update: {
+          created_at?: string
+          detail?: string | null
+          id?: string
+          item_type?: string
+          material_url?: string | null
+          order_index?: number
+          press_conference_id?: string
+          summary?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "press_conference_items_press_conference_id_fkey"
+            columns: ["press_conference_id"]
+            isOneToOne: false
+            referencedRelation: "press_conferences"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      press_conference_turns: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          order_index: number
+          press_conference_item_id: string
+          speaker: string
+          speaker_name: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          order_index: number
+          press_conference_item_id: string
+          speaker: string
+          speaker_name?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          order_index?: number
+          press_conference_item_id?: string
+          speaker?: string
+          speaker_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "press_conference_turns_press_conference_item_id_fkey"
+            columns: ["press_conference_item_id"]
+            isOneToOne: false
+            referencedRelation: "press_conference_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      press_conferences: {
+        Row: {
+          created_at: string
+          held_at: string
+          id: string
+          slug: string
+          status: string
+          title: string
+          updated_at: string
+          youtube_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          held_at: string
+          id?: string
+          slug: string
+          status?: string
+          title: string
+          updated_at?: string
+          youtube_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          held_at?: string
+          id?: string
+          slug?: string
+          status?: string
+          title?: string
+          updated_at?: string
+          youtube_url?: string | null
+        }
+        Relationships: []
       }
       preview_tokens: {
         Row: {

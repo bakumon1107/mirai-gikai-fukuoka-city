@@ -24,6 +24,14 @@ import {
 } from "./data";
 import { createBillContents } from "./bill-contents-data";
 import {
+  committeeMeetings,
+  createCommitteeMeetingTopics,
+  createGeneralQuestions,
+  createPressConferenceItems,
+  pressConferences,
+  withCommitteeIds,
+} from "./minutes-data";
+import {
   createShippingBillInterviewConfig,
   createShippingBillQuestions,
   createShippingBillSessions,
@@ -115,6 +123,13 @@ async function seedDatabase() {
     }
 
     console.log(`✅ Inserted ${insertedFactions.length} factions`);
+
+    // ===== 議事録ベースのアーカイブ（一般質問・委員会議事録・首長の記者会見） =====
+    const minutesCounts = await seedMinutesArchive(
+      supabase,
+      insertedCouncilSessions.map((s) => s.id),
+      insertedCommittees
+    );
 
     // Insert bills
     console.log("📄 Inserting bills...");
@@ -608,10 +623,108 @@ async function seedDatabase() {
     console.log(`  Interview Sessions: ${insertedSessionsCount}`);
     console.log(`  Interview Messages: ${insertedMessagesCount}`);
     console.log(`  Interview Reports: ${insertedReportsCount}`);
+    console.log(`  General Questions: ${minutesCounts.generalQuestions}`);
+    console.log(`  Committee Meetings: ${minutesCounts.committeeMeetings}`);
+    console.log(`  Committee Meeting Topics: ${minutesCounts.topics}`);
+    console.log(`  Press Conferences: ${minutesCounts.pressConferences}`);
+    console.log(
+      `  Press Conference Items / Turns: ${minutesCounts.items} / ${minutesCounts.turns}`
+    );
   } catch (error) {
     console.error("❌ Error seeding database:", error);
     process.exit(1);
   }
+}
+
+async function seedMinutesArchive(
+  supabase: ReturnType<typeof createAdminClient>,
+  councilSessionIds: string[],
+  insertedCommittees: { id: string; name: string }[]
+) {
+  console.log("🗣️  Inserting general questions...");
+  const { data: questions, error: questionsError } = await supabase
+    .from("general_questions")
+    .insert(createGeneralQuestions(councilSessionIds))
+    .select("id");
+  if (questionsError) {
+    throw new Error(
+      `Failed to insert general questions: ${questionsError.message}`
+    );
+  }
+
+  console.log("🏛️  Inserting committee meetings...");
+  const { data: meetings, error: meetingsError } = await supabase
+    .from("committee_meetings")
+    .insert(withCommitteeIds(committeeMeetings, insertedCommittees))
+    .select("id");
+  if (meetingsError || !meetings) {
+    throw new Error(
+      `Failed to insert committee meetings: ${meetingsError?.message}`
+    );
+  }
+
+  const { data: topics, error: topicsError } = await supabase
+    .from("committee_meeting_topics")
+    .insert(createCommitteeMeetingTopics(meetings.map((m) => m.id)))
+    .select("id");
+  if (topicsError) {
+    throw new Error(
+      `Failed to insert committee meeting topics: ${topicsError.message}`
+    );
+  }
+
+  console.log("🎤 Inserting press conferences...");
+  const { data: conferences, error: conferencesError } = await supabase
+    .from("press_conferences")
+    .insert(pressConferences)
+    .select("id");
+  if (conferencesError || !conferences) {
+    throw new Error(
+      `Failed to insert press conferences: ${conferencesError?.message}`
+    );
+  }
+
+  let itemCount = 0;
+  let turnCount = 0;
+  for (const { pressConferenceId, items } of createPressConferenceItems(
+    conferences.map((c) => c.id)
+  )) {
+    for (const { turns, ...item } of items) {
+      const { data: insertedItem, error: itemError } = await supabase
+        .from("press_conference_items")
+        .insert({ ...item, press_conference_id: pressConferenceId })
+        .select("id")
+        .single();
+      if (itemError || !insertedItem) {
+        throw new Error(
+          `Failed to insert press conference item: ${itemError?.message}`
+        );
+      }
+      itemCount++;
+
+      const { error: turnsError } = await supabase
+        .from("press_conference_turns")
+        .insert(
+          turns.map((t) => ({ ...t, press_conference_item_id: insertedItem.id }))
+        );
+      if (turnsError) {
+        throw new Error(
+          `Failed to insert press conference turns: ${turnsError.message}`
+        );
+      }
+      turnCount += turns.length;
+    }
+  }
+
+  console.log("✅ Inserted minutes archive data");
+  return {
+    generalQuestions: questions?.length ?? 0,
+    committeeMeetings: meetings.length,
+    topics: topics?.length ?? 0,
+    pressConferences: conferences.length,
+    items: itemCount,
+    turns: turnCount,
+  };
 }
 
 // Run the seed function
