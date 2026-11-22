@@ -70,6 +70,12 @@ gh pr create --base base-local/develop ...
 ### 並列PR作成
 複数の独立したPRを作成する場合は `/parallel-pr` スキルを使用すること。
 
+### Dependabot の PR の対応
+「Dependabot の PR を対応して」「脆弱性の PR が来てる」「依存関係を更新して」等と依頼されたら、`dependabot-triage` スキル（[.claude/skills/dependabot-triage/SKILL.md](.claude/skills/dependabot-triage/SKILL.md)）を Step 1 から順に実行すること。スキル一覧に出ない場合は SKILL.md を読んでそのまま実行する。
+- マージ・close は、PR ごとの扱いを一覧で提示して承認を得てから行う。「実装完了後は即PR作成」のルールは、Dependabot の PR のマージには適用しない。
+- Dependabot のブランチには push しない（上げ直しは別ブランチで行う）。
+- 人向けの手順書は [依存関係の脆弱性対応手順](docs/20261122_1000_依存関係の脆弱性対応手順.md)。
+
 ### Linearタスクのステータス管理
 Linear issue ID（例: `MIR-123`）を含むタスクを依頼された場合、以下のタイミングで `/linear` スキルを実行すること：
 - **作業着手時**: `/linear start <issue-id>` でステータスを `In Progress` に更新

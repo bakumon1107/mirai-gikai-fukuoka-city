@@ -1,0 +1,40 @@
+# Dependabot の設定
+#
+# 脆弱性の修正（security updates）だけを受け取り、通常のバージョン更新の PR は出さない設定です。
+# 手順と届いた PR の扱い方は docs/20261122_1000_依存関係の脆弱性対応手順.md を参照してください。
+#
+# - この設定は GitHub の「既定ブランチ」にあるものだけが読まれます。
+#   fork した地域版では、既定ブランチを <地域>/develop に変えた後に有効になります。
+# - 脆弱性の PR は、リポジトリ設定（Settings → Code security）で
+#   Dependabot alerts と Dependabot security updates を有効にしないと届きません。
+version: 2
+updates:
+  # pnpm ワークスペース（ルートの pnpm-lock.yaml が web・admin・packages をまとめて管理）
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    # 0 にすると通常のバージョン更新の PR を出さず、脆弱性の修正だけが届く
+    open-pull-requests-limit: 0
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      # 同時に見つかった脆弱性の修正を 1 本の PR にまとめる
+      security:
+        applies-to: security-updates
+        patterns:
+          - "*"
+
+  # GitHub Actions（ワークフローは pinact で SHA 固定。脆弱性のあるアクションの修正だけ受け取る）
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 0
+    commit-message:
+      prefix: "chore(actions)"
+    groups:
+      security:
+        applies-to: security-updates
+        patterns:
+          - "*"

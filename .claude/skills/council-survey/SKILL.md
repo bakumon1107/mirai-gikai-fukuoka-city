@@ -282,7 +282,7 @@ AI解説のソースになりうる資料が複数見つかることがある
 
 ユーザーが着手を決めたら、アプリの改修より先に
 [fork手順 セクション4](../../../docs/20260304_1000_別地域向けfork手順.md#4-自地域のブランチへ切り替える)
-を **4-0 → 4-1 → 4-2 → 4-7 → 4-3 の順に**実行する。
+を **4-0 → 4-1 → 4-2 → 4-7 → 4-3 → 4-8 の順に**実行する。
 調査だけで終わる場合（着手しない・保留）はこの Step は行わない。
 
 1. **4-0 前提の確認。** `gh repo set-default --view` が作業中の fork を指しているか確認する。
@@ -320,6 +320,10 @@ AI解説のソースになりうる資料が複数見つかることがある
    AGENTS.md の worktree の置き場所（`../mirai-gikai-local-worktree/`）は置き換え前の値をそのまま使ってよい
 5. Actions が fork で無効のままの場合は API では確実に有効化できないため、
    ユーザーに **Actions タブで有効化する**よう伝える
+6. **4-8 Dependabot の有効化。** 既定ブランチを変えた後に、Dependabot alerts と security updates を有効にする
+   （`gh api -X PUT repos/<owner>/<repo>/vulnerability-alerts` と `.../automated-security-fixes`）。
+   権限が無く失敗した場合は、Settings → Code security で有効にするようユーザーに伝える。
+   既存の別用途の fork（4-0 で判定）の場合は、設定を変えてよいかユーザーに確認してから行う
 
 ---
 
