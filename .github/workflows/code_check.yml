@@ -34,6 +34,15 @@ jobs:
       - name: Run TypeScript type checking
         run: pnpm run typecheck
 
+      # DB には接続できないため、ビルド中のデータ取得は失敗ログを出して空のまま進む（ビルドが通るかだけを見る）
+      - name: Run build
+        run: pnpm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: http://localhost:54321
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: dummy-anon-key-for-build-check
+          SUPABASE_URL: http://localhost:54321
+          SUPABASE_SERVICE_ROLE_KEY: dummy-service-role-key-for-build-check
+
       - name: Run Test with Coverage
         run: pnpm run test:coverage
 
