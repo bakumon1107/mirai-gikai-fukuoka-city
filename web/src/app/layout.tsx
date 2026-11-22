@@ -1,23 +1,22 @@
+// フォントは npm パッケージ（@fontsource、SIL Open Font License 1.1）から同梱する。
+// next/font/google はビルド中に Google Fonts から取得するため、取得に失敗するとビルドが止まる
+// （Noto Sans JP は文字の範囲ごとに100以上のファイルに分かれていて、失敗しやすい）。
+// CSS 変数 --font-noto-sans-jp / --font-lexend-giga は globals.css の :root で定義している。
+import "@fontsource/noto-sans-jp/400.css";
+import "@fontsource/noto-sans-jp/500.css";
+import "@fontsource/noto-sans-jp/700.css";
+import "@fontsource/lexend-giga/400.css";
+import "@fontsource/lexend-giga/500.css";
+import "@fontsource/lexend-giga/700.css";
+import "@fontsource/lexend-giga/800.css";
+import "@fontsource/lexend-giga/900.css";
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
-import { Lexend_Giga, Noto_Sans_JP } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
 import { brandColors } from "@/config/brand";
 import { siteConfig } from "@/config/site.config";
 import type { ReactNode } from "react";
 import { env } from "@/lib/env";
-
-const notoSansJP = Noto_Sans_JP({
-  variable: "--font-noto-sans-jp",
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-});
-
-const lexendGiga = Lexend_Giga({
-  variable: "--font-lexend-giga",
-  subsets: ["latin"],
-  weight: ["400", "500", "700", "800", "900"],
-});
 
 const isDev = process.env.NODE_ENV === "development";
 const ogImage = {
@@ -79,9 +78,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <body
-        className={`${notoSansJP.variable} ${lexendGiga.variable} font-sans antialiased bg-mirai-surface-light`}
-      >
+      <body className="font-sans antialiased bg-mirai-surface-light">
         <NextTopLoader showSpinner={false} color={brandColors.primary} />
         {children}
       </body>

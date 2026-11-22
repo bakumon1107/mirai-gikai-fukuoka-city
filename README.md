@@ -263,3 +263,15 @@ WHERE email = '<1で作成したユーザーのemail>';
 
 [AGPL-3.0](LICENSE)。fork 版をネットワーク経由で提供する場合は、改変後のソースコードを
 利用者が入手できる状態にする義務があります（第13条）。詳細は [FORK_GUIDELINES.md](FORK_GUIDELINES.md) を参照してください。
+
+### 同梱しているフォント
+
+フォントは npm パッケージとして同梱し、サイトから配信しています（ビルド中に Google Fonts から取得しません）。
+いずれも [SIL Open Font License 1.1](https://openfontlicense.org/) で、コード（AGPL-3.0）とは別に OFL が適用されます。
+著作権表示とライセンス文は、各パッケージの `LICENSE` に含まれています。フォントは改変せずに使っています。
+
+| フォント | 使う場所 | パッケージ | ライセンス |
+|---|---|---|---|
+| Noto Sans JP | web（本文） | [`@fontsource/noto-sans-jp`](https://www.npmjs.com/package/@fontsource/noto-sans-jp) | OFL 1.1 |
+| Lexend Giga | web（見出しの英字） | [`@fontsource/lexend-giga`](https://www.npmjs.com/package/@fontsource/lexend-giga) | OFL 1.1 |
+| Geist / Geist Mono | admin | [`geist`](https://www.npmjs.com/package/geist) | OFL 1.1 |

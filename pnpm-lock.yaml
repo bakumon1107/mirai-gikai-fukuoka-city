@@ -109,6 +109,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      geist:
+        specifier: ^1.9.2
+        version: 1.9.2(next@15.5.29(@opentelemetry/api@1.10.0)(@types/node@24.19.2)(react-dom@19.1.10(react@19.1.10))(react@19.1.10))
       langfuse-vercel:
         specifier: ^3.38.5
         version: 3.39.2(ai@6.0.312(zod@4.6.7))
@@ -232,6 +235,12 @@ importers:
       '@ai-sdk/react':
         specifier: ^3.0.315
         version: 3.0.315(react@19.1.10)(zod@4.6.7)
+      '@fontsource/lexend-giga':
+        specifier: ^5.3.0
+        version: 5.3.0
+      '@fontsource/noto-sans-jp':
+        specifier: ^5.3.1
+        version: 5.3.1
       '@mirai-gikai/shared':
         specifier: workspace:*
         version: link:../packages/shared
@@ -960,6 +969,12 @@ packages:
 
   '@floating-ui/utils@0.2.12':
     resolution: {integrity: sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww==}
+
+  '@fontsource/lexend-giga@5.3.0':
+    resolution: {integrity: sha512-MAvhajRbnhVYwZaxBu7dbVI11xFFPCcdKOzi5ey0YmUTrjCU5eTtBgiK+kmHisQ7kr1BtBacPTZYtOVznO5ogA==}
+
+  '@fontsource/noto-sans-jp@5.3.1':
+    resolution: {integrity: sha512-9NNBB/M9PextLYVXGSfIaLZsPnrt5UDw8g2B6T0M775H2yb/oekApSjuS1XKOP7FPcMMEnTavR5rJGDM66qKtA==}
 
   '@google/genai@1.47.0':
     resolution: {integrity: sha512-0VV7AaXm5rQu3oRHNZNEubRAOL2lv5u+YA72eWnDwcOx3B1jFRbvtgL4drRHlocRHOnludvr3xmbQGbR+/RQAQ==}
@@ -3245,6 +3260,11 @@ packages:
     resolution: {integrity: sha512-zV/5HKTfCeKWnxG0Dmrw51hEWFGfcF2xiXqcA3+J90WDuP0SvoiSO5ORvcBsifmx/FoIjgQN3oNOGaQ5PhLFkg==}
     engines: {node: '>=18'}
 
+  geist@1.9.2:
+    resolution: {integrity: sha512-UU1x2q5Khob0+i4csFvXk1Ki4DePdu7xISuXyEcj1tzQMg64oN7Kbuy4e5z5QhcUWbbvOMJNs3ZxYQqpsEMV3w==}
+    peerDependencies:
+      next: '>=13.2.0'
+
   get-caller-file@2.0.5:
     resolution: {integrity: sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg==}
     engines: {node: 6.* || 8.* || >= 10.*}
@@ -5019,6 +5039,10 @@ snapshots:
       react-dom: 19.1.10(react@19.1.10)
 
   '@floating-ui/utils@0.2.12': {}
+
+  '@fontsource/lexend-giga@5.3.0': {}
+
+  '@fontsource/noto-sans-jp@5.3.1': {}
 
   '@google/genai@1.47.0':
     dependencies:
@@ -7260,6 +7284,10 @@ snapshots:
       json-bigint: 1.0.0
     transitivePeerDependencies:
       - supports-color
+
+  geist@1.9.2(next@15.5.29(@opentelemetry/api@1.10.0)(@types/node@24.19.2)(react-dom@19.1.10(react@19.1.10))(react@19.1.10)):
+    dependencies:
+      next: 15.5.29(@opentelemetry/api@1.10.0)(@types/node@24.19.2)(react-dom@19.1.10(react@19.1.10))(react@19.1.10)
 
   get-caller-file@2.0.5: {}
 
