@@ -8,12 +8,9 @@ export default defineConfig({
     include: ["src/**/*.integration.test.ts"],
     setupFiles: [path.resolve(__dirname, "vitest.integration.setup.ts")],
     // テスト間のデータ干渉を防ぐためシーケンシャル実行
+    // （Vitest 4 で poolOptions.forks.singleFork は maxWorkers: 1 に置き換わった）
     pool: "forks",
-    poolOptions: {
-      forks: {
-        singleFork: true,
-      },
-    },
+    maxWorkers: 1,
     testTimeout: 30000,
     coverage: {
       provider: "v8",
