@@ -118,3 +118,11 @@ git show origin/base-local/develop:pnpm-lock.yaml | grep -n "^  <名前>@" | hea
 
 PR ごとに、行ったこと（マージ／close／作り直し依頼／上げ直し PR の番号／保留）と、
 残っている alerts（Step 1 の一覧で修正が入っていないもの）をまとめて報告する。
+
+マージ直後は Dependabot が依存関係を読み直すまで alerts が開いたままに見えることがある。
+直ったかどうかは alerts の一覧ではなく、**既定ブランチの lockfile の版**が alerts の修正版以上になっているかで判断し、
+「alerts は読み直し後に自動で閉じる見込み」と書き分ける。
+
+```bash
+git fetch origin && git show origin/<既定ブランチ>:pnpm-lock.yaml | grep -E "^  <名前>@[0-9]"
+```
