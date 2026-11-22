@@ -54,6 +54,9 @@ gh api "repos/<owner>/<repo>/dependabot/alerts?state=open&per_page=100" \
 
 補足:
 
+- **B が届いていたら、古い lockfile の残骸を疑う。** `git ls-files | grep -E "(^|/)(pnpm-lock\.yaml|package-lock\.json|yarn\.lock)$"` で
+  ルート以外に lockfile があれば、それが B と、すでに直っている脆弱性の alerts の原因。Step 4 の一覧に「残骸の削除」を提案として加える
+  （削除はデプロイ先のビルドに影響しうるので、本番がある地域版ではビルドの確認方法も添える）
 - CI が「実行されていない」場合（fork で Actions が無効など）は、A/E でも Step 3 の手元確認を必須にする
 - 同じライブラリで A が複数あるときは、新しい版の1本だけを残し、残りは重複として close を提案する
 
