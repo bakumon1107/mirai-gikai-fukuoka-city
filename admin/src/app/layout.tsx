@@ -1,20 +1,17 @@
+// フォントは Vercel 公式の geist パッケージ（SIL Open Font License 1.1）から同梱する。
+// next/font/google はビルド中に Google Fonts から取得するため、取得に失敗するとビルドが止まる。
+// CSS 変数名（--font-geist-sans / --font-geist-mono）は next/font/google のときと同じ。
+import { GeistMono } from "geist/font/mono";
+import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
 import type { ReactNode } from "react";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { siteConfig } from "@/config/site.config";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const geistSans = GeistSans;
+const geistMono = GeistMono;
 
 const isDev = process.env.NODE_ENV === "development";
 

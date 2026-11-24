@@ -115,6 +115,9 @@
 }
 
 :root {
+  /* フォント（layout.tsx で @fontsource から読み込み。名前は各パッケージの font-family） */
+  --font-noto-sans-jp: "Noto Sans JP", system-ui, sans-serif;
+  --font-lexend-giga: "Lexend Giga", system-ui, sans-serif;
   --radius: 0.625rem;
   --background: #f7f4ee;
   --foreground: oklch(0.145 0 0);
