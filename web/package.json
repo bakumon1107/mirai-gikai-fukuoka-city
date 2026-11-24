@@ -20,6 +20,8 @@
   "dependencies": {
     "@ai-sdk/openai": "^3.0.131",
     "@ai-sdk/react": "^3.0.315",
+    "@fontsource/lexend-giga": "^5.3.0",
+    "@fontsource/noto-sans-jp": "^5.3.1",
     "@mirai-gikai/shared": "workspace:*",
     "@mirai-gikai/supabase": "workspace:*",
     "@opentelemetry/sdk-node": "^0.301.2",
