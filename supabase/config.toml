@@ -2,7 +2,13 @@
 # https://supabase.com/docs/guides/local-development/cli/config
 # A string used to distinguish different Supabase projects on the same host. Defaults to the
 # working directory name when running `supabase init`.
-project_id = "mirai-gikai"
+#
+# 【fork 時に必ず変更】ローカル DB（Docker のボリューム）はこの名前ごとに分かれる。
+# 別の mirai-gikai 系リポジトリと同じ名前のままだと、同じ PC 上で DB を共有してしまい、
+# 片方で `pnpm db:reset` するともう片方のデータも消える。
+# 「mirai-gikai-<地域>」（例: mirai-gikai-shibuya）に変えること。
+# 手順: docs/20260304_1000_別地域向けfork手順.md セクション 1-5
+project_id = "mirai-gikai-base-local"
 
 [api]
 enabled = true
