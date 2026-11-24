@@ -367,7 +367,8 @@ Step 5.5 で着手の承認が得られたら、アプリの改修より先に
 
    一覧を**ユーザーに提示し、承認を得てから**削除する。削除は元に戻せない。
    既定ブランチを変える前に削除しない
-4. **4-3 参照の置き換え。** `base-local/develop`・`../mirai-gikai-local-worktree/`・`.github/CODEOWNERS` を
+4. **4-3 参照の置き換え。** `base-local/develop`・`../mirai-gikai-local-worktree/`・`.github/CODEOWNERS`・
+   `supabase/config.toml` の `project_id`（→ `mirai-gikai-<地域>`。fork手順 1-5）を
    自地域向けに置き換え、PR で `<地域>/develop` に入れる。
    この PR に限り、AGENTS.md の「ベースブランチは必ず `base-local/develop`」より
    この手順を優先する（その記述自体をこの PR で置き換えるため）。

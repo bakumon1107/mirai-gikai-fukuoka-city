@@ -49,7 +49,14 @@
       "web/src/**/*",
       "admin/src/**/*",
       "tests/**/*",
+      "packages/supabase/types/**/*",
       "!.claude/worktrees"
     ]
-  }
+  },
+  "overrides": [
+    {
+      "includes": ["packages/supabase/types/**/*"],
+      "linter": { "enabled": false }
+    }
+  ]
 }
