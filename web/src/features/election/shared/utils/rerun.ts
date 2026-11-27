@@ -15,6 +15,16 @@ export function filterRerunCandidates<
 }
 
 /**
+ * 出馬の意向をどう書くか。本人が自分のサイト等で表明していれば「示されています」、
+ * 報道だけが出典なら「報じられています」（本人が表明したようには書かない）。
+ */
+export function describeRerunIntent(rerun: CandidateRerun): string {
+  return rerun.source.startsWith("本人")
+    ? "再選挙への出馬の意向が示されています"
+    : "再選挙への出馬の意向が報じられています";
+}
+
+/**
  * 日付と出典を並べる。日付は報道の日付のこともあるため、「○日に表明」とは書かない。
  * → "11月18日・TNCテレビ西日本" / "11月21日・本人サイト"
  */

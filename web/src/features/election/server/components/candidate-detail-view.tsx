@@ -45,6 +45,7 @@ import {
   formatInterviewLinkLabel,
 } from "../../shared/utils/interviews";
 import { formatMonthDayJa } from "../../shared/utils/month-day";
+import { describeRerunIntent } from "../../shared/utils/rerun";
 
 type Props = {
   candidate: Candidate;
@@ -102,7 +103,7 @@ export function CandidateDetailView({ candidate, phase, tab }: Props) {
         </div>
         {candidate.rerun ? (
           <p className="mt-2.5 text-[11.5px] leading-[1.7] text-mirai-text-subtle">
-            再選挙への出馬の意向が示されています（
+            {describeRerunIntent(candidate.rerun)}（
             {formatMonthDayJa(candidate.rerun.date)}・
             <a
               href={candidate.rerun.url}

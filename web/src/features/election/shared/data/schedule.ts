@@ -12,7 +12,8 @@ import type { ElectionSchedule } from "../types";
  *
  * 出典: 報道（TNCテレビ西日本、2026年11月18日・11月27日）
  * https://news.tnc.co.jp/news/articles/NID2026111832908
- * https://news.yahoo.co.jp/articles/67f12276583261f5ac5cdfce04428b45cadda9a3
+ * https://news.tnc.co.jp/news/articles/NID2026112733033
+ * （11/27の記事にも「1月3日告示、17日投開票が有力視されていた」とあるため、表示の出典はこちらにする）
  *
  * 市選管が期日を告示したら、次を埋めること。
  * - kokujiAt / voteClosesAt / kokujiLabel / voteDateLabel
@@ -46,7 +47,6 @@ export const ELECTION_SCHEDULE: ElectionSchedule = {
   earlyVotingPlaces: [],
   earlyVotingNote: "",
   sourceLabel: "報道（TNCテレビ西日本）",
-  sourceUrl:
-    "https://news.yahoo.co.jp/articles/67f12276583261f5ac5cdfce04428b45cadda9a3",
+  sourceUrl: "https://news.tnc.co.jp/news/articles/NID2026112733033",
   hiddenAt: null,
 };

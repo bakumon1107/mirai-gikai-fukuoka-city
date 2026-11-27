@@ -26,15 +26,18 @@ const RERUN_INATOMI_SITE = {
   url: "https://inatomi.jp/news/3456",
 };
 
-/** 再選挙に出馬しない意向を表明した人。日付は本人が表明した日 */
+/**
+ * 再選挙に出馬しない意向を表明した人。日付は本人が表明した日（記事の配信日とは限らない）。
+ * 出典は放送局自身のサイトの記事にする（転載先のポータルは記事が早く消えるため）。
+ */
 const RERUN_DECLINED_SASAKI = {
   date: "2026-11-24",
-  source: "KBC九州朝日放送",
-  url: "https://news.yahoo.co.jp/articles/64423ffa0b091fb1ad6f6a859ae134f8a22cf810",
+  source: "TNCテレビ西日本",
+  url: "https://news.tnc.co.jp/news/articles/NID2026112432971",
 };
-/** 吉富氏は自身のXで、井上氏はコメントで表明した（同じTNCの記事で報じられた） */
+/** 吉富氏は11/26に自身のXで、井上氏は11/27にコメントで表明した（同じTNCの記事で報じられた） */
 const RERUN_DECLINED_TNC_1127 =
-  "https://news.yahoo.co.jp/articles/67f12276583261f5ac5cdfce04428b45cadda9a3";
+  "https://news.tnc.co.jp/news/articles/NID2026112733033";
 const RERUN_DECLINED_YOSHITOMI = {
   date: "2026-11-26",
   source: "TNCテレビ西日本",
