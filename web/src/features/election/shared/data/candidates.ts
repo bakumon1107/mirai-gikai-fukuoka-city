@@ -43,6 +43,16 @@ const RERUN_DECLINED_YOSHITOMI = {
   source: "TNCテレビ西日本",
   url: RERUN_DECLINED_TNC_1127,
 };
+/**
+ * 荒牧氏・西脇氏・片山氏は、共同通信（11/21）が関係者への取材で不出馬を報じた。
+ * 本人の表明日が記事に書かれていないため、日付は記事の配信日にする。
+ * 片山氏は擁立した市民団体が見送りを発表したとも報じられている（読売新聞・西日本新聞）
+ */
+const RERUN_DECLINED_KYODO_1121 = {
+  date: "2026-11-21",
+  source: "共同通信（東京新聞）",
+  url: "https://www.tokyo-np.co.jp/article/529853",
+};
 const RERUN_DECLINED_INOUE = {
   date: "2026-11-27",
   source: "TNCテレビ西日本",
@@ -975,6 +985,7 @@ export const CANDIDATES: Candidate[] = [
   {
     id: "nishiwaki-hiroki",
     no: "02",
+    rerunDeclined: RERUN_DECLINED_KYODO_1121,
     name: "西脇 ひろき",
     kana: "にしわき ひろき",
     // 出典（選挙ドットコムのプロフィール欄）の表記に合わせた年齢。
@@ -1486,6 +1497,7 @@ export const CANDIDATES: Candidate[] = [
   {
     id: "aramaki-akira",
     no: "03",
+    rerunDeclined: RERUN_DECLINED_KYODO_1121,
     name: "荒牧 明楽",
     kana: "あらまき あきら",
     // 出馬表明会見の報道（KBC・TNC）が41歳としており、本人サイトの
@@ -5949,6 +5961,7 @@ export const CANDIDATES: Candidate[] = [
   {
     id: "katayama-sumiko",
     no: "12",
+    rerunDeclined: RERUN_DECLINED_KYODO_1121,
     name: "片山 純子",
     kana: "かたやま すみこ",
     age: 69,

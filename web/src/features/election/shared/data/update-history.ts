@@ -34,7 +34,7 @@ const RERUN_INTENT: UpdateEntry = {
 };
 
 /**
- * 2026年11月27日、再選挙に出馬しない意向の表明を載せた（佐々木氏・吉富氏）。
+ * 2026年11月27日、再選挙に出馬しない意向の表明を載せた（西脇氏・荒牧氏・佐々木氏・片山氏・吉富氏）。
  * 井上氏は再選挙の一覧から外した点も書くため、同じ日の行を個別に書いている
  */
 const RERUN_DECLINED: UpdateEntry = {
@@ -82,6 +82,7 @@ export const CANDIDATE_UPDATES: Readonly<
       text: "本人ブログの記事（想定Q&A、外国人・治安、交通渋滞、再選挙）を反映",
     },
     { date: "2026-10-29", text: REHACQ_DEBATE },
+    RERUN_DECLINED,
   ],
   "aramaki-akira": [
     { date: "2026-08-28", text: "掲載を開始" },
@@ -106,6 +107,7 @@ export const CANDIDATE_UPDATES: Readonly<
       date: "2026-10-29",
       text: `${REHACQ_DEBATE}。副首都の分野が「未表明」から「表明済み」に`,
     },
+    RERUN_DECLINED,
   ],
   "niimura-masaru": [
     { date: "2026-09-04", text: "掲載を開始" },
@@ -258,6 +260,7 @@ export const CANDIDATE_UPDATES: Readonly<
       text: "政策集の政策7「人権を守る」の記述（外国籍住民、特別永住者の地方参政権など）を反映",
     },
     { date: "2026-10-29", text: REHACQ_DEBATE },
+    RERUN_DECLINED,
   ],
   "yoshitomi-keiko": [
     { date: "2026-09-30", text: "掲載を開始" },
