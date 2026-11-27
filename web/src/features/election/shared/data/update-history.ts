@@ -24,10 +24,22 @@ const ISSUES_EXPANDED: UpdateEntry = {
 const REHACQ_DEBATE =
   "ReHacQ九州のネット討論会（10月28日）での発言を、高島市政への評価と各分野に反映";
 
-/** 2026年11月20日、再選挙への出馬の意向（報道）を載せた。意向が報じられた5人の欄に書く */
+/**
+ * 2026年11月20日、再選挙への出馬の意向（報道）を載せた。このとき意向が報じられた5人の欄に書いた
+ * （うち井上氏はその後不出馬を表明したため、井上氏の欄にはその旨の行を個別に足している）
+ */
 const RERUN_INTENT: UpdateEntry = {
   date: "2026-11-20",
   text: "再選挙への出馬の意向が報じられたことを追加",
+};
+
+/**
+ * 2026年11月27日、再選挙に出馬しない意向の表明を載せた（西脇氏・荒牧氏・佐々木氏・片山氏・吉富氏）。
+ * 井上氏は再選挙の一覧から外した点も書くため、同じ日の行を個別に書いている
+ */
+const RERUN_DECLINED: UpdateEntry = {
+  date: "2026-11-27",
+  text: "再選挙には出馬しない意向を表明したことを追加",
 };
 
 /** キーは Candidate.id */
@@ -70,6 +82,7 @@ export const CANDIDATE_UPDATES: Readonly<
       text: "本人ブログの記事（想定Q&A、外国人・治安、交通渋滞、再選挙）を反映",
     },
     { date: "2026-10-29", text: REHACQ_DEBATE },
+    RERUN_DECLINED,
   ],
   "aramaki-akira": [
     { date: "2026-08-28", text: "掲載を開始" },
@@ -94,6 +107,7 @@ export const CANDIDATE_UPDATES: Readonly<
       date: "2026-10-29",
       text: `${REHACQ_DEBATE}。副首都の分野が「未表明」から「表明済み」に`,
     },
+    RERUN_DECLINED,
   ],
   "niimura-masaru": [
     { date: "2026-09-04", text: "掲載を開始" },
@@ -142,6 +156,10 @@ export const CANDIDATE_UPDATES: Readonly<
       text: `${REHACQ_DEBATE}。外国人住民・外国人政策の分野が「未表明」から「表明済み」に`,
     },
     RERUN_INTENT,
+    {
+      date: "2026-11-27",
+      text: "再選挙には出馬しない意向を表明したことを追加（再選挙の一覧からは外した）",
+    },
   ],
   "mori-kentaro": [
     { date: "2026-09-19", text: "掲載を開始" },
@@ -216,6 +234,7 @@ export const CANDIDATE_UPDATES: Readonly<
       text: "政策発表の記者会見での副首都・外国人住民についての発言を反映",
     },
     { date: "2026-10-29", text: REHACQ_DEBATE },
+    RERUN_DECLINED,
   ],
   "jinno-genki": [
     { date: "2026-09-27", text: "掲載を開始" },
@@ -241,6 +260,7 @@ export const CANDIDATE_UPDATES: Readonly<
       text: "政策集の政策7「人権を守る」の記述（外国籍住民、特別永住者の地方参政権など）を反映",
     },
     { date: "2026-10-29", text: REHACQ_DEBATE },
+    RERUN_DECLINED,
   ],
   "yoshitomi-keiko": [
     { date: "2026-09-30", text: "掲載を開始" },
@@ -257,6 +277,7 @@ export const CANDIDATE_UPDATES: Readonly<
       date: "2026-10-28",
       text: "出馬表明の記者会見での発言（政策協定、国家戦略特区）を反映",
     },
+    RERUN_DECLINED,
   ],
   "inatomi-shuji": [
     { date: "2026-10-16", text: "掲載を開始" },
@@ -271,6 +292,10 @@ export const CANDIDATE_UPDATES: Readonly<
     {
       date: "2026-11-21",
       text: "本人サイトの「よくあるご質問」（11月7日）の回答を、外国人住民・外国人政策（外国人への参政権付与に反対）と財政規律（ワンヘルス事業）に反映",
+    },
+    {
+      date: "2026-11-27",
+      text: "再選挙への出馬の意向の出典を、本人サイトの表明（11月21日）に差し替えた",
     },
   ],
 };

@@ -186,12 +186,17 @@ export type Candidate = {
    * 特設トップ・争点の比較に並べるのはこれを持つ人だけ。
    */
   rerun?: CandidateRerun;
+  /**
+   * 再選挙に出馬しない意向を表明した場合のみ持つ。個人ページにその旨を出典つきで出す。
+   * 表明していない人には「出ない」と書かない（rerun も rerunDeclined も持たない）
+   */
+  rerunDeclined?: CandidateRerun;
 };
 
 export type CandidateRerun = {
-  /** 意向を確認した日（報道の日付）。"YYYY-MM-DD" 形式 */
+  /** 意向を確認した日（報道の日付、または本人が表明した日）。"YYYY-MM-DD" 形式 */
   date: string;
-  /** 報じた媒体の名前（例: 「TNCテレビ西日本」） */
+  /** 出典の名前（例: 「TNCテレビ西日本」「本人サイト」） */
   source: string;
   url: string;
 };

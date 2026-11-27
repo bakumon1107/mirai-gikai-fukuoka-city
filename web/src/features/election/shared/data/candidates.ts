@@ -5,9 +5,9 @@ import { filterActiveCandidates } from "../utils/withdrawal";
 
 /**
  * 再選挙への出馬の意向（11月15日の選挙で法定得票数に届いた人がおらず、再選挙になった）。
- * 日付は意向を報じた記事の日付。本人の会見日ではない。
+ * 日付は意向を報じた記事の日付（本人サイトで表明していればその日付）。
  * TNC（11/18）は稲富・新村・森・神野の4氏、データ・マックス（11/19）はこれに井上氏を加えた5氏、
- * KBC（11/18）は「稲富さんを含め5人」と報じている。
+ * KBC（11/18）は「稲富さんを含め5人」と報じた。井上氏はその後、11/27に不出馬を表明した。
  */
 const RERUN_NIKKEI = {
   date: "2026-11-16",
@@ -19,10 +19,44 @@ const RERUN_TNC = {
   source: "TNCテレビ西日本",
   url: "https://news.tnc.co.jp/news/articles/NID2026111832908",
 };
-const RERUN_DATA_MAX = {
-  date: "2026-11-19",
-  source: "NetIB-News",
-  url: "https://www.data-max.co.jp/article/88059",
+/** 稲富氏は本人サイトで「再選挙に立候補することを決意いたしました」と表明した */
+const RERUN_INATOMI_SITE = {
+  date: "2026-11-21",
+  source: "本人サイト",
+  url: "https://inatomi.jp/news/3456",
+};
+
+/**
+ * 再選挙に出馬しない意向を表明した人。日付は本人が表明した日（記事の配信日とは限らない）。
+ * 出典は放送局自身のサイトの記事にする（転載先のポータルは記事が早く消えるため）。
+ */
+const RERUN_DECLINED_SASAKI = {
+  date: "2026-11-24",
+  source: "TNCテレビ西日本",
+  url: "https://news.tnc.co.jp/news/articles/NID2026112432971",
+};
+/** 吉富氏は11/26に自身のXで、井上氏は11/27にコメントで表明した（同じTNCの記事で報じられた） */
+const RERUN_DECLINED_TNC_1127 =
+  "https://news.tnc.co.jp/news/articles/NID2026112733033";
+const RERUN_DECLINED_YOSHITOMI = {
+  date: "2026-11-26",
+  source: "TNCテレビ西日本",
+  url: RERUN_DECLINED_TNC_1127,
+};
+/**
+ * 荒牧氏・西脇氏・片山氏は、共同通信（11/21）が関係者への取材で不出馬を報じた。
+ * 本人の表明日が記事に書かれていないため、日付は記事の配信日にする。
+ * 片山氏は擁立した市民団体が見送りを発表したとも報じられている（読売新聞・西日本新聞）
+ */
+const RERUN_DECLINED_KYODO_1121 = {
+  date: "2026-11-21",
+  source: "共同通信（東京新聞）",
+  url: "https://www.tokyo-np.co.jp/article/529853",
+};
+const RERUN_DECLINED_INOUE = {
+  date: "2026-11-27",
+  source: "TNCテレビ西日本",
+  url: RERUN_DECLINED_TNC_1127,
 };
 
 /**
@@ -951,6 +985,7 @@ export const CANDIDATES: Candidate[] = [
   {
     id: "nishiwaki-hiroki",
     no: "02",
+    rerunDeclined: RERUN_DECLINED_KYODO_1121,
     name: "西脇 ひろき",
     kana: "にしわき ひろき",
     // 出典（選挙ドットコムのプロフィール欄）の表記に合わせた年齢。
@@ -1462,6 +1497,7 @@ export const CANDIDATES: Candidate[] = [
   {
     id: "aramaki-akira",
     no: "03",
+    rerunDeclined: RERUN_DECLINED_KYODO_1121,
     name: "荒牧 明楽",
     kana: "あらまき あきら",
     // 出馬表明会見の報道（KBC・TNC）が41歳としており、本人サイトの
@@ -2934,7 +2970,7 @@ export const CANDIDATES: Candidate[] = [
   {
     id: "inoue-kiyoshi",
     no: "06",
-    rerun: RERUN_DATA_MAX,
+    rerunDeclined: RERUN_DECLINED_INOUE,
     name: "井上 潔",
     kana: "いのうえ きよし",
     age: 56,
@@ -4747,6 +4783,7 @@ export const CANDIDATES: Candidate[] = [
   {
     id: "sasaki-ayano",
     no: "10",
+    rerunDeclined: RERUN_DECLINED_SASAKI,
     name: "佐々木 彩乃",
     kana: "ささき あやの",
     age: 29,
@@ -5924,6 +5961,7 @@ export const CANDIDATES: Candidate[] = [
   {
     id: "katayama-sumiko",
     no: "12",
+    rerunDeclined: RERUN_DECLINED_KYODO_1121,
     name: "片山 純子",
     kana: "かたやま すみこ",
     age: 69,
@@ -6419,6 +6457,7 @@ export const CANDIDATES: Candidate[] = [
   {
     id: "yoshitomi-keiko",
     no: "13",
+    rerunDeclined: RERUN_DECLINED_YOSHITOMI,
     name: "吉富 景子",
     kana: "よしとみ けいこ",
     age: 37,
@@ -6732,7 +6771,7 @@ export const CANDIDATES: Candidate[] = [
   {
     id: "inatomi-shuji",
     no: "14",
-    rerun: RERUN_TNC,
+    rerun: RERUN_INATOMI_SITE,
     name: "稲富 修二",
     kana: "いなとみ しゅうじ",
     age: 56,

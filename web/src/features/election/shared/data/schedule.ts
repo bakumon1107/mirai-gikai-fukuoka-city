@@ -6,10 +6,14 @@ import type { ElectionSchedule } from "../types";
  * 令和8年11月15日執行の福岡市長選挙では、13人のいずれも法定得票数
  * （有効投票総数の4分の1）に届かず、再選挙になった。再選挙の期日は本稿時点で未定。
  * 異議の申出の期間は11月30日まで。異議の申出がなければ、その後50日以内に行われ、
- * 「1月3日告示・1月17日投開票」が有力視されていると報じられている（確定ではない）。
+ * 「1月3日告示・1月17日投開票」が有力視されていた（TNC、11/18）。
+ * その後、市選管に異議の申出があり、日程は延期される見通しと報じられた（TNC、11/27）。
+ * 異議の中身（特定の候補への違反の疑いの主張）は、中立性の観点から掲載しない。
  *
- * 出典: 報道（TNCテレビ西日本、2026年11月18日）
+ * 出典: 報道（TNCテレビ西日本、2026年11月18日・11月27日）
  * https://news.tnc.co.jp/news/articles/NID2026111832908
+ * https://news.tnc.co.jp/news/articles/NID2026112733033
+ * （11/27の記事にも「1月3日告示、17日投開票が有力視されていた」とあるため、表示の出典はこちらにする）
  *
  * 市選管が期日を告示したら、次を埋めること。
  * - kokujiAt / voteClosesAt / kokujiLabel / voteDateLabel
@@ -35,7 +39,7 @@ export const ELECTION_SCHEDULE: ElectionSchedule = {
   kokujiAt: null,
   voteClosesAt: null,
   voteClosesNote:
-    "再選挙の期日は、福岡市選挙管理委員会がまだ決めていません。異議の申出の期間は11月30日までで、異議の申出がなければその後50日以内に行われ、1月中旬までの見通しと報じられています。",
+    "再選挙の期日は、福岡市選挙管理委員会がまだ決めていません。1月3日告示・1月17日投開票が有力視されていましたが、市の選挙管理委員会に異議の申出があり、日程は延期される見通しと報じられています。",
   kokujiLabel: "未定",
   voteDateLabel: "未定",
   earlyVotingPeriod: "",
@@ -43,6 +47,6 @@ export const ELECTION_SCHEDULE: ElectionSchedule = {
   earlyVotingPlaces: [],
   earlyVotingNote: "",
   sourceLabel: "報道（TNCテレビ西日本）",
-  sourceUrl: "https://news.tnc.co.jp/news/articles/NID2026111832908",
+  sourceUrl: "https://news.tnc.co.jp/news/articles/NID2026112733033",
   hiddenAt: null,
 };
