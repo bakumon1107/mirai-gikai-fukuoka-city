@@ -5,9 +5,9 @@ import { filterActiveCandidates } from "../utils/withdrawal";
 
 /**
  * 再選挙への出馬の意向（11月15日の選挙で法定得票数に届いた人がおらず、再選挙になった）。
- * 日付は意向を報じた記事の日付。本人の会見日ではない。
+ * 日付は意向を報じた記事の日付（本人サイトで表明していればその日付）。
  * TNC（11/18）は稲富・新村・森・神野の4氏、データ・マックス（11/19）はこれに井上氏を加えた5氏、
- * KBC（11/18）は「稲富さんを含め5人」と報じている。
+ * KBC（11/18）は「稲富さんを含め5人」と報じた。井上氏はその後、11/27に不出馬を表明した。
  */
 const RERUN_NIKKEI = {
   date: "2026-11-16",
@@ -19,10 +19,31 @@ const RERUN_TNC = {
   source: "TNCテレビ西日本",
   url: "https://news.tnc.co.jp/news/articles/NID2026111832908",
 };
-const RERUN_DATA_MAX = {
-  date: "2026-11-19",
-  source: "NetIB-News",
-  url: "https://www.data-max.co.jp/article/88059",
+/** 稲富氏は本人サイトで「再選挙に立候補することを決意いたしました」と表明した */
+const RERUN_INATOMI_SITE = {
+  date: "2026-11-21",
+  source: "本人サイト",
+  url: "https://inatomi.jp/news/3456",
+};
+
+/** 再選挙に出馬しない意向を表明した人。日付は本人が表明した日 */
+const RERUN_DECLINED_SASAKI = {
+  date: "2026-11-24",
+  source: "KBC九州朝日放送",
+  url: "https://news.yahoo.co.jp/articles/64423ffa0b091fb1ad6f6a859ae134f8a22cf810",
+};
+/** 吉富氏は自身のXで、井上氏はコメントで表明した（同じTNCの記事で報じられた） */
+const RERUN_DECLINED_TNC_1127 =
+  "https://news.yahoo.co.jp/articles/67f12276583261f5ac5cdfce04428b45cadda9a3";
+const RERUN_DECLINED_YOSHITOMI = {
+  date: "2026-11-26",
+  source: "TNCテレビ西日本",
+  url: RERUN_DECLINED_TNC_1127,
+};
+const RERUN_DECLINED_INOUE = {
+  date: "2026-11-27",
+  source: "TNCテレビ西日本",
+  url: RERUN_DECLINED_TNC_1127,
 };
 
 /**
@@ -2934,7 +2955,7 @@ export const CANDIDATES: Candidate[] = [
   {
     id: "inoue-kiyoshi",
     no: "06",
-    rerun: RERUN_DATA_MAX,
+    rerunDeclined: RERUN_DECLINED_INOUE,
     name: "井上 潔",
     kana: "いのうえ きよし",
     age: 56,
@@ -4747,6 +4768,7 @@ export const CANDIDATES: Candidate[] = [
   {
     id: "sasaki-ayano",
     no: "10",
+    rerunDeclined: RERUN_DECLINED_SASAKI,
     name: "佐々木 彩乃",
     kana: "ささき あやの",
     age: 29,
@@ -6419,6 +6441,7 @@ export const CANDIDATES: Candidate[] = [
   {
     id: "yoshitomi-keiko",
     no: "13",
+    rerunDeclined: RERUN_DECLINED_YOSHITOMI,
     name: "吉富 景子",
     kana: "よしとみ けいこ",
     age: 37,
@@ -6732,7 +6755,7 @@ export const CANDIDATES: Candidate[] = [
   {
     id: "inatomi-shuji",
     no: "14",
-    rerun: RERUN_TNC,
+    rerun: RERUN_INATOMI_SITE,
     name: "稲富 修二",
     kana: "いなとみ しゅうじ",
     age: 56,

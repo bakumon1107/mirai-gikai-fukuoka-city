@@ -102,7 +102,7 @@ export function CandidateDetailView({ candidate, phase, tab }: Props) {
         </div>
         {candidate.rerun ? (
           <p className="mt-2.5 text-[11.5px] leading-[1.7] text-mirai-text-subtle">
-            再選挙への出馬の意向が報じられています（
+            再選挙への出馬の意向が示されています（
             {formatMonthDayJa(candidate.rerun.date)}・
             <a
               href={candidate.rerun.url}
@@ -113,6 +113,20 @@ export function CandidateDetailView({ candidate, phase, tab }: Props) {
               {candidate.rerun.source}
             </a>
             ）
+          </p>
+        ) : candidate.rerunDeclined ? (
+          <p className="mt-2.5 rounded-lg bg-mirai-surface-grouped px-3.5 py-2.5 text-[11.5px] leading-[1.7] text-mirai-text-subtle">
+            11月15日の選挙に立候補した人です。再選挙には出馬しない意向を表明しています（
+            {formatMonthDayJa(candidate.rerunDeclined.date)}・
+            <a
+              href={candidate.rerunDeclined.url}
+              target="_blank"
+              rel="noreferrer"
+              className="font-bold text-primary-accent"
+            >
+              {candidate.rerunDeclined.source}
+            </a>
+            ）。
           </p>
         ) : (
           // 再選挙の特設ページの中にあるため、再選挙の立候補予定者と読まれないよう位置づけを示す。

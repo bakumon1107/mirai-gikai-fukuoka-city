@@ -30,6 +30,12 @@ const RERUN_INTENT: UpdateEntry = {
   text: "再選挙への出馬の意向が報じられたことを追加",
 };
 
+/** 2026年11月27日、再選挙に出馬しない意向の表明（佐々木氏・吉富氏）を載せた */
+const RERUN_DECLINED: UpdateEntry = {
+  date: "2026-11-27",
+  text: "再選挙には出馬しない意向を表明したことを追加",
+};
+
 /** キーは Candidate.id */
 export const CANDIDATE_UPDATES: Readonly<
   Record<string, readonly UpdateEntry[]>
@@ -142,6 +148,10 @@ export const CANDIDATE_UPDATES: Readonly<
       text: `${REHACQ_DEBATE}。外国人住民・外国人政策の分野が「未表明」から「表明済み」に`,
     },
     RERUN_INTENT,
+    {
+      date: "2026-11-27",
+      text: "再選挙には出馬しない意向を表明したことを追加（再選挙の一覧からは外した）",
+    },
   ],
   "mori-kentaro": [
     { date: "2026-09-19", text: "掲載を開始" },
@@ -216,6 +226,7 @@ export const CANDIDATE_UPDATES: Readonly<
       text: "政策発表の記者会見での副首都・外国人住民についての発言を反映",
     },
     { date: "2026-10-29", text: REHACQ_DEBATE },
+    RERUN_DECLINED,
   ],
   "jinno-genki": [
     { date: "2026-09-27", text: "掲載を開始" },
@@ -257,6 +268,7 @@ export const CANDIDATE_UPDATES: Readonly<
       date: "2026-10-28",
       text: "出馬表明の記者会見での発言（政策協定、国家戦略特区）を反映",
     },
+    RERUN_DECLINED,
   ],
   "inatomi-shuji": [
     { date: "2026-10-16", text: "掲載を開始" },
@@ -271,6 +283,10 @@ export const CANDIDATE_UPDATES: Readonly<
     {
       date: "2026-11-21",
       text: "本人サイトの「よくあるご質問」（11月7日）の回答を、外国人住民・外国人政策（外国人への参政権付与に反対）と財政規律（ワンヘルス事業）に反映",
+    },
+    {
+      date: "2026-11-27",
+      text: "再選挙への出馬の意向の出典を、本人サイトの表明（11月21日）に差し替えた",
     },
   ],
 };

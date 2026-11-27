@@ -15,9 +15,9 @@ export function filterRerunCandidates<
 }
 
 /**
- * 日付は報道の日付であって本人の表明日ではないため、「いつ報じられたか」として書く。
- * → "11月18日の報道（TNCテレビ西日本）"
+ * 日付と出典を並べる。日付は報道の日付のこともあるため、「○日に表明」とは書かない。
+ * → "11月18日・TNCテレビ西日本" / "11月21日・本人サイト"
  */
 export function formatRerunReport(rerun: CandidateRerun): string {
-  return `${formatMonthDayJa(rerun.date)}の報道（${rerun.source}）`;
+  return `${formatMonthDayJa(rerun.date)}・${rerun.source}`;
 }
